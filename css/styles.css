@@ -1,0 +1,33 @@
+section {
+	padding-top: 100px;
+	padding-bottom: 100px;
+}
+
+section h2 {
+    font-size: 3em;
+    width: 100%;
+    padding-bottom: 50px;
+}
+
+section h3 {
+	width: 100%
+}
+
+.jumbotron {
+	margin-bottom: 0px;
+	padding-bottom: 150px;
+	padding-top: 150px;
+
+}
+
+.navbar-brand {
+	font-size: 200%;
+}
+
+.nav-item {
+    text-transform: uppercase;
+    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-weight: 700;
+    font-size: 1.2em;
+}
+
