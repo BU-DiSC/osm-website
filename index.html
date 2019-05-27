@@ -17,11 +17,11 @@
     <nav class="navbar navbar-expand-lg navbar-dark navbar-fixed-top bg-dark fixed-top">
       <div class="container">
         <a class="navbar-brand" href="#page-top">OSM-Tree<span class="sr-only">(current)</span></a></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsable-nav" aria-controls="collapsable-nav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarColor02">
+        <div class="collapse navbar-collapse" id="collapsable-nav">
           <ul class="nav navbar-nav ml-auto">
             <li class="nav-item">
               <a class="nav-link" href="#problem">The Problem</a>
@@ -102,6 +102,90 @@
        <div class="row text-center">
         <h2> Section 3: Interactive Section </h2>
       </div>
+
+
+      <div class="row">
+        <!-- LSM-Tree -->
+        <div class="col-lg-3 col-md-3 col-sm-3">
+          <div class="row">
+            <span class="mx-auto" style="font-size: 24px;">LSM-Tree</span>
+          </div>
+
+
+          <div class="row">
+            <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text">Levels</label>
+            </div>
+            <input id = "lsm-input-level" type="number" class="form-control" placeholder="Levels" aria-label="Levels">
+            </div>
+
+            <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text">Ratio</label>
+            </div>
+            <input id = "lsm-input-ratio" type="number" class="form-control" placeholder="Ratio" aria-label="Ratio">
+            </div>
+          </div>
+
+          
+
+          <div class="lsm-result row">
+            <div id="lsm-btn-group" class="btn-group-vertical">
+              <button type="button" style="width: 10%; "class="lsm-btn btn btn-secondary btn-outline-primary" ></button>
+              <button type="button" style="width: 20%; "class="lsm-btn btn btn-secondary btn-outline-primary" ></button>
+              <button type="button" style="width: 30%; "class="lsm-btn btn btn-secondary btn-outline-primary" ></button>
+              <button type="button" style="width: 40%; "class="lsm-btn btn btn-secondary btn-outline-primary" ></button>
+            </div>
+            
+
+
+
+          </div>
+
+
+          <!-- 
+          <div class="row">
+            <div class="btn-toolbar mx-auto" role="toolbar" aria-label="Toolbar with button groups">
+              <div class="btn-group mr-2" role="group" aria-label="First group">
+                <button type="button" class="btn btn-secondary btn-outline-primary">1</button>
+                <button type="button" class="btn btn-secondary btn-outline-primary">2</button>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+             <div class="btn-toolbar mx-auto" role="toolbar" aria-label="Toolbar with button groups">
+              <div class="btn-group mr-2" role="group" aria-label="Second group">
+                <button type="button" class="btn btn-secondary btn-outline-primary">3</button>
+                <button type="button" class="btn btn-secondary btn-outline-primary">4</button>
+                <button type="button" class="btn btn-secondary btn-outline-primary">5</button>
+                <button type="button" class="btn btn-secondary btn-outline-primary">6</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+             <div class="btn-toolbar mx-auto" role="toolbar" aria-label="Toolbar with button groups">
+              <div class="btn-group mr-2" role="group" aria-label="Thrid group">
+                <button type="button" class="btn btn-secondary btn-outline-primary">7</button>
+                <button type="button" class="btn btn-secondary btn-outline-primary">8</button>
+                <button type="button" class="btn btn-secondary btn-outline-primary">9</button>
+                <button type="button" class="btn btn-secondary btn-outline-primary">10</button>
+                <button type="button" class="btn btn-secondary btn-outline-primary">11</button>
+                <button type="button" class="btn btn-secondary btn-outline-primary">12</button>
+                <button type="button" class="btn btn-secondary btn-outline-primary">13</button>
+                <button type="button" class="btn btn-secondary btn-outline-primary">14</button>
+              </div>
+            </div>
+          </div>
+          -->
+
+
+        </div>
+      </div>
+
+      <br>
+
       <div class="row">
         <div>
             <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,</p>
