@@ -51,7 +51,31 @@ ul > .nav-item{
 	text-align: right;
 }
 
-#lsm-btn-group {
+.input-group-text {
+	color: black;
+}
+
+.btn-custom {
+	background-color: #ecf0f1;
+	color:black;
+	border-color: #95a5a6;
+	padding: 0.1875rem 0.75rem;
+}
+
+.btn-custom:hover, .btn-custom:focus {
+	color: #fff;
+	background-color: #95a5a6;
+    border-color: #798d8f;
+}
+
+.div-title {
+	font-size: 24px;
+	margin-bottom: 5px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.btn-group {
 	width: 100%;
 }
 
@@ -62,6 +86,19 @@ ul > .nav-item{
 	margin-right: auto;
 	border-radius: 0.25rem;
 	margin-bottom: 4px;
+}
+
+.lsm-btn {
+	height: 12px;
+	padding: 0px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+.col-lg-3 .row {
+	padding-left: 15px;
+	padding-right: 15px;
 }
 
 @media(max-width:991px) {
