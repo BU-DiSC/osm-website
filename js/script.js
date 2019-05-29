@@ -3,12 +3,49 @@ document.addEventListener("DOMContentLoaded",
     function (event) {
         // Event attributes, trigger
         var STATUS = 0;     // leveling:0, tiering:1
-        document.querySelector("#lsm-input-level").onchange = updateLSM;
-        document.querySelector("#lsm-input-level").onwheel = updateLSM;
-        document.querySelector("#lsm-input-ratio").onchange = updateLSM;
-        document.querySelector("#lsm-input-ratio").onwheel = updateLSM;
+        // document.querySelector("#lsm-input-L").onchange = updateLSM;
+        // document.querySelector("#lsm-input-L").onwheel = updateLSM;
+        document.querySelector("#lsm-input-T").onchange = updateLSM;
+        document.querySelector("#lsm-input-T").onwheel = updateLSM;
+        document.querySelector("#lsm-input-E").onchange = updateLSM;
+        document.querySelector("#lsm-input-E").onwheel = updateLSM;
+        document.querySelector("#lsm-input-N").onchange = updateLSM;
+        document.querySelector("#lsm-input-N").onwheel = updateLSM;
+        document.querySelector("#lsm-input-M").onchange = updateLSM;
+        document.querySelector("#lsm-input-M").onwheel = updateLSM;
         document.querySelector("#tiering").onclick = updateLSM;
         document.querySelector("#leveling").onclick = updateLSM;
+
+        // N : number of entries
+        // L : number of Levels
+        // E : size of an entry(bytes)
+        // T : size ratio
+        // M : buffer capacity(MB);
+
+
+        function getBaseLog(x, y) {
+            return Math.log(y) / Math.log(x);
+        }
+
+        function getL() {
+            // Compute the levels of LSM-tree having
+            // ratio, #entry, entry size, Mbuffer
+            var L;
+            var T = document.querySelector("#lsm-input-T").value;
+            var E = document.querySelector("#lsm-input-E").value;
+            var N = document.querySelector("#lsm-input-N").value;
+            var M = document.querySelector("#lsm-input-M").value;
+            var Mbytes = M * Math.pow(10, 6);   // convert to bytes
+            var exponent = ((N*E)/Mbytes) * ((T-1)/T);
+            L = Math.ceil(getBaseLog(T, exponent));
+            // console.log("exponent =" + exponent);
+            // console.log("T(ratio) = " + T);
+            // console.log("E(entry size) = " + E);
+            // console.log("N(#entries) = " + N);
+            // console.log("M(buffer size) = " + M);
+            console.log("Computed Level = " + L);
+            return (L < 1) ? 1 : L;
+        }
 
 
 
@@ -19,13 +56,18 @@ document.addEventListener("DOMContentLoaded",
         }
 
         function updateLSM() {
-            var default_values = {
-                LEVEL: 4,
-                RATIO: 2
+            var DEFAULT = {
+                L: 4,
+                T: 2,
+                E: 16,
+                N: 314159265,
+                M: 200
             };
+
             checkValid(this);
-            var levels = document.querySelector("#lsm-input-level").value; 
-            var ratio = document.querySelector("#lsm-input-ratio").value;
+
+            var levels = getL();
+            var ratio = document.querySelector("#lsm-input-T").value;
 
             if (this.id === "leveling") {
                 console.log("update leveling demo");
@@ -125,33 +167,50 @@ document.addEventListener("DOMContentLoaded",
             }
 
             function checkValid(self) {
+                // T >= 2, N, E > 1, M > 0
                 if (!self.classList.contains("lsm-input")) {
                     alert("Invalid: Unknown LSM-Tree configuration input");
-                    return false;
+                    return;
                 }
+             
+                var input_T = document.querySelector("#lsm-input-T").value;
+                var input_E = document.querySelector("#lsm-input-E").value;
+                var input_N = document.querySelector("#lsm-input-N").value;
+                var input_M = document.querySelector("#lsm-input-M").value;
 
-                var input_levels = document.querySelector("#lsm-input-level").value;
-                var input_ratio = document.querySelector("#lsm-input-ratio").value;
-
-                if (self.id === "lsm-input-level") {
-                    if (input_levels > 0) {
-                        return true;
-                    } else {
-                        document.querySelector("#lsm-input-level").value = 1;
-                        alert("Invalid: The minimal level of LSM-Tree is 1");
-                        return false;
-                    }
+                switch (self.id) {
+                    case "lsm-input-T":
+                        if (input_T <= 1) {
+                            document.querySelector("#lsm-input-T").value = DEFAULT.T;
+                            alert("Invalid: The minimal ratio of LSM-Tree is 2");
+                        }
+                        break;
+                    case "lsm-input-N":
+                        if (input_N < 1) {
+                            document.querySelector("#lsm-input-N").value = 1;
+                            alert("Invalid: The minimal number of entries of LSM-Tree is 1");
+                        }
+                        break;
+                    case "lsm-input-E":
+                            if (input_E < 1) {
+                            document.querySelector("#lsm-input-E").value = 1;
+                            alert("Invalid: The minimal entry size of LSM-Tree is 1 bytes");
+                        }
+                        break;
+                    case "lsm-input-M":
+                            if (input_M < 0) {
+                            document.querySelector("#lsm-input-M").value = DEFAULT.M;
+                            alert("Invalid: The buffer size of LSM-Tree must > 0");
+                        }
+                        break;
+                    case "tiering":
+                    case "leveling":
+                        break;
+                    default:
+                        console.log(self.id);
+                        alert("Invalid: Unknown LSM-Tree configuration input");
                 }
-
-                if (self.id === "lsm-input-ratio") {
-                    if (input_ratio > 1) {
-                        return true;
-                    } else {
-                        document.querySelector("#lsm-input-ratio").value = 2;
-                        alert("Invalid: The minimal ratio of LSM-Tree is 2");
-                        return false;
-                    }
-                }
+                return;
             }
         }
     }

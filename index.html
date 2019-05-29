@@ -118,12 +118,39 @@
             </div>
           </div>
         
-          <div class="row lsm-conf-row">
+<!--           <div class="row lsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Levels</label>
               </div>
-              <input id="lsm-input-level" value="4" type="number" class="lsm-input form-control" placeholder="4" aria-label="Levels">
+              <input id="lsm-input-L" value="4" type="number" class="lsm-input form-control" aria-label="Levels">
+            </div>
+          </div> -->
+
+          <div class="row lsm-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text"># Entries</label>
+              </div>
+              <input id="lsm-input-N" value="314159265" type="number" class="lsm-input form-control" aria-label="#Entries">
+            </div>
+          </div>
+
+          <div class="row lsm-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Entry Size (Bytes)</label>
+              </div>
+              <input id="lsm-input-E" value="16" type="number" class="lsm-input form-control" aria-label="Entry Size">
+            </div>
+          </div>
+
+          <div class="row lsm-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Buffer Size (MB)</label>
+              </div>
+              <input id="lsm-input-M" value="200" type="number" class="lsm-input form-control" aria-label="Buffer Capacity">
             </div>
           </div>
 
@@ -132,10 +159,10 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Ratio</label>
               </div>
-              <input id="lsm-input-ratio" value="2" type="number" class="lsm-input form-control" placeholder="Ratio" aria-label="Ratio">
+              <input id="lsm-input-T" value="2" type="number" class="lsm-input form-control" aria-label="Ratio">
             </div>
           </div>
-        </div> <!-- END of Demo1-col -->
+        </div> <!-- END of Demo1-conf-col -->
 
 
 
@@ -146,42 +173,61 @@
           </div>
 
           <div class="row demo2-conf-row mb-2">
-            <div class="btn-group" role="group" aria-label="LSM Merge Policy" >
-              <button id="leveling" name="lsm-input" type="button" class="btn btn-custom">Leveling</button>
-              <button id="tiering"  name="lsm-input" type="button" class="btn btn-custom">Tiering</button>
+            <div class="mp-btn-group btn-group" role="group" aria-label="LSM Merge Policy" >
+              <button id="leveling" type="button" class="demo2-input btn btn-custom">Leveling</button>
+              <button id="tiering"  type="button" class="demo2-input btn btn-custom">Tiering</button>
             </div>
           </div>
 
           <div class="row demo2-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
-                <label class="input-group-text">Levels</label>
+                <label class="input-group-text"># Entries</label>
               </div>
-              <input id="lsm-input-level" name="lsm-input" value="4" type="number" class="form-control" placeholder="4" aria-label="Levels">
+              <input id="demo2-input-N" value="314159265" type="number" class="demo2-input form-control" aria-label="#Entries">
             </div>
           </div>
+
+          <div class="row demo2-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Entry Size (Bytes)</label>
+              </div>
+              <input id="demo2-input-E" value="16" type="number" class="demo2-input form-control" aria-label="Entry Size">
+            </div>
+          </div>
+
+          <div class="row demo2-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Buffer Size (MB)</label>
+              </div>
+              <input id="demo2-input-M" value="200" type="number" class="demo2-input form-control" aria-label="Buffer Capacity">
+            </div>
+          </div>
+
           <div class="row demo2-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Ratio</label>
               </div>
-              <input id="lsm-input-ratio" name="lsm-input" value="2" type="number" class="form-control" placeholder="Ratio" aria-label="Ratio">
+              <input id="demo2-input-T" value="2" type="number" class="demo2-input form-control" aria-label="Ratio">
             </div>
           </div>
-        </div> <!-- END of Demo2-col -->
+        </div> <!-- END of Demo2-conf-col -->
 
 
         <div class="demo3-conf-col col-lg-3 col-md-3 col-sm-3">
           <div class="row demo3-conf-row">
             <span class="div-title">Demo 3</span>
           </div>
-        </div> <!-- END of Demo3-col -->
+        </div> <!-- END of Demo3-conf-col -->
 
         <div class="demo4-conf-col col-lg-3 col-md-3 col-sm-3">
           <div class="row demo3-conf-row">
             <span class="div-title">Demo 4</span>
           </div>
-        </div> <!-- END of Demo4-col -->
+        </div> <!-- END of Demo4-conf-col -->
 
       </div> <!-- END of configurations of Interactive Demo -->
       

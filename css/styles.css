@@ -58,7 +58,7 @@ ul > .nav-item{
 .btn-custom {
 	background-color: #ecf0f1;
 	color:black;
-	border-color: #95a5a6;
+	border-color: rgb(206, 212, 218);
 	padding: 0.1875rem 0.75rem;
 }
 
@@ -75,7 +75,7 @@ ul > .nav-item{
 	margin-right: auto;
 }
 
-.lsm-conf-row .mp-btn-group {
+.mp-btn-group {
 	width: 100%;
 }
 
@@ -85,14 +85,6 @@ ul > .nav-item{
 	padding: 0px;
 	border-radius: 0.25rem;
 	vertical-align: top;
-}
-
-.lsm-result .t-btn-group {
-	margin-right: auto;
-	margin-left: auto;
-	height: 12px;
-	display: inline-block;
-	margin-bottom: 3px;
 }
 
 
