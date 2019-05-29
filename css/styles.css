@@ -75,24 +75,24 @@ ul > .nav-item{
 	margin-right: auto;
 }
 
-.btn-group {
+.lsm-conf-row .mp-btn-group {
 	width: 100%;
 }
 
-#lsm-btn-group .lsm-btn {
+.lsm-reuslt .lsm-btn, .lsm-btn-group, .lsm-btn{
 	height: 12px;
+	margin: 0 auto 3px;
 	padding: 0px;
-	margin-left: auto;
-	margin-right: auto;
 	border-radius: 0.25rem;
-	margin-bottom: 4px;
+	vertical-align: top;
 }
 
-.lsm-btn {
-	height: 12px;
-	padding: 0px;
-	margin-left: auto;
+.lsm-result .t-btn-group {
 	margin-right: auto;
+	margin-left: auto;
+	height: 12px;
+	display: inline-block;
+	margin-bottom: 3px;
 }
 
 

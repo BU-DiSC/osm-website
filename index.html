@@ -106,26 +106,28 @@
 
       <div class="row">
         <!-- LSM-Tree -->
-        <div class="col-lsm col-lg-3 col-md-3 col-sm-3">
-          <div class="row">
+        <div class="lsm-conf-col col-lg-3 col-md-3 col-sm-3">
+          <div class="row lsm-conf-row">
             <span class="div-title">LSM-Tree</span>
           </div>
 
-          <div class="row mb-2">
-            <div class="btn-group" role="group" aria-label="LSM Merge Policy" >
+          <div class="row lsm-conf-row mb-2">
+            <div class="mp-btn-group btn-group" role="group" aria-label="LSM Merge Policy" >
               <button id="leveling" type="button" class="lsm-input btn btn-custom">Leveling</button>
               <button id="tiering" type="button" class="lsm-input btn btn-custom">Tiering</button>
             </div>
           </div>
         
-          <div class="row">
+          <div class="row lsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Levels</label>
               </div>
               <input id="lsm-input-level" value="4" type="number" class="lsm-input form-control" placeholder="4" aria-label="Levels">
             </div>
+          </div>
 
+          <div class="row lsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Ratio</label>
@@ -133,49 +135,50 @@
               <input id="lsm-input-ratio" value="2" type="number" class="lsm-input form-control" placeholder="Ratio" aria-label="Ratio">
             </div>
           </div>
-
         </div> <!-- END of Demo1-col -->
 
 
 
 
-        <div class="col-lsm-t col-lg-3 col-md-3 col-sm-3">
-          <div class="row">
+        <div class="demo2-conf-col col-lg-3 col-md-3 col-sm-3">
+          <div class="row demo2-conf-row">
             <span class="div-title">Demo 2</span>
           </div>
 
-          <div class="row mb-2">
+          <div class="row demo2-conf-row mb-2">
             <div class="btn-group" role="group" aria-label="LSM Merge Policy" >
               <button id="leveling" name="lsm-input" type="button" class="btn btn-custom">Leveling</button>
               <button id="tiering"  name="lsm-input" type="button" class="btn btn-custom">Tiering</button>
             </div>
           </div>
 
-          <div class="row">
+          <div class="row demo2-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Levels</label>
               </div>
               <input id="lsm-input-level" name="lsm-input" value="4" type="number" class="form-control" placeholder="4" aria-label="Levels">
             </div>
+          </div>
+          <div class="row demo2-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Ratio</label>
               </div>
               <input id="lsm-input-ratio" name="lsm-input" value="2" type="number" class="form-control" placeholder="Ratio" aria-label="Ratio">
             </div>
-          </div> <!-- END of input row -->
+          </div>
         </div> <!-- END of Demo2-col -->
 
 
-        <div class="col-lsm-t col-lg-3 col-md-3 col-sm-3">
-          <div class="row">
+        <div class="demo3-conf-col col-lg-3 col-md-3 col-sm-3">
+          <div class="row demo3-conf-row">
             <span class="div-title">Demo 3</span>
           </div>
         </div> <!-- END of Demo3-col -->
 
-        <div class="col-lsm-t col-lg-3 col-md-3 col-sm-3">
-          <div class="row">
+        <div class="demo4-conf-col col-lg-3 col-md-3 col-sm-3">
+          <div class="row demo3-conf-row">
             <span class="div-title">Demo 4</span>
           </div>
         </div> <!-- END of Demo4-col -->
@@ -184,21 +187,71 @@
       
 
       <!-- Interactive Demo result starts here -->
-      <div class="row">
-        <div class="col-lsm col-lg-3 col-md-3 col-sm-3"> 
-          <div class="row lsm-result">
-            <div id="lsm-btn-group" class="btn-group btn-group-vertical">
+      <div class="row ">
+        <div class="lsm-col-res col-lg-3 col-md-3 col-sm-3"> 
+          <div id ="lsm-res">
+            <div class="row lsm-result">
+              <button type="button" style="width: 31.875px; "class="lsm-btn btn btn-secondary" ></button>
+            </div>
+            <div class="row lsm-result">
+              <button type="button" style="width: 63.75px; "class="lsm-btn btn btn-secondary" ></button>
+            </div>
+            <div class="row lsm-result">
+              <button type="button" style="width: 127.5px; "class="lsm-btn btn btn-secondary" ></button>
+            </div>
+            <div class="row lsm-result">
+              <button type="button" style="width: 255px; "class="lsm-btn btn btn-secondary" ></button>
+            </div>
+          </div>
+
+            <!-- <div id="l-btn-group" class="btn-group btn-group-vertical">
               <button type="button" style="width: 31.875px; "class="lsm-btn btn btn-secondary" ></button>
               <button type="button" style="width: 63.75px; "class="lsm-btn btn btn-secondary" ></button>
               <button type="button" style="width: 127.5px; "class="lsm-btn btn btn-secondary" ></button>
               <button type="button" style="width: 255px; "class="lsm-btn btn btn-secondary" ></button>
+            </div> -->
+        </div> <!-- END of lsm-col-result -->
+
+
+        <div class="demo2-col-res col-lg-3 col-md-3 col-sm-3">
+          <div>
+            <div class="row lsm-result">
+              <div class="lsm-btn-group">
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
+              </div>
+            </div>
+
+            <div class="row lsm-result">
+              <div class="lsm-btn-group">
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 20px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 20px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 20px;"></button>
+              </div>
+            </div>
+
+            <div class="row lsm-result">
+              <div class="lsm-btn-group">
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 30px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 30px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 30px;"></button>
+              </div>
+            </div>
+
+            <div class="row lsm-result">
+              <div class="lsm-btn-group">
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 83px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 83px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 83px;"></button>
+              </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="col-lsm col-lg-3 col-md-3 col-sm-3"> 
-          <div class="row lsm-result">
-            <div class="d-flex flex-column mx-auto">
+
+            <!-- <div class="d-flex flex-column mx-auto">
               <div class="lsm-btn-group mx-auto">
                 <button class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
                 <button class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
@@ -216,10 +269,7 @@
               <button class="lsm-btn btn btn-secondary" style="width: 40px;"></button>
               <button class="lsm-btn btn btn-secondary" style="width: 40px;"></button>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
+          </div> -->
 
 
     <hr class="my-4 row">
