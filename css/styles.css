@@ -79,12 +79,18 @@ ul > .nav-item{
 	width: 100%;
 }
 
-.lsm-reuslt .lsm-btn, .lsm-btn-group, .lsm-btn{
+.lsm-btn-group, .lsm-btn{
 	height: 12px;
 	margin: 0 auto 3px;
 	padding: 0px;
 	border-radius: 0.25rem;
 	vertical-align: top;
+}
+
+.lsm-btn-group .lsm-btn {
+	height: 12px;
+	padding: 0px;
+	margin: 0 1px 3px;
 }
 
 

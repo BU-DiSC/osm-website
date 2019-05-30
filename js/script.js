@@ -2,7 +2,7 @@
 document.addEventListener("DOMContentLoaded",
     function (event) {
         // Event attributes, trigger
-        var STATUS = 0;     // leveling:0, tiering:1
+        var LSM_MP = 0;     // leveling:0, tiering:1
         // document.querySelector("#lsm-input-L").onchange = updateLSM;
         // document.querySelector("#lsm-input-L").onwheel = updateLSM;
         document.querySelector("#lsm-input-T").onchange = updateLSM;
@@ -71,19 +71,15 @@ document.addEventListener("DOMContentLoaded",
 
             if (this.id === "leveling") {
                 console.log("update leveling demo");
-                STATUS = 0;
+                LSM_MP = 0;
             } else if (this.id === "tiering") {
                 console.log("update tiering demo");
-                STATUS = 1;
+                LSM_MP = 1;
             } else {
                 console.log("simply update");
             }
 
-            if (STATUS) {
-                drawTiering();
-            } else {
-                drawLSM();
-            }
+            drawLSM();
 
 
             function getBtns(element, level, ratio) {
@@ -113,11 +109,10 @@ document.addEventListener("DOMContentLoaded",
                 // Return a list of lsm-btn-group obejcts
                 var btn_groups = [];
                 var m = (element.clientWidth - 1) / Math.pow(ratio, level - 1);
-                console.log("Total space:" + element.clientWidth);
 
                 var getWidth = function(i) {
                     // Return the width for each button in a btn-group regarding to tiering
-                    var width = ((m * Math.pow(ratio, i)) / ratio);  // minus 1 to avoid stacking
+                    var width = (m * Math.pow(ratio, i) / ratio) - 2;  // minus 1(margin) to avoid stacking
                     return width + "px";
                 }
 
@@ -140,24 +135,13 @@ document.addEventListener("DOMContentLoaded",
             }
 
             function drawLSM() {
+                var btnList;
                 var parent = document.querySelector("#lsm-res");
-                var btnList = getBtns(parent, levels, ratio);
+                if (LSM_MP) btnList = getBtnGroups(parent, levels, ratio);
+                else btnList = getBtns(parent, levels, ratio);
+        
                 clear(parent);
 
-                for (var i = 0; i < levels; i++) {
-                    var res_wrap = document.createElement("div");
-                    res_wrap.setAttribute("class", "row lsm-result");
-                    res_wrap.appendChild(btnList[i]);
-                    parent.appendChild(res_wrap);
-                }
-            }
- 
-
-            function drawTiering() {
-                var parent = document.querySelector("#lsm-res");
-                var btnList = getBtnGroups(parent, levels, ratio);
-                clear(parent);
-                console.log(btnList);
                 for (var i = 0; i < levels; i++) {
                     var res_wrap = document.createElement("div");
                     res_wrap.setAttribute("class", "row lsm-result");
