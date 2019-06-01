@@ -17,11 +17,11 @@
     <nav class="navbar navbar-expand-lg navbar-dark navbar-fixed-top bg-dark fixed-top">
       <div class="container">
         <a class="navbar-brand" href="#page-top">OSM-Tree<span class="sr-only">(current)</span></a></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsable-nav" aria-controls="collapsable-nav" aria-expanded="false" aria-label="Toggle navigation">
+        <button id="navbarToggle" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsable-nav" aria-controls="collapsable-nav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="collapsable-nav">
+        <div id="collapsable-nav" class="collapse navbar-collapse" id="collapsable-nav">
           <ul class="nav navbar-nav ml-auto">
             <li class="nav-item">
               <a class="nav-link" href="#problem">The Problem</a>
@@ -98,7 +98,7 @@
   </section>
 
   <section id="interactiveDemo">
-    <div class="container">
+    <div class="container-fluid">
        <div class="row text-center">
         <h2> Section 3: Interactive Section </h2>
       </div>
@@ -108,7 +108,7 @@
         <!-- LSM-Tree -->
         <div class="lsm-conf-col col-lg-3 col-md-3 col-sm-3">
           <div class="row lsm-conf-row">
-            <span class="div-title">LSM-Tree</span>
+            <span class="div-title">Vanilla-LSM</span>
           </div>
 
           <div class="row lsm-conf-row mb-2">
@@ -132,7 +132,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text"># Entries</label>
               </div>
-              <input id="lsm-input-N" value="314159265" type="number" class="lsm-input form-control" aria-label="#Entries">
+              <input id="lsm-input-N" value="4294967296" type="number" min="1" data-old="4294967296" class="lsm-input form-control" aria-label="#Entries">
             </div>
           </div>
 
@@ -141,7 +141,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Entry Size (Bytes)</label>
               </div>
-              <input id="lsm-input-E" value="16" type="number" class="lsm-input form-control" aria-label="Entry Size">
+              <input id="lsm-input-E" value="16" type="number" min="1" data-old="16" class="lsm-input form-control" aria-label="Entry Size">
             </div>
           </div>
 
@@ -150,7 +150,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Buffer Size (MB)</label>
               </div>
-              <input id="lsm-input-M" value="200" type="number" class="lsm-input form-control" aria-label="Buffer Capacity">
+              <input id="lsm-input-M" value="256" type="number" min="0" data-old="256" class="lsm-input form-control" aria-label="Buffer Capacity">
             </div>
           </div>
 
@@ -159,7 +159,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Ratio</label>
               </div>
-              <input id="lsm-input-T" value="2" type="number" class="lsm-input form-control" aria-label="Ratio">
+              <input id="lsm-input-T" value="2" min="2" type="number" class="lsm-input form-control" aria-label="Ratio">
             </div>
           </div>
         </div> <!-- END of Demo1-conf-col -->
@@ -169,7 +169,7 @@
 
         <div class="demo2-conf-col col-lg-3 col-md-3 col-sm-3">
           <div class="row demo2-conf-row">
-            <span class="div-title">Demo 2</span>
+            <span class="div-title">RocksDB-LSM</span>
           </div>
 
           <div class="row demo2-conf-row mb-2">
@@ -184,7 +184,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text"># Entries</label>
               </div>
-              <input id="demo2-input-N" value="314159265" type="number" class="demo2-input form-control" aria-label="#Entries">
+              <input id="demo2-input-N" value="4294967296" type="number" class="demo2-input form-control" aria-label="#Entries">
             </div>
           </div>
 
@@ -202,7 +202,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Buffer Size (MB)</label>
               </div>
-              <input id="demo2-input-M" value="200" type="number" class="demo2-input form-control" aria-label="Buffer Capacity">
+              <input id="demo2-input-M" value="256" type="number" class="demo2-input form-control" aria-label="Buffer Capacity">
             </div>
           </div>
 
@@ -221,18 +221,104 @@
           <div class="row demo3-conf-row">
             <span class="div-title">Demo 3</span>
           </div>
+
+          <div class="row demo3-conf-row mb-2">
+            <div class="mp-btn-group btn-group" role="group" aria-label="LSM Merge Policy" >
+              <button id="leveling" type="button" class="demo3-input btn btn-custom">Leveling</button>
+              <button id="tiering"  type="button" class="demo3-input btn btn-custom">Tiering</button>
+            </div>
+          </div>
+
+          <div class="row demo3-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text"># Entries</label>
+              </div>
+              <input id="demo3-input-N" value="4294967296" type="number" class="demo3-input form-control" aria-label="#Entries">
+            </div>
+          </div>
+
+          <div class="row demo3-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Entry Size (Bytes)</label>
+              </div>
+              <input id="demo3-input-E" value="16" type="number" class="demo3-input form-control" aria-label="Entry Size">
+            </div>
+          </div>
+
+          <div class="row demo3-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Buffer Size (MB)</label>
+              </div>
+              <input id="demo3-input-M" value="256" type="number" class="demo3-input form-control" aria-label="Buffer Capacity">
+            </div>
+          </div>
+
+          <div class="row demo3-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Ratio</label>
+              </div>
+              <input id="demo3-input-T" value="2" type="number" class="demo3-input form-control" aria-label="Ratio">
+            </div>
+          </div>
         </div> <!-- END of Demo3-conf-col -->
 
         <div class="demo4-conf-col col-lg-3 col-md-3 col-sm-3">
-          <div class="row demo3-conf-row">
+          <div class="row demo4-conf-row">
             <span class="div-title">Demo 4</span>
+          </div>
+
+          <div class="row demo4-conf-row mb-2">
+            <div class="mp-btn-group btn-group" role="group" aria-label="LSM Merge Policy" >
+              <button id="leveling" type="button" class="demo4-input btn btn-custom">Leveling</button>
+              <button id="tiering"  type="button" class="demo4-input btn btn-custom">Tiering</button>
+            </div>
+          </div>
+
+          <div class="row demo4-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text"># Entries</label>
+              </div>
+              <input id="demo4-input-N" value="4294967296" type="number" class="demo4-input form-control" aria-label="#Entries">
+            </div>
+          </div>
+
+          <div class="row demo4-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Entry Size (Bytes)</label>
+              </div>
+              <input id="demo4-input-E" value="16" type="number" class="demo4-input form-control" aria-label="Entry Size">
+            </div>
+          </div>
+
+          <div class="row demo4-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Buffer Size (MB)</label>
+              </div>
+              <input id="demo4-input-M" value="256" type="number" class="demo4-input form-control" aria-label="Buffer Capacity">
+            </div>
+          </div>
+
+          <div class="row demo4-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Ratio</label>
+              </div>
+              <input id="demo4-input-T" value="2" type="number" class="demo4-input form-control" aria-label="Ratio">
+            </div>
           </div>
         </div> <!-- END of Demo4-conf-col -->
 
       </div> <!-- END of configurations of Interactive Demo -->
       
-
       <!-- Interactive Demo result starts here -->
+      <!-- Diagram result starts here -->
       <div class="row ">
         <div class="lsm-col-res col-lg-3 col-md-3 col-sm-3"> 
           <div id ="lsm-res">
@@ -287,36 +373,242 @@
 
             <div class="row lsm-result">
               <div class="lsm-btn-group">
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 81px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 81px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 81px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 79px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 79px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 79px;"></button>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </div> <!-- END of demo2-col-res -->
 
-
-            <!-- <div class="d-flex flex-column mx-auto">
-              <div class="lsm-btn-group mx-auto">
-                <button class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
-                <button class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
-                <button class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
+        <div class="demo3-col-res col-lg-3 col-md-3 col-sm-3">
+          <div id=“demo3-res>
+            <div class="row lsm-result">
+              <div class="lsm-btn-group">
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
               </div>
-
-              <div class="lsm-btn-group mx-auto">
-              <button class="lsm-btn btn btn-secondary" style="width: 20px;"></button>
-              <button class="lsm-btn btn btn-secondary" style="width: 20px;"></button>
-              <button class="lsm-btn btn btn-secondary" style="width: 20px;"></button>
             </div>
 
-            <div class="lsm-btn-group mx-auto">
-              <button class="lsm-btn btn btn-secondary" style="width: 40px;"></button>
-              <button class="lsm-btn btn btn-secondary" style="width: 40px;"></button>
-              <button class="lsm-btn btn btn-secondary" style="width: 40px;"></button>
+            <div class="row lsm-result">
+              <div class="lsm-btn-group">
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 20px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 20px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 20px;"></button>
+              </div>
             </div>
-          </div> -->
 
+            <div class="row lsm-result">
+              <div class="lsm-btn-group">
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 30px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 30px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 30px;"></button>
+              </div>
+            </div>
+
+            <div class="row lsm-result">
+              <div class="lsm-btn-group">
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 79px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 79px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 79px;"></button>
+              </div>
+            </div>
+          </div>
+        </div> <!-- END of demo3-col-res -->
+
+        <div class="demo4-col-res col-lg-3 col-md-3 col-sm-3">
+          <div id=“demo4-res>
+            <div class="row lsm-result">
+              <div class="lsm-btn-group">
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
+              </div>
+            </div>
+
+            <div class="row lsm-result">
+              <div class="lsm-btn-group">
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 20px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 20px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 20px;"></button>
+              </div>
+            </div>
+
+            <div class="row lsm-result">
+              <div class="lsm-btn-group">
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 30px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 30px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 30px;"></button>
+              </div>
+            </div>
+
+            <div class="row lsm-result">
+              <div class="lsm-btn-group">
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 79px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 79px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 79px;"></button>
+              </div>
+            </div>
+          </div>
+        </div> <!-- END of demo4-col-res -->
+      </div> <!-- END of diagram result -->
+
+    <br>
+    <!-- Cost result starts here -->
+    <div id="cost-result" class="row">
+      <!-- Demo1 cost result starts here -->
+      <div class="d1cost-col-res col-lg-3 col-md-3 col-sm-3">
+        <div class="row">
+          <div class="metrics col-lg-7 col-md-7 col-sm-7">
+            <span class="metric-title">Write</span>
+          </div>
+          <div class="col-lg-5 col-md-5 col-sm-5 text-center">
+            <span class="cost">XXX I/O</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="metrics col-lg-7 col-md-7 col-sm-7">
+            <span class="metric-title">Range Lookup</span>
+          </div>
+          <div class="col-lg-5 col-md-5 col-sm-5 text-center">
+            <span class="cost">XXX I/O</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="metrics col-lg-7 col-md-7 col-sm-7">
+            <span class="metric-title">Point Lookup</span>
+          </div>
+          <div class="col-lg-5 col-md-5 col-sm-5 text-center">
+            <span class="cost">XXX I/O</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="metrics col-lg-7 col-md-7 col-sm-7">
+            <span class="metric-title">Storage Space</span>
+          </div>
+          <div class="col-lg-5 col-md-5 col-sm-5 text-center">
+            <span class="cost">XXX TB</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="metrics col-lg-7 col-md-7 col-sm-7">
+            <span class="metric-title">Memory Footprint</span>
+          </div>
+          <div class="col-lg-5 col-md-5 col-sm-5 text-center">
+            <span class="cost">XXX GB</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="metrics col-lg-7 col-md-7 col-sm-7">
+            <span class="metric-title">Throughput</span>
+          </div>
+          <div class="col-lg-5 col-md-5 col-sm-5 text-center">
+            <span class="cost">XXX ops/s</span>
+          </div>
+        </div>
+      </div> <!-- END of demo1 cost result -->
+
+      <!-- Demo2 cost result starts here -->
+      <div class="d2cost-col-res col-lg-3 col-md-3 col-sm-3">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <span class="cost">XXX I/O</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <span class="cost">XXX I/O</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <span class="cost">XXX I/O</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <span class="cost">XXX TB</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <span class="cost">XXX GB</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <span class="cost">XXX ops/s</span>
+          </div>  
+        </div>
+      </div> <!-- END of demo2 cost result -->
+
+      <!-- Demo3 cost result starts here -->
+      <div class="d3cost-col-res col-lg-3 col-md-3 col-sm-3">
+        <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <span class="cost">XXX I/O</span>
+        </div>
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <span class="cost">XXX I/O</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <span class="cost">XXX I/O</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <span class="cost">XXX TB</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <span class="cost">XXX GB</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <span class="cost">XXX ops/s</span>
+          </div>  
+        </div>
+      </div> <!-- END of demo3 cost result -->
+
+      <!-- Demo4 cost result starts here -->
+      <div class="d4cost-col-res col-lg-3 col-md-3 col-sm-3">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <span class="cost">XXX I/O</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <span class="cost">XXX I/O</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <span class="cost">XXX I/O</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <span class="cost">XXX TB</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <span class="cost">XXX GB</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+            <span class="cost">XXX ops/s</span>
+          </div>  
+        </div>
+      </div> <!-- END of demo4 cost result -->
+    </div> <!-- END of all cost results -->
 
     <hr class="my-4 row">
 
@@ -379,5 +671,6 @@
   <script src="js/jquery-3.4.1.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script src="js/script.js"></script>
+  <script src="js/treeBush.js"></script>
 </body>
 </html>

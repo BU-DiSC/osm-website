@@ -3,8 +3,6 @@ section {
 	padding-bottom: 100px;
 }
 
-span {
-}
 
 section h2 {
     font-size: 3em;
@@ -16,7 +14,8 @@ section h3 {
 	width: 100%
 }
 
-.container {
+#interactiveDemo .container-fluid {
+	width: 80%;
 }
 
 .navbar-brand {
@@ -80,23 +79,35 @@ ul > .nav-item{
 }
 
 .lsm-btn-group, .lsm-btn{
-	height: 12px;
+	height: 15px;
 	margin: 0 auto 3px;
 	padding: 0px;
-	border-radius: 0.25rem;
+	border-radius: 0.35rem;
 	vertical-align: top;
 }
 
 .lsm-btn-group .lsm-btn {
-	height: 12px;
+	height: 15px;
 	padding: 0px;
-	margin: 0 1px 3px;
+	margin: 0 2px 3px;
 }
 
+.metrics {
+	padding-left: 0px;
+}
 
 .col-lg-3 .row {
 	padding-left: 15px;
 	padding-right: 15px;
+}
+
+.abbr-dot {
+	cursor: pointer;
+	padding: 0px;
+	margin: 0px 2px 3px;
+	vertical-align: top;
+	line-height: 40%;
+	font-size: 20px;
 }
 
 @media(max-width:991px) {
