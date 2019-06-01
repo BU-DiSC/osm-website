@@ -9,10 +9,9 @@ function initLSM(self) {
 
 // Event attributes, trigger
 var LSM_MP = 0;     // leveling:0, tiering:1
-// document.querySelector("#lsm-input-L").onchange = updateLSM;
-// document.querySelector("#lsm-input-L").onwheel = updateLSM;
+
 document.querySelector("#lsm-input-T").onchange = updateLSM;
-// document.querySelector("#lsm-input-T").onwheel = updateLSM;
+document.querySelector("#lsm-input-T").onwheel = updateLSM;
 document.querySelector("#lsm-input-E").onchange = updateLSM;
 document.querySelector("#lsm-input-E").onwheel = updateLSM;
 document.querySelector("#lsm-input-N").onchange = updateLSM;
@@ -63,8 +62,9 @@ function lastPowerOfTwo(x) {
 }
 
 function getL() {
-    // Compute the levels of LSM-tree having
-    // ratio, #entry, entry size, Mbuffer
+    /* Compute the levels of LSM-tree having
+     * ratio, #entry, entry size, Mbuffer
+     */
     var L;
     var T = document.querySelector("#lsm-input-T").value;
     var E = document.querySelector("#lsm-input-E").value;
@@ -73,15 +73,17 @@ function getL() {
     var Mbytes = M * Math.pow(10, 6);   // convert to bytes
     var exp = ((N*E)/Mbytes) * ((T-1)/T);
     L = Math.ceil(getBaseLog(T, exp));
-    // console.log("exp =" + exp);
-    // console.log("T(ratio) = " + T);
-    // console.log("E(entry size) = " + E);
-    // console.log("N(#entries) = " + N);
-    // console.log("M(buffer size) = " + M);
     console.log("Computed Level = " + L);
     return (L < 1) ? 1 : L;
 }
 
+function createBtn(width) {
+    var btn = document.createElement("button");
+    btn.setAttribute("type", "button");
+    btn.setAttribute("class", "lsm-btn btn btn-secondary");
+    btn.setAttribute("style", "width:" + width);
+    return btn;
+}
 
 
 function clear(element) {
@@ -133,7 +135,7 @@ function updateLSM() {
         M: 256
     };
 
-    checkValid(this);
+    validate(this);
 
     var L = getL();
     var T = document.querySelector("#lsm-input-T").value;
@@ -150,15 +152,11 @@ function updateLSM() {
 
     drawLSM();
 
-    function findCoefficient() {
-        // if 1st level 
-    }
-
     function getBtns(element, level, ratio) {
-        // Calculate current amount of buttons
-        // and set the width
-        // Return a list of button objects
-        var buttons = [];
+        /* Calculate current amount and set the width of runs
+         * Return a list of button objects
+         */
+        var runs = [];
 
         var getWidth = function(i) {
             var coef = 1;
@@ -173,15 +171,11 @@ function updateLSM() {
         };
 
         for (var i = 0; i < level; i++) {
-            var btn = document.createElement("button");
-            var width = getWidth(i);
-            btn.setAttribute("type", "button");
-            btn.setAttribute("class", "lsm-btn btn btn-secondary");
-            btn.setAttribute("style", "width: " + width);
-            buttons[i] = btn;
+            var run_width = getWidth(i);
+            var button = createBtn(run_width);
+            runs[i] = button;
         }
-
-        return buttons;
+        return runs;
     }
 
     function getBtnGroups(element, level, ratio) {
@@ -215,14 +209,6 @@ function updateLSM() {
             return dots;
         }
 
-        var createBtn = function(width) {
-            var btn = document.createElement("button");
-            btn.setAttribute("type", "button");
-            btn.setAttribute("class", "lsm-btn btn btn-secondary");
-            btn.setAttribute("style", "width:" + width);
-            return btn;
-        }
-
         for (var i = 0; i < level; i++) {
             var run_width = getWidth(i);
             var group_wrap = document.createElement("div");
@@ -237,7 +223,7 @@ function updateLSM() {
                 else child = createBtn(run_width);
                 group_wrap.appendChild(child);
 
-                if (i == 0) break;
+                if (i == 0) break;  // buffer level
             }
             btn_groups[i] = group_wrap;
         }
@@ -261,7 +247,7 @@ function updateLSM() {
         }
     }
 
-    function checkValid(self) {
+    function validate(self) {
         // T >= 2, N, E > 1, M > 0
         if (!self.classList.contains("lsm-input")) {
             alert("Invalid: Unknown LSM-Tree configuration input");
