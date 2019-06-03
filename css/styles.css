@@ -13,7 +13,7 @@ section h3 {
 	width: 100%
 }
 
-/* Custom tooltip */
+/* Custom tooltip style */
 .tooltip{
 	font-size: 12px;
 }
@@ -30,10 +30,7 @@ section h3 {
 .tooltip-arrow {
 }
 
-#interactiveDemo .container-fluid {
-	width: 85%;
-}
-
+/* Custom navbar style */
 .navbar-brand {
 	font-size: 200%;
 }
@@ -52,14 +49,16 @@ ul > .nav-item{
     font-size: 1.1em;
 }
 
+/* Custom navbar style */
 .jumbotron {
 	margin-bottom: 0px;
 	padding-bottom: 150px;
 	padding-top: 150px;
 }
 
-.btn-toolbar {
-	margin-bottom: 2px;
+/* Custom interactiveDemo section style */
+#interactiveDemo .container-fluid {
+	width: 85%;
 }
 
 .input-group > input {
@@ -95,7 +94,7 @@ ul > .nav-item{
 }
 
 .lsm-btn-group, .lsm-btn{
-	height: 15px;
+	height: 18px;
 	margin: 0 auto 3px;
 	padding: 0px;
 	border-radius: 0.35rem;
@@ -103,7 +102,7 @@ ul > .nav-item{
 }
 
 .lsm-btn-group .lsm-btn {
-	height: 15px;
+	height: 18px;
 	padding: 0px;
 	margin: 0 2px 3px;
 }
@@ -120,6 +119,7 @@ ul > .nav-item{
 	padding-left: 0px;
 }
 
+
 .col-lg-3 .row {
 	padding-left: 15px;
 	padding-right: 15px;
@@ -130,7 +130,7 @@ ul > .nav-item{
 	padding: 0px;
 	margin: 0px 2px 3px;
 	vertical-align: top;
-	line-height: 40%;
+	line-height: 50%;
 	font-size: 20px;
 }
 

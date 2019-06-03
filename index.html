@@ -113,8 +113,8 @@
 
           <div class="row lsm-conf-row mb-2">
             <div class="mp-btn-group btn-group" role="group" aria-label="LSM Merge Policy" >
-              <button id="leveling" type="button" class="lsm-input btn btn-custom">Leveling</button>
-              <button id="tiering" type="button" class="lsm-input btn btn-custom">Tiering</button>
+              <button id="v-leveling" type="button" class="vlsm-input btn btn-custom">Leveling</button>
+              <button id="v-tiering" type="button" class="vlsm-input btn btn-custom">Tiering</button>
             </div>
           </div>
         
@@ -123,7 +123,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Levels</label>
               </div>
-              <input id="lsm-input-L" value="4" type="number" class="lsm-input form-control" aria-label="Levels">
+              <input id="vlsm-input-L" value="4" type="number" class="vlsm-input form-control" aria-label="Levels">
             </div>
           </div> -->
 
@@ -132,7 +132,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text"># Entries</label>
               </div>
-              <input id="lsm-input-N" value="4294967296" type="number" min="1" data-old="4294967296" class="lsm-input form-control" aria-label="#Entries">
+              <input id="vlsm-input-N" value="4294967296" type="number" min="1" data-old="4294967296" class="vlsm-input form-control" aria-label="#Entries">
             </div>
           </div>
 
@@ -141,7 +141,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Entry Size (Bytes)</label>
               </div>
-              <input id="lsm-input-E" value="16" type="number" min="1" data-old="16" class="lsm-input form-control" aria-label="Entry Size">
+              <input id="vlsm-input-E" value="16" type="number" min="1" data-old="16" class="vlsm-input form-control" aria-label="Entry Size">
             </div>
           </div>
 
@@ -150,7 +150,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Buffer Size (MB)</label>
               </div>
-              <input id="lsm-input-M" value="256" type="number" min="0" data-old="256" class="lsm-input form-control" aria-label="Buffer Capacity">
+              <input id="vlsm-input-M" value="256" type="number" min="0" data-old="256" class="vlsm-input form-control" aria-label="Buffer Capacity">
             </div>
           </div>
 
@@ -159,7 +159,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Ratio</label>
               </div>
-              <input id="lsm-input-T" value="2" min="2" type="number" class="lsm-input form-control" aria-label="Ratio">
+              <input id="vlsm-input-T" value="2" min="2" type="number" class="vlsm-input form-control" aria-label="Ratio">
             </div>
           </div>
         </div> <!-- END of Demo1-conf-col -->
@@ -174,8 +174,8 @@
 
           <div class="row demo2-conf-row mb-2">
             <div class="mp-btn-group btn-group" role="group" aria-label="LSM Merge Policy" >
-              <button id="leveling" type="button" class="demo2-input btn btn-custom">Leveling</button>
-              <button id="tiering"  type="button" class="demo2-input btn btn-custom">Tiering</button>
+              <button id="r-leveling" type="button" class="rlsm-input btn btn-custom">Leveling</button>
+              <button id="r-tiering"  type="button" class="rlsm-input btn btn-custom">Tiering</button>
             </div>
           </div>
 
@@ -184,7 +184,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text"># Entries</label>
               </div>
-              <input id="demo2-input-N" value="4294967296" type="number" class="demo2-input form-control" aria-label="#Entries">
+              <input id="rlsm-input-N" value="4294967296" type="number" class="rlsm-input form-control" aria-label="#Entries">
             </div>
           </div>
 
@@ -193,7 +193,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Entry Size (Bytes)</label>
               </div>
-              <input id="demo2-input-E" value="16" type="number" class="demo2-input form-control" aria-label="Entry Size">
+              <input id="rlsm-input-E" value="16" type="number" class="rlsm-input form-control" aria-label="Entry Size">
             </div>
           </div>
 
@@ -202,7 +202,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Buffer Size (MB)</label>
               </div>
-              <input id="demo2-input-M" value="256" type="number" class="demo2-input form-control" aria-label="Buffer Capacity">
+              <input id="rlsm-input-M" value="256" type="number" class="rlsm-input form-control" aria-label="Buffer Capacity">
             </div>
           </div>
 
@@ -211,7 +211,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Ratio</label>
               </div>
-              <input id="demo2-input-T" value="2" type="number" class="demo2-input form-control" aria-label="Ratio">
+              <input id="rlsm-input-T" value="2" type="number" class="rlsm-input form-control" aria-label="Ratio">
             </div>
           </div>
         </div> <!-- END of Demo2-conf-col -->
@@ -321,7 +321,7 @@
       <!-- Diagram result starts here -->
       <div class="row ">
         <div class="lsm-col-res col-lg-3 col-md-3 col-sm-3"> 
-          <div id ="lsm-res">
+          <div id ="vlsm-res">
             <div class="row lsm-result">
               <button type="button" style="width: 31.875px; "class="lsm-btn btn btn-secondary" ></button>
             </div>
@@ -346,7 +346,7 @@
 
 
         <div class="demo2-col-res col-lg-3 col-md-3 col-sm-3">
-          <div id=“demo2-res>
+          <div id="rlsm-res">
             <div class="row lsm-result">
               <div class="lsm-btn-group">
                 <button type="button" class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
@@ -365,7 +365,7 @@
 
             <div class="row lsm-result">
               <div class="lsm-btn-group">
-                <button type="button" class="lsm-btn btn btn-secondary" data-toggle="tooltip" data-placement="left" title="Test" style="width: 30px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary" style="width: 30px;"></button>
                 <button type="button" class="lsm-btn btn btn-secondary" style="width: 30px;"></button>
                 <button type="button" class="lsm-btn btn btn-secondary" style="width: 30px;"></button>
               </div>
