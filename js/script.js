@@ -1,4 +1,10 @@
 $(function () { // Same as document.addEventListener("DOMContentLoaded"...
+  // enable tooltip
+  // $('[data-toggle="tooltip"]').tooltip()
+  // enable tooltip for dynamic content
+  $('body').tooltip({
+    selector: '[data-toggle="tooltip"]'
+  });
 
   // Same as document.querySelector("#navbarToggle").addEventListener("blur",...
   $("#navbarToggle").blur(function (event) {

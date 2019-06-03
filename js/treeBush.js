@@ -64,6 +64,7 @@ function lastPowerOfTwo(x) {
 function getL() {
     /* Compute the levels of LSM-tree having
      * ratio, #entry, entry size, Mbuffer
+     * Return 0 when all in buffer.
      */
     var L;
     var T = document.querySelector("#lsm-input-T").value;
@@ -74,7 +75,47 @@ function getL() {
     var exp = ((N*E)/Mbytes) * ((T-1)/T);
     L = Math.ceil(getBaseLog(T, exp));
     console.log("Computed Level = " + L);
-    return (L < 1) ? 1 : L;
+    return (L < 1) ? 0 : L;
+}
+
+function getEntryNum(ith) {
+    /* Having known the numer of levels,
+     * compute the number of entries per run in the ith level
+     */
+    var nr = 0; // number of entries each run
+    var T = document.querySelector("#lsm-input-T").value;
+    var E = document.querySelector("#lsm-input-E").value;
+    var M = document.querySelector("#lsm-input-M").value;
+    var Mbytes = M * Math.pow(10, 6);   // convert to bytes
+    var nl = Math.floor(Mbytes * Math.pow(T, ith) / E);  // number of entries per level
+    if (LSM_MP) nr = Math.floor(nl / T);
+    else nr = nl;
+    return nr;
+}
+
+function setToolTip(elem, pos, text) {
+    if (!(typeof pos === 'string' || pos instanceof String)) {
+        throw new TypeError(pos + " must be a string or string object");
+    } else if (!(pos == "left" || pos == "right" || pos == "top" || pos == "bottom")){
+        throw new RangeError(pos + " must be a left or right or top or bottom");
+    }
+    elem.setAttribute("data-toggle", "tooltip");
+    elem.setAttribute("data-placement", pos);
+    elem.setAttribute("title", "" + text);
+}
+
+function getTipText(ith) {
+    /* Compute the number of entries in ith level;
+     * Return a string to be displayed when triggering ToolTip 
+     */
+    var n = getEntryNum(ith);
+    var text = "";
+    if (ith === 0) {
+        text = "In buffer, it contains " + n + " entries";
+    } else {
+        text = "Level: " + ith + ", this run contains " + n + " entries";
+    }
+    return text;
 }
 
 function createBtn(width) {
@@ -157,22 +198,26 @@ function updateLSM() {
          * Return a list of button objects
          */
         var runs = [];
+        var context = "At level: ";
 
         var getWidth = function(i) {
-            var coef = 1;
-            var least_width = 5;
-            var m = element.clientWidth / Math.pow(ratio, level - 1);   // level0 actual width;
-            if (m < least_width) {
-                var exp = level - 1;
-                coef = Math.pow(element.clientWidth/least_width, 1/exp) / ratio;
-                m  = least_width;
+            // for leveling, margin = 0;
+            var coef = 1;  
+            var base_width = 5;
+            var clientWidth = element.clientWidth - 1;  // -1 to avoid stacking
+            var m = clientWidth / Math.pow(ratio, level);   // level0 actual width;
+            if (m < base_width) {
+                coef = Math.pow(clientWidth / base_width, 1 / level) / ratio;
+                m  = base_width;
             }
             return m * Math.pow(coef * ratio, i) + "px";
         };
 
-        for (var i = 0; i < level; i++) {
+        for (var i = 0; i <= level; i++) {
             var run_width = getWidth(i);
             var button = createBtn(run_width);
+            var context = getTipText(i);
+            setToolTip(button, "left", context);
             runs[i] = button;
         }
         return runs;
@@ -183,22 +228,26 @@ function updateLSM() {
         var btn_groups = [];
         var max_runs = 8;
         if (ratio < max_runs) {
-            if (level != 1) max_runs = ratio;
+            if (level !== 0) max_runs = ratio;
             else max_runs = 1;
         }
 
         var getWidth = function(i) {
             // Return the width for each button in a btn-group regarding to tiering
+            if (level === 0) return element.clientWidth + "px";
+            var base_width = 5;
+            var margin = (max_runs - 2) * 4 + 4;
+            var l1_width = max_runs * base_width + margin;   // invariant: level1 width
             var coef = 1;
-            var m = (element.clientWidth) / Math.pow(max_runs, level - 1);
-            var margin = 4 + 4 + (max_runs-2) * 4 ;    //margin space per btn-group
-            var least_width = (5*max_runs) + margin; 
-            if (m < least_width) {
-                var exp = level - 1;
-                coef = Math.pow(element.clientWidth/least_width, 1/exp) / max_runs;
-                m  = least_width;
+            var clientWidth = element.clientWidth - 1;  // -1 to avoid stacking 
+            var m = clientWidth / Math.pow(max_runs, level - 1);    // level1 acutal width
+
+            if (m < l1_width) {
+                coef = Math.pow(clientWidth / l1_width, 1 / (level - 1)) / max_runs;
+                m  = l1_width;
             }
-            return (m * Math.pow(coef*max_runs, i) - margin) / max_runs + "px";
+            if (i > 1) return (m * Math.pow(coef * max_runs, i - 1) - margin) / max_runs + "px";
+            else return (m - margin) / max_runs + "px";
         }
 
         var createDots = function(width) {
@@ -209,7 +258,7 @@ function updateLSM() {
             return dots;
         }
 
-        for (var i = 0; i < level; i++) {
+        for (var i = 0; i <= level; i++) {
             var run_width = getWidth(i);
             var group_wrap = document.createElement("div");
             group_wrap.setAttribute("class", "lsm-btn-group");
@@ -217,13 +266,19 @@ function updateLSM() {
            
             for (var j = 0; j < max_runs; j++) {
                 var child = null;
+                var context = "";
                 if ((max_runs >= 8) && (j == max_runs - 2)) {
                     child = createDots(run_width);
+                    var context = "This level contains " + ratio + " runs in total";
                 }
-                else child = createBtn(run_width);
+                else {
+                    child = createBtn(run_width);
+                    var context = getTipText(i);
+                }
+                setToolTip(child, "left", context);
                 group_wrap.appendChild(child);
 
-                if (i == 0) break;  // buffer level
+                if (i === 0) break;  // only one run in buffer level 
             }
             btn_groups[i] = group_wrap;
         }
@@ -239,7 +294,7 @@ function updateLSM() {
 
         clear(parent);
 
-        for (var i = 0; i < L; i++) {
+        for (var i = 0; i <= L; i++) {
             var res_wrap = document.createElement("div");
             res_wrap.setAttribute("class", "row lsm-result");
             res_wrap.appendChild(btnList[i]);

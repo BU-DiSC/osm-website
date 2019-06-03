@@ -3,7 +3,6 @@ section {
 	padding-bottom: 100px;
 }
 
-
 section h2 {
     font-size: 3em;
     width: 100%;
@@ -14,8 +13,25 @@ section h3 {
 	width: 100%
 }
 
+/* Custom tooltip */
+.tooltip{
+	font-size: 12px;
+}
+
+.tooltip-inner {
+  max-width: 200px;
+  padding: 3px 8px;
+  color: #fff;
+  text-align: center;
+  background-color: #000;
+  border-radius: 4px;
+}
+
+.tooltip-arrow {
+}
+
 #interactiveDemo .container-fluid {
-	width: 80%;
+	width: 85%;
 }
 
 .navbar-brand {
@@ -92,6 +108,14 @@ ul > .nav-item{
 	margin: 0 2px 3px;
 }
 
+.lsm-btn-group .lsm-btn:first-child {
+	margin-left: 0px;
+}
+
+.lsm-btn-group .lsm-btn:last-child {
+	margin-right: 0px;
+}
+
 .metrics {
 	padding-left: 0px;
 }
@@ -109,6 +133,7 @@ ul > .nav-item{
 	line-height: 40%;
 	font-size: 20px;
 }
+
 
 @media(max-width:991px) {
 	ul > .nav-item {
