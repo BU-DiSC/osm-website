@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>LSM Tree Visualization</title>
+    <title>OSM Tree Visualization</title>
     <!-- Bootswatch CSS based on Bootstrao -->
     <!-- Theme: http://bootswatch.com/flatly/ -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -56,7 +56,7 @@
 
   <section id="problem">
     <div class="container">
-      <div class="row text-center">
+      <div class="row section-title text-center">
         <h2> Section 1: The Problem </h2>
       </div>
       <div class="row">
@@ -79,7 +79,7 @@
 
   <section id="research" class="bg-light">
     <div class="container">
-       <div class="row text-center">
+       <div class="row section-title text-center">
         <h2> Section 2: Research </h2>
       </div>
       <div class="row">
@@ -99,26 +99,85 @@
 
   <section id="interactiveDemo">
     <div class="container-fluid">
-       <div class="row text-center">
+      <div class="row section-title text-center">
         <h2> Section 3: Interactive Section </h2>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 mt-3">
+          <div class="custom-control custom-radio text-right">
+            <input id="customRadio1" type="radio" name="customRadio" class="custom-control-input"checked="">
+            <label class="custom-control-label" for="customRadio1">Comparative Analysis</label>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 mt-3">
+          <div class="custom-control custom-radio text-left">
+            <input id="customRadio2" type="radio" name="customRadio" class="custom-control-input">
+            <label class="custom-control-label" for="customRadio2">Individual Analysis </label>
+          </div>
+        </div>
       </div>
 
+      <!-- Comparative configuration starts here -->
+      <div id="cmp-conf-row" class="row">
+        <div class="cmp-conf-col col-lg-12 col-md-12 col-sm-12">
+          <div class="mp-btn-group btn-group mb-2" role="group" aria-label="LSM Merge Policy" >
+            <button id="cmp-leveling" type="button" class="cmp-input btn btn-custom">Leveling</button>
+            <button id="cmp-tiering"  type="button" class="cmp-input btn btn-custom">Tiering</button>
+            <button id="cmp-lazy-leveling"  type="button" class="cmp-input btn btn-custom">Lazy Leveling</button>
+          </div>
+        </div>
+      
+        <div class="cmp-conf-col col-lg-12 col-md-12 col-sm-12">
+          <div class="input-group input-group-md mb-2">
+            <div class="input-group-prepend">
+              <label class="input-group-text"># Entries</label>
+            </div>
+            <input id="cmp-input-N" value="4294967296" min="1" type="number" class="cmp-input form-control" aria-label="#Entries">
+          </div>
+        </div>
 
-      <div class="row">
-        <!-- LSM-Tree -->
-        <div class="lsm-conf-col col-lg-3 col-md-3 col-sm-3">
-          <div class="row lsm-conf-row">
+        <div class="cmp-conf-col col-lg-12 col-md-12 col-sm-12">
+          <div class="input-group input-group-md mb-2">
+            <div class="input-group-prepend">
+              <label class="input-group-text">Entry Size (Bytes)</label>
+            </div>
+            <input id="cmp-input-E" value="16" min="1" type="number" class="cmp-input form-control" aria-label="Entry Size">
+          </div>
+        </div>
+
+        <div class="cmp-conf-col col-lg-12 col-md-12 col-sm-12">
+          <div class="input-group input-group-md mb-2">
+            <div class="input-group-prepend">
+              <label class="input-group-text">Buffer Size (MB)</label>
+            </div>
+            <input id="cmp-input-M" value="256" min="0" type="number" class="cmp-input form-control" aria-label="Buffer Capacity">
+          </div>
+        </div>
+
+        <div class="cmp-conf-col col-lg-12 col-md-12 col-sm-12">
+          <div class="input-group input-group-md mb-2">
+            <div class="input-group-prepend">
+              <label class="input-group-text">Ratio</label>
+            </div>
+            <input id="cmp-input-T" value="2" min="2" type="number" class="cmp-input form-control" aria-label="Ratio">
+          </div>
+        </div>
+      </div> <!-- END of comparative configurations of Interactive Demo -->
+
+      <!-- Individual configuration starts here -->
+      <div id="indiv-conf-row" class="row" style="display: none;">
+        <!-- Vanilla LSM-Tree Configuration starts here-->
+        <div class="vlsm-conf-col col-lg-3 col-md-3 col-sm-3">
+          <div class="row vlsm-conf-row">
             <span class="div-title">Vanilla-LSM</span>
           </div>
 
-          <div class="row lsm-conf-row mb-2">
+          <div class="row vlsm-conf-row mb-2">
             <div class="mp-btn-group btn-group" role="group" aria-label="LSM Merge Policy" >
               <button id="v-leveling" type="button" class="vlsm-input btn btn-custom">Leveling</button>
               <button id="v-tiering" type="button" class="vlsm-input btn btn-custom">Tiering</button>
             </div>
           </div>
         
-<!--           <div class="row lsm-conf-row">
+<!--           <div class="row vlsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Levels</label>
@@ -127,7 +186,7 @@
             </div>
           </div> -->
 
-          <div class="row lsm-conf-row">
+          <div class="row vlsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text"># Entries</label>
@@ -136,7 +195,7 @@
             </div>
           </div>
 
-          <div class="row lsm-conf-row">
+          <div class="row vlsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Entry Size (Bytes)</label>
@@ -145,7 +204,7 @@
             </div>
           </div>
 
-          <div class="row lsm-conf-row">
+          <div class="row vlsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Buffer Size (MB)</label>
@@ -154,7 +213,7 @@
             </div>
           </div>
 
-          <div class="row lsm-conf-row">
+          <div class="row vlsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Ratio</label>
@@ -165,289 +224,286 @@
         </div> <!-- END of Demo1-conf-col -->
 
 
-
-
-        <div class="demo2-conf-col col-lg-3 col-md-3 col-sm-3">
-          <div class="row demo2-conf-row">
+        <!-- RocksDB LSM-Tree Configuration starts here-->
+        <div class="rlsm-conf-col col-lg-3 col-md-3 col-sm-3">
+          <div class="row rlsm-conf-row">
             <span class="div-title">RocksDB-LSM</span>
           </div>
 
-          <div class="row demo2-conf-row mb-2">
+          <div class="row rlsm-conf-row mb-2">
             <div class="mp-btn-group btn-group" role="group" aria-label="LSM Merge Policy" >
               <button id="r-leveling" type="button" class="rlsm-input btn btn-custom">Leveling</button>
               <button id="r-tiering"  type="button" class="rlsm-input btn btn-custom">Tiering</button>
             </div>
           </div>
 
-          <div class="row demo2-conf-row">
+          <div class="row rlsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text"># Entries</label>
               </div>
-              <input id="rlsm-input-N" value="4294967296" type="number" class="rlsm-input form-control" aria-label="#Entries">
+              <input id="rlsm-input-N" value="4294967296" min="1" type="number" class="rlsm-input form-control" aria-label="#Entries">
             </div>
           </div>
 
-          <div class="row demo2-conf-row">
+          <div class="row rlsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Entry Size (Bytes)</label>
               </div>
-              <input id="rlsm-input-E" value="16" type="number" class="rlsm-input form-control" aria-label="Entry Size">
+              <input id="rlsm-input-E" value="16" min="1" type="number" class="rlsm-input form-control" aria-label="Entry Size">
             </div>
           </div>
 
-          <div class="row demo2-conf-row">
+          <div class="row rlsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Buffer Size (MB)</label>
               </div>
-              <input id="rlsm-input-M" value="256" type="number" class="rlsm-input form-control" aria-label="Buffer Capacity">
+              <input id="rlsm-input-M" value="256" min="0" type="number" class="rlsm-input form-control" aria-label="Buffer Capacity">
             </div>
           </div>
 
-          <div class="row demo2-conf-row">
+          <div class="row rlsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Ratio</label>
               </div>
-              <input id="rlsm-input-T" value="2" type="number" class="rlsm-input form-control" aria-label="Ratio">
+              <input id="rlsm-input-T" value="2" min="2" type="number" class="rlsm-input form-control" aria-label="Ratio">
             </div>
           </div>
         </div> <!-- END of Demo2-conf-col -->
 
-
-        <div class="demo3-conf-col col-lg-3 col-md-3 col-sm-3">
-          <div class="row demo3-conf-row">
-            <span class="div-title">Demo 3</span>
+        <!-- Dostoevsky LSM-Tree Configuration starts here-->
+        <div class="dlsm-conf-col col-lg-3 col-md-3 col-sm-3">
+          <div class="row dlsm-conf-row">
+            <span class="div-title">Dostoevsky-LSM</span>
           </div>
 
-          <div class="row demo3-conf-row mb-2">
+          <div class="row dlsm-conf-row mb-2">
             <div class="mp-btn-group btn-group" role="group" aria-label="LSM Merge Policy" >
-              <button id="leveling" type="button" class="demo3-input btn btn-custom">Leveling</button>
-              <button id="tiering"  type="button" class="demo3-input btn btn-custom">Tiering</button>
+              <button id="d-leveling" type="button" class="dlsm-input btn btn-custom">Leveling</button>
+              <button id="d-tiering"  type="button" class="dlsm-input btn btn-custom">Tiering</button>
             </div>
           </div>
 
-          <div class="row demo3-conf-row">
+          <div class="row dlsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text"># Entries</label>
               </div>
-              <input id="demo3-input-N" value="4294967296" type="number" class="demo3-input form-control" aria-label="#Entries">
+              <input id="dlsm-input-N" value="4294967296" min="1" type="number" class="dlsm-input form-control" aria-label="#Entries">
             </div>
           </div>
 
-          <div class="row demo3-conf-row">
+          <div class="row dlsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Entry Size (Bytes)</label>
               </div>
-              <input id="demo3-input-E" value="16" type="number" class="demo3-input form-control" aria-label="Entry Size">
+              <input id="dlsm-input-E" value="16" min="1" type="number" class="dlsm-input form-control" aria-label="Entry Size">
             </div>
           </div>
 
-          <div class="row demo3-conf-row">
+          <div class="row dlsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Buffer Size (MB)</label>
               </div>
-              <input id="demo3-input-M" value="256" type="number" class="demo3-input form-control" aria-label="Buffer Capacity">
+              <input id="dlsm-input-M" value="256" min="0" type="number" class="dlsm-input form-control" aria-label="Buffer Capacity">
             </div>
           </div>
 
-          <div class="row demo3-conf-row">
+          <div class="row dlsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Ratio</label>
               </div>
-              <input id="demo3-input-T" value="2" type="number" class="demo3-input form-control" aria-label="Ratio">
+              <input id="dlsm-input-T" value="2" min="2" type="number" class="dlsm-input form-control" aria-label="Ratio">
             </div>
           </div>
         </div> <!-- END of Demo3-conf-col -->
 
-        <div class="demo4-conf-col col-lg-3 col-md-3 col-sm-3">
-          <div class="row demo4-conf-row">
-            <span class="div-title">Demo 4</span>
+        <!-- OSM LSM-Tree Configuration starts here-->
+        <div class="olsm-conf-col col-lg-3 col-md-3 col-sm-3">
+          <div class="row olsm-conf-row">
+            <span class="div-title">OSM-LSM</span>
           </div>
 
-          <div class="row demo4-conf-row mb-2">
+          <div class="row olsm-conf-row mb-2">
             <div class="mp-btn-group btn-group" role="group" aria-label="LSM Merge Policy" >
-              <button id="leveling" type="button" class="demo4-input btn btn-custom">Leveling</button>
-              <button id="tiering"  type="button" class="demo4-input btn btn-custom">Tiering</button>
+              <button id="o-leveling" type="button" class="olsm-input btn btn-custom">Leveling</button>
+              <button id="o-tiering"  type="button" class="olsm-input btn btn-custom">Tiering</button>
             </div>
           </div>
 
-          <div class="row demo4-conf-row">
+          <div class="row olsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text"># Entries</label>
               </div>
-              <input id="demo4-input-N" value="4294967296" type="number" class="demo4-input form-control" aria-label="#Entries">
+              <input id="olsm-input-N" value="4294967296" min="1" type="number" class="olsm-input form-control" aria-label="#Entries">
             </div>
           </div>
 
-          <div class="row demo4-conf-row">
+          <div class="row olsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Entry Size (Bytes)</label>
               </div>
-              <input id="demo4-input-E" value="16" type="number" class="demo4-input form-control" aria-label="Entry Size">
+              <input id="olsm-input-E" value="16" min="1" type="number" class="olsm-input form-control" aria-label="Entry Size">
             </div>
           </div>
 
-          <div class="row demo4-conf-row">
+          <div class="row olsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Buffer Size (MB)</label>
               </div>
-              <input id="demo4-input-M" value="256" type="number" class="demo4-input form-control" aria-label="Buffer Capacity">
+              <input id="olsm-input-M" value="256" min="0" type="number" class="olsm-input form-control" aria-label="Buffer Capacity">
             </div>
           </div>
 
-          <div class="row demo4-conf-row">
+          <div class="row olsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Ratio</label>
               </div>
-              <input id="demo4-input-T" value="2" type="number" class="demo4-input form-control" aria-label="Ratio">
+              <input id="olsm-input-T" value="2" min="2" type="number" class="olsm-input form-control" aria-label="Ratio">
             </div>
           </div>
         </div> <!-- END of Demo4-conf-col -->
+      </div> <!-- END of indivaidual configurations of Interactive Demo -->
 
-      </div> <!-- END of configurations of Interactive Demo -->
+      <br>
       
       <!-- Interactive Demo result starts here -->
       <!-- Diagram result starts here -->
-      <div class="row ">
-        <div class="lsm-col-res col-lg-3 col-md-3 col-sm-3"> 
+      <div id="indiv-bush-row" class="row">
+        <!-- Vanilla LSM-Tree diagram results starts here -->
+        <div class="vlsm-col-res col-lg-3 col-md-3 col-sm-3"> 
           <div id ="vlsm-res">
-            <div class="row lsm-result">
-              <button type="button" style="width: 31.875px; "class="lsm-btn btn btn-secondary" ></button>
+            <div class="row vlsm-reuslt">
+              <button type="button" class="lsm-btn btn btn-secondary" ></button>
             </div>
-            <div class="row lsm-result">
-              <button type="button" style="width: 63.75px; "class="lsm-btn btn btn-secondary" ></button>
+            <div class="row vlsm-reuslt">
+              <button type="button" class="lsm-btn btn btn-secondary" ></button>
             </div>
-            <div class="row lsm-result">
-              <button type="button" style="width: 127.5px; "class="lsm-btn btn btn-secondary" ></button>
+            <div class="row vlsm-reuslt">
+              <button type="button" class="lsm-btn btn btn-secondary" ></button>
             </div>
-            <div class="row lsm-result">
-              <button type="button" style="width: 255px; "class="lsm-btn btn btn-secondary" ></button>
+            <div class="row vlsm-reuslt">
+              <button type="button" class="lsm-btn btn btn-secondary" ></button>
             </div>
           </div>
+        </div> <!-- END of vlsm-col-result -->
 
-            <!-- <div id="l-btn-group" class="btn-group btn-group-vertical">
-              <button type="button" style="width: 31.875px; "class="lsm-btn btn btn-secondary" ></button>
-              <button type="button" style="width: 63.75px; "class="lsm-btn btn btn-secondary" ></button>
-              <button type="button" style="width: 127.5px; "class="lsm-btn btn btn-secondary" ></button>
-              <button type="button" style="width: 255px; "class="lsm-btn btn btn-secondary" ></button>
-            </div> -->
-        </div> <!-- END of lsm-col-result -->
-
-
-        <div class="demo2-col-res col-lg-3 col-md-3 col-sm-3">
+        <!-- RocksDB LSM-Tree diagram results starts here -->
+        <div class="rlsm-col-res col-lg-3 col-md-3 col-sm-3">
           <div id="rlsm-res">
-            <div class="row lsm-result">
+            <div class="row rlsm-result">
               <div class="lsm-btn-group">
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
               </div>
             </div>
 
-            <div class="row lsm-result">
+            <div class="row rlsm-result">
               <div class="lsm-btn-group">
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 20px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 20px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 20px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
               </div>
             </div>
 
-            <div class="row lsm-result">
+            <div class="row rlsm-result">
               <div class="lsm-btn-group">
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 30px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 30px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 30px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
               </div>
             </div>
 
-            <div class="row lsm-result">
+            <div class="row rlsm-result">
               <div class="lsm-btn-group">
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 79px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 79px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 79px;"></button>
-              </div>
-            </div>
-          </div>
-        </div> <!-- END of demo2-col-res -->
-
-        <div class="demo3-col-res col-lg-3 col-md-3 col-sm-3">
-          <div id=“demo3-res>
-            <div class="row lsm-result">
-              <div class="lsm-btn-group">
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
-              </div>
-            </div>
-
-            <div class="row lsm-result">
-              <div class="lsm-btn-group">
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 20px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 20px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 20px;"></button>
-              </div>
-            </div>
-
-            <div class="row lsm-result">
-              <div class="lsm-btn-group">
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 30px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 30px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 30px;"></button>
-              </div>
-            </div>
-
-            <div class="row lsm-result">
-              <div class="lsm-btn-group">
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 79px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 79px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 79px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
               </div>
             </div>
           </div>
-        </div> <!-- END of demo3-col-res -->
+        </div> <!-- END of rlsm-col-res -->
 
-        <div class="demo4-col-res col-lg-3 col-md-3 col-sm-3">
-          <div id=“demo4-res>
-            <div class="row lsm-result">
+        <!-- Dostoevsky LSM-Tree diagram results starts here -->
+        <div class="dlsm-col-res col-lg-3 col-md-3 col-sm-3">
+          <div id="dlsm-res">
+            <div class="row dlsm-reuslt">
               <div class="lsm-btn-group">
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 10px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
               </div>
             </div>
 
-            <div class="row lsm-result">
+            <div class="row dlsm-reuslt">
               <div class="lsm-btn-group">
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 20px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 20px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 20px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
               </div>
             </div>
 
-            <div class="row lsm-result">
+            <div class="row dlsm-reuslt">
               <div class="lsm-btn-group">
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 30px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 30px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 30px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
               </div>
             </div>
 
-            <div class="row lsm-result">
+            <div class="row dlsm-reuslt">
               <div class="lsm-btn-group">
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 79px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 79px;"></button>
-                <button type="button" class="lsm-btn btn btn-secondary" style="width: 79px;"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+              </div>
+            </div>
+          </div>
+        </div> <!-- END of dlsm3-col-res -->
+
+        <!-- OSM LSM-Tree diagram results starts here -->
+        <div class="olsm-col-res col-lg-3 col-md-3 col-sm-3">
+          <div id="olsm-res">
+            <div class="row olsm">
+              <div class="lsm-btn-group">
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+              </div>
+            </div>
+
+            <div class="row olsm">
+              <div class="lsm-btn-group">
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+              </div>
+            </div>
+
+            <div class="row olsm">
+              <div class="lsm-btn-group">
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+              </div>
+            </div>
+
+            <div class="row olsm">
+              <div class="lsm-btn-group">
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
+                <button type="button" class="lsm-btn btn btn-secondary"></button>
               </div>
             </div>
           </div>
@@ -455,6 +511,7 @@
       </div> <!-- END of diagram result -->
 
     <br>
+
     <!-- Cost result starts here -->
     <div id="cost-result" class="row">
       <!-- Demo1 cost result starts here -->
@@ -630,7 +687,7 @@
 
   <section id="publication" class="bg-light">
     <div class="container">
-       <div class="row text-center">
+       <div class="row section-title text-center">
         <h2> Section 4: Publication </h2>
       </div>
       <div class="row">
