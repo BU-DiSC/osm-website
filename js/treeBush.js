@@ -1,22 +1,6 @@
 // Event handling
 document.addEventListener("DOMContentLoaded",
 function (event) {
-// Treebush initialization
-(function initALL(self) {
-    var vlsm = new VanillaLSM();
-    var rlsm = new RocksDBLSM();
-    var dlsm = new DostoevskyLSM();
-    var olsm = new OSMLSM;
-    self.rlsm = rlsm;
-    self.vlsm = vlsm;
-    self.dlsm = dlsm;
-    self.olsm = olsm;
-    vlsm.update();
-    rlsm.update();
-    dlsm.update();
-    olsm.update();
-})(window);
-
 
 // Event attributes, trigger
 // Analysis mode selection trigger
@@ -165,15 +149,14 @@ function VanillaLSM() {
             parent.appendChild(res_wrap);
         }
 
+        /* Calculate current amount and set the width of runs
+         * Return a list of button objects
+         */
         function getBtns(elem, level, ratio) {
-            /* Calculate current amount and set the width of runs
-             * Return a list of button objects
-             */
             var runs = [];
             var context = "At level: ";
 
             var getWidth = function(i) {
-                // for leveling, margin = 0;
                 var coef = 1;  
                 var base_width = 10;
                 var clientWidth = elem.clientWidth - 1;  // -1 to avoid stacking
@@ -207,7 +190,7 @@ function VanillaLSM() {
             var getWidth = function(i) {
                 // Return the width for each button in a btn-group regarding to tiering
                 if (level === 0) return elem.clientWidth + "px";
-                var base_width = 5;
+                var base_width = 10;
                 var margin = (max_runs - 2) * 4 + 4;
                 var l1_width = max_runs * base_width + margin;   // invariant: level1 width
                 var coef = 1;
@@ -300,7 +283,8 @@ function RocksDBLSM() {
     }
     
     /* Compute the levels of LSM-tree having ratio, #entry, entry size, Mbuffer
-       Return 0 when all in buffer.*/
+     * Return 0 when all in buffer.
+     */
     function _getL() {
         var L;
         var Mbytes = _M * Math.pow(10, 6);   // convert to bytes
@@ -311,7 +295,8 @@ function RocksDBLSM() {
     }
 
     /* Having known the numer of levels,
-     * compute the number of entries per run in the ith level*/
+     * compute the number of entries per run in the ith level
+     */
     function _getEntryNum(ith) {
         var nr = 0; // number of entries each run
         var Mbytes = _M * Math.pow(10, 6);   // convert to bytes
@@ -350,10 +335,10 @@ function RocksDBLSM() {
             parent.appendChild(res_wrap);
         }
 
+        /* Calculate current amount and set the width of runs
+         * Return a list of button objects
+         */
         function getBtns(elem, level, ratio) {
-            /* Calculate current amount and set the width of runs
-             * Return a list of button objects
-             */
             var runs = [];
             var context = "At level: ";
 
@@ -574,7 +559,8 @@ function DostoevskyLSM() {
 
             var getWidth = function(i) {
                 // Return the width for each button in a btn-group regarding to tiering
-                if (level === 0) return elem.clientWidth + "px";
+                // *Customized for lazy leveling 
+                if (level === 0 || level === i ) return elem.clientWidth + "px";    //*Customized
                 var base_width = 10;
                 var margin = (max_runs - 2) * 4 + 4;
                 var l1_width = max_runs * base_width + margin;   // invariant: level1 width
@@ -610,7 +596,7 @@ function DostoevskyLSM() {
                     setToolTip(child, "left", context);
                     group_wrap.appendChild(child);
 
-                    if (i === 0) break;  // only one run in buffer level 
+                    if (i === 0 || i === level) break;  //*Customized, only one run in buffer and last level 
                 }
                 btn_groups[i] = group_wrap;
             }
@@ -1148,6 +1134,9 @@ function clear(element) {
     }
 }
 
+/* Display one of analysis mode according to
+ * it's corresponding button triggers onlick event
+ */
 function display() {
     var indiv_conf = document.querySelector("#indiv-conf-row");
     var indiv_bush = document.querySelector("#indiv-bush-row");
@@ -1162,12 +1151,30 @@ function display() {
             cmp_conf.style.display = "none";
             indiv_conf.style.display = "";
             indiv_bush.style.display = "";
+            initIndiv();
             break;
         default:
             console.log(this.id);
             alert("Invalid: Unknown anlysis model selected");
     }
+}
 
+/* Initialize the configuration and tree bush reuslt
+ * when indiv-analysis being displayed
+ */
+function initIndiv() {
+    var vlsm = new VanillaLSM();
+    var rlsm = new RocksDBLSM();
+    var dlsm = new DostoevskyLSM();
+    var olsm = new OSMLSM;
+    window.rlsm = rlsm;     // pass to global
+    window.vlsm = vlsm;
+    window.dlsm = dlsm;
+    window.olsm = olsm;
+    vlsm.update();
+    rlsm.update();
+    dlsm.update();
+    olsm.update();
 }
 
 // function setStep(element, default_value) {

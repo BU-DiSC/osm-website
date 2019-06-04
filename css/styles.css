@@ -20,7 +20,6 @@ section .section-title {
 .tooltip{
 	font-size: 12px;
 }
-
 .tooltip-inner {
   max-width: 200px;
   padding: 3px 8px;
@@ -29,7 +28,6 @@ section .section-title {
   background-color: #000;
   border-radius: 4px;
 }
-
 .tooltip-arrow {
 }
 
@@ -37,11 +35,9 @@ section .section-title {
 .navbar-brand {
 	font-size: 200%;
 }
-
 .navbar-nav {
 	margin-right: -20px;
 }
-
 ul > .nav-item{
     letter-spacing: 1px;
     padding-left: 5px;
@@ -52,7 +48,7 @@ ul > .nav-item{
     font-size: 1.1em;
 }
 
-/* Custom navbar style */
+/* Custom jumbotron style */
 .jumbotron {
 	margin-bottom: 0px;
 	padding-bottom: 150px;
@@ -63,67 +59,88 @@ ul > .nav-item{
 #interactiveDemo .container-fluid {
 	width: 85%;
 }
+/* Comparative analysis conf */
+#cmp-conf-row {
+	display:flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center
+}
+.cmp-conf-col {
+	max-width: 50%;
+}
+.cmp-input {
+
+}
+
 
 .input-group > input {
 	text-align: right;
 }
-
 .input-group-text {
-	color: black;
+	color: #343a40;
 }
 
-.btn-custom {
+/* Merge policy selecting bar */
+.mp-btn-group {
+	width: 100%;
+}
+.mp-btn-group .btn {	/*Override*/
+	flex: 1 1 100%;
+	overflow: hidden;
 	background-color: #ecf0f1;
-	color:black;
+	color:#2C3E50;
 	border-color: rgb(206, 212, 218);
 	padding: 0.1875rem 0.75rem;
 }
-
-.btn-custom:hover, .btn-custom:focus {
+.mp-btn-group .btn:hover, .mp-btn-group .btn:focus {
 	color: #fff;
 	background-color: #95a5a6;
     border-color: #798d8f;
 }
 
-.div-title {
+.div-title { /* LSM name title */
 	font-size: 24px;
 	margin-bottom: 5px;
 	margin-left: auto;
 	margin-right: auto;
 }
 
-.mp-btn-group {
-	width: 100%;
+/* LSM tree bush diagram reuslt display */
+.bush-res > div:first-child > button:first-child, 
+.bush-res > div:first-child >  div:first-child > button:first-child  { /* Custom buffer color */
+	background-color:#2C3E50;
+	border-color: #2C3E50;
 }
-.mp-btn-group  .btn {
-	 flex: 1 1 100%;
-	 overflow: hidden; 
-}
-
-.lsm-btn-group, .lsm-btn{
+.lsm-btn-group, .lsm-btn { /* Default, tree bush result */
 	height: 18px;
 	margin: 0 auto 3px;
 	padding: 0px;
 	border-radius: 0.35rem;
 	vertical-align: top;
 }
-
-.lsm-btn-group .lsm-btn {
+.lsm-btn-group .lsm-btn { /* Override, tree bush result for tiering */
 	height: 18px;
 	padding: 0px;
 	margin: 0 2px 3px;
 }
-
-.lsm-btn-group .lsm-btn:first-child {
+.lsm-btn-group .lsm-btn:first-child { /* Override, first run in each level in tiering */
 	margin-left: 0px;
 }
-
-.lsm-btn-group .lsm-btn:last-child {
+.lsm-btn-group .lsm-btn:last-child { /* Override, last first run in each level in tiering */
 	margin-right: 0px;
 }
 
+/* LSM performance result display */
+#cost-result {
+	line-height: 2;
+	font-size: 1.10rem;
+	font-weight: 300;
+	color: #343a40;
+}
 .metrics {
 	padding-left: 0px;
+
 }
 
 
@@ -141,19 +158,6 @@ ul > .nav-item{
 	font-size: 20px;
 }
 
-#cmp-conf-row {
-	display:flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center
-
-}
-.cmp-conf-col {
-	max-width: 50%;
-}
-.cmp-input {
-
-}
 
 .col-xs-auto, .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8
 .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
