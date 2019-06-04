@@ -214,7 +214,7 @@ function VanillaLSM() {
                 for (var j = 0; j < max_runs; j++) {
                     var child = null;
                     var context = "";
-                    if ((max_runs >= 4) && (j == max_runs - 2)) {
+                    if ((max_runs >= 5) && (j == max_runs - 2)) {
                         child = createDots(run_width);
                         var context = "This level contains " + ratio + " runs in total";
                     }
@@ -401,7 +401,7 @@ function RocksDBLSM() {
                 for (var j = 0; j < max_runs; j++) {
                     var child = null;
                     var context = "";
-                    if ((max_runs >= 4) && (j == max_runs - 2)) {
+                    if ((max_runs >= 5) && (j == max_runs - 2)) {
                         child = createDots(run_width);
                         var context = "This level contains " + ratio + " runs in total";
                     }
@@ -585,7 +585,7 @@ function DostoevskyLSM() {
                 for (var j = 0; j < max_runs; j++) {
                     var child = null;
                     var context = "";
-                    if ((max_runs >= 4) && (j == max_runs - 2)) {
+                    if ((max_runs >= 5) && (j == max_runs - 2)) {
                         child = createDots(run_width);
                         var context = "This level contains " + ratio + " runs in total";
                     }
@@ -769,7 +769,7 @@ function OSMLSM() {
                 for (var j = 0; j < max_runs; j++) {
                     var child = null;
                     var context = "";
-                    if ((max_runs >= 4) && (j == max_runs - 2)) {
+                    if ((max_runs >= 5) && (j == max_runs - 2)) {
                         child = createDots(run_width);
                         var context = "This level contains " + ratio + " runs in total";
                     }
