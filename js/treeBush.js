@@ -1,862 +1,363 @@
 // Event handling
 document.addEventListener("DOMContentLoaded",
 function (event) {
-
 // Event attributes, trigger
 // Analysis mode selection trigger
 document.querySelector("#customRadio1").onclick = display;
 document.querySelector("#customRadio2").onclick = display;
 // Individual LSM configuration trigger
-document.querySelector("#vlsm-input-T").onchange = runVanillaLSM;
-document.querySelector("#vlsm-input-T").onwheel = runVanillaLSM;
-document.querySelector("#vlsm-input-E").onchange = runVanillaLSM;
-document.querySelector("#vlsm-input-E").onwheel = runVanillaLSM;
-document.querySelector("#vlsm-input-N").onchange = runVanillaLSM;
-document.querySelector("#vlsm-input-N").onwheel = runVanillaLSM;
-document.querySelector("#vlsm-input-M").onchange = runVanillaLSM;
-document.querySelector("#vlsm-input-M").onwheel = runVanillaLSM;
-document.querySelector("#v-tiering").onclick = runVanillaLSM;
-document.querySelector("#v-leveling").onclick = runVanillaLSM;
-document.querySelector("#rlsm-input-T").onchange = runRocksDBLSM
-document.querySelector("#rlsm-input-T").onwheel = runRocksDBLSM;
-document.querySelector("#rlsm-input-E").onchange = runRocksDBLSM;
-document.querySelector("#rlsm-input-E").onwheel = runRocksDBLSM;
-document.querySelector("#rlsm-input-N").onchange = runRocksDBLSM;
-document.querySelector("#rlsm-input-N").onwheel = runRocksDBLSM;
-document.querySelector("#rlsm-input-M").onchange = runRocksDBLSM;
-document.querySelector("#rlsm-input-M").onwheel = runRocksDBLSM;
-document.querySelector("#r-tiering").onclick = runRocksDBLSM;
-document.querySelector("#r-leveling").onclick = runRocksDBLSM;
-document.querySelector("#dlsm-input-T").onchange = runDostoevskyLSM
-document.querySelector("#dlsm-input-T").onwheel = runDostoevskyLSM;
-document.querySelector("#dlsm-input-E").onchange = runDostoevskyLSM;
-document.querySelector("#dlsm-input-E").onwheel = runDostoevskyLSM;
-document.querySelector("#dlsm-input-N").onchange = runDostoevskyLSM;
-document.querySelector("#dlsm-input-N").onwheel = runDostoevskyLSM;
-document.querySelector("#dlsm-input-M").onchange = runDostoevskyLSM;
-document.querySelector("#dlsm-input-M").onwheel = runDostoevskyLSM;
-document.querySelector("#d-tiering").onclick = runDostoevskyLSM;
-document.querySelector("#d-leveling").onclick = runDostoevskyLSM;
-document.querySelector("#olsm-input-T").onchange = runOSMLSM
-document.querySelector("#olsm-input-T").onwheel = runOSMLSM;
-document.querySelector("#olsm-input-E").onchange = runOSMLSM;
-document.querySelector("#olsm-input-E").onwheel = runOSMLSM;
-document.querySelector("#olsm-input-N").onchange = runOSMLSM;
-document.querySelector("#olsm-input-N").onwheel = runOSMLSM;
-document.querySelector("#olsm-input-M").onchange = runOSMLSM;
-document.querySelector("#olsm-input-M").onwheel = runOSMLSM;
-document.querySelector("#o-tiering").onclick = runOSMLSM;
-document.querySelector("#o-leveling").onclick = runOSMLSM;
+document.querySelector("#vlsm-input-T").onchange = run;
+document.querySelector("#vlsm-input-T").onwheel = run;
+document.querySelector("#vlsm-input-E").onchange = run;
+document.querySelector("#vlsm-input-E").onwheel = run;
+document.querySelector("#vlsm-input-N").onchange = run;
+document.querySelector("#vlsm-input-N").onwheel = run;
+document.querySelector("#vlsm-input-M").onchange = run;
+document.querySelector("#vlsm-input-M").onwheel = run;
+document.querySelector("#vlsm-tiering").onclick = run;
+document.querySelector("#vlsm-leveling").onclick = run;
+document.querySelector("#rlsm-input-T").onchange = run
+document.querySelector("#rlsm-input-T").onwheel = run;
+document.querySelector("#rlsm-input-E").onchange = run;
+document.querySelector("#rlsm-input-E").onwheel = run;
+document.querySelector("#rlsm-input-N").onchange = run;
+document.querySelector("#rlsm-input-N").onwheel = run;
+document.querySelector("#rlsm-input-M").onchange = run;
+document.querySelector("#rlsm-input-M").onwheel = run;
+document.querySelector("#rlsm-tiering").onclick = run;
+document.querySelector("#rlsm-leveling").onclick = run;
+document.querySelector("#dlsm-input-T").onchange = run
+document.querySelector("#dlsm-input-T").onwheel = run;
+document.querySelector("#dlsm-input-E").onchange = run;
+document.querySelector("#dlsm-input-E").onwheel = run;
+document.querySelector("#dlsm-input-N").onchange = run;
+document.querySelector("#dlsm-input-N").onwheel = run;
+document.querySelector("#dlsm-input-M").onchange = run;
+document.querySelector("#dlsm-input-M").onwheel = run;
+document.querySelector("#dlsm-tiering").onclick = run;
+document.querySelector("#dlsm-leveling").onclick = run;
+document.querySelector("#osm-input-T").onchange = run
+document.querySelector("#osm-input-T").onwheel = run;
+document.querySelector("#osm-input-E").onchange = run;
+document.querySelector("#osm-input-E").onwheel = run;
+document.querySelector("#osm-input-N").onchange = run;
+document.querySelector("#osm-input-N").onwheel = run;
+document.querySelector("#osm-input-M").onchange = run;
+document.querySelector("#osm-input-M").onwheel = run;
+document.querySelector("#osm-tiering").onclick = run;
+document.querySelector("#osm-leveling").onclick = run;
 // N : number of entries
 // L : number of Levels
 // E : size of an entry(bytes)
 // T : size ratio
 // M : buffer capacity(MB);
-function VanillaLSM() {
-    var _T = document.querySelector("#vlsm-input-T").value;
-    var _E = document.querySelector("#vlsm-input-E").value;
-    var _N = document.querySelector("#vlsm-input-N").value;
-    var _M = document.querySelector("#vlsm-input-M").value;
-    var _MP = 0;    // leveling:0, tiering:1
-    var _DEFAULT = {
+
+
+class LSM {
+    _T; 
+    _E;
+    _N;
+    _M;
+    _MP;
+    _DEFAULT = {
         T: 2,
         E: 16,
         N: 4294967296,
         M: 256,
         MP: 0
     };
+    _target;
 
-    this.getT = function() {return _T;}
-    this.getE = function() {return _E;}
-    this.getN = function() {return _N;}
-    this.getM = function() {return _M;}
-    this.getMP = function() {return _MP;}
-    this.getDEFAULT = function() {return _DEFAULT;}
-
-    this.updateT = function(ratio) {
-        _T = ratio;
-        return _T;
-    }
-
-    this.updateE = function(entrySize) {
-        _E = entrySize;
-        return _E;
-    }
-
-    this.updateN = function(entryNum) {
-        _N = entryNum;
-        return _N;
-    }
-
-    this.updateM = function(bufferSize) {
-        _M = bufferSize;
-        return _M;
-    }
-
-    this.updateMP = function(mergePolicy) {
-        _MP = mergePolicy;
-        return _MP;
-    }
-    
-    /* Compute the levels of LSM-tree having ratio, #entry, entry size, Mbuffer
-       Return 0 when all in buffer.*/
-    function _getL() {
-        var L;
-        var Mbytes = _M * Math.pow(10, 6);   // convert to bytes
-        var exp = ((_N * _E) / Mbytes) * ((_T - 1) / _T);
-        L = Math.ceil(getBaseLog(_T, exp));
-        console.log("Computed Level = " + L);
-        return (L < 1) ? 0 : L;
-    }
-
-    /* Having known the numer of levels,
-     * compute the number of entries per run in the ith level*/
-    function _getEntryNum(ith) {
-        var nr = 0; // number of entries each run
-        var Mbytes = _M * Math.pow(10, 6);   // convert to bytes
-        var nl = Math.floor(Mbytes * Math.pow(_T, ith) / _E);  // number of entries per level
-        if (_MP) nr = Math.floor(nl / _T);
-        else nr = nl;
-        return nr;
-    }
-
-    /* Compute the number of entries in ith level;
-     * Return a string to be displayed when triggering ToolTip 
-     */
-    function _getTipText(ith) {
-        var n = _getEntryNum(ith);
-        var text = "";
-        if (ith === 0) {
-            text = "In buffer, it contains " + n + " entries";
+    constructor(target = "") {
+        this._MP =this._DEFAULT.MP;
+        this._target = target;
+        if(target) {
+            this._T = document.querySelector(`#${target}-input-T`).value;
+            this._E = document.querySelector(`#${target}-input-E`).value;
+            this._N = document.querySelector(`#${target}-input-N`).value;
+            this._M = document.querySelector(`#${target}-input-M`).value;
         } else {
-            text = "Level: " + ith + ", this run contains " + n + " entries";
-        }
-        return text;
+            this._T = this._DEFAULT.T;
+            this._E = this._DEFAULT.E;
+            this._N = this._DEFAULT.N;
+            this._M = this._DEFAULT.M;
+        }     
     }
 
-    this.update = function() {
-        var L = _getL();
-        var btnList = [];
-        var parent = document.querySelector("#vlsm-res");
-        if (_MP) btnList = getBtnGroups(parent, L, _T);
-        else btnList = getBtns(parent, L, _T);
-        clear(parent);
-
-        for (var i = 0; i <= L; i++) {
-            var res_wrap = document.createElement("div");
-            res_wrap.setAttribute("class", "row vlsm-result");
-            res_wrap.appendChild(btnList[i]);
-            parent.appendChild(res_wrap);
-        }
-
-        /* Calculate current amount and set the width of runs
-         * Return a list of button objects
-         */
-        function getBtns(elem, level, ratio) {
-            var runs = [];
-            var context = "At level: ";
-
-            var getWidth = function(i) {
-                var coef = 1;  
-                var base_width = 10;
-                var clientWidth = elem.clientWidth - 1;  // -1 to avoid stacking
-                var m = clientWidth / Math.pow(ratio, level);   // level0 actual width;
-                if (m < base_width) {
-                    coef = Math.pow(clientWidth / base_width, 1 / level) / ratio;
-                    m  = base_width;
-                }
-                return m * Math.pow(coef * ratio, i) + "px";
-            };
-
-            for (var i = 0; i <= level; i++) {
-                var run_width = getWidth(i);
-                var button = createBtn(run_width);
-                var context = _getTipText(i);
-                setToolTip(button, "left", context);
-                runs[i] = button;
-            }
-            return runs;
-        }
-
-        function getBtnGroups(elem, level, ratio) {
-            // Return a list of lsm-btn-group obejcts
-            var btn_groups = [];
-            var max_runs = 5;
-            if (ratio < max_runs) {
-                if (level !== 0) max_runs = ratio;
-                else max_runs = 1;
-            }
-
-            var getWidth = function(i) {
-                // Return the width for each button in a btn-group regarding to tiering
-                if (level === 0) return elem.clientWidth + "px";
-                var base_width = 10;
-                var margin = (max_runs - 2) * 4 + 4;
-                var l1_width = max_runs * base_width + margin;   // invariant: level1 width
-                var coef = 1;
-                var clientWidth = elem.clientWidth - 1;  // -1 to avoid stacking 
-                var m = clientWidth / Math.pow(max_runs, level - 1);    // level1 acutal width
-
-                if (m < l1_width) {
-                    coef = Math.pow(clientWidth / l1_width, 1 / (level - 1)) / max_runs;
-                    m  = l1_width;
-                }
-                if (i > 1) return (m * Math.pow(coef * max_runs, i - 1) - margin) / max_runs + "px";
-                else return (m - margin) / max_runs + "px";
-            }
-
-            for (var i = 0; i <= level; i++) {
-                var run_width = getWidth(i);
-                var group_wrap = document.createElement("div");
-                group_wrap.setAttribute("class", "lsm-btn-group");
-                console.log("Level" + i + " width = " + run_width);
-               
-                for (var j = 0; j < max_runs; j++) {
-                    var child = null;
-                    var context = "";
-                    if ((max_runs >= 5) && (j == max_runs - 2)) {
-                        child = createDots(run_width);
-                        var context = "This level contains " + ratio + " runs in total";
-                    }
-                    else {
-                        child = createBtn(run_width);
-                        var context = _getTipText(i);
-                    }
-                    setToolTip(child, "left", context);
-                    group_wrap.appendChild(child);
-
-                    if (i === 0) break;  // only one run in buffer level 
-                }
-                btn_groups[i] = group_wrap;
-            }
-            return btn_groups;
-
-        }
+    get T() {return this._T;}
+    get E() {return this._E;}
+    get N() {return this._N;}
+    get M() {return this._M;}
+    get MP() {return this._MP;}
+    get DEFAULT() {return this._DEFAULT;}
+    set T(ratio) {
+        this._T = ratio;
+        return this._T;
+    }
+    set E(entrySize) {
+        this._E = entrySize;
+        return this._E;
+    }
+    set N(entryNum) {
+        this._N = entryNum;
+        return this._N;
+    }
+    set M(bufferSize) {
+        this._M = bufferSize;
+        return this._M;
+    }
+    set MP(mergePolicy) {
+        this._MP = mergePolicy;
+        return this._MP;
+    }
+    set DEFAULT(defaultObj) {
+        this._DEFAULT = defaultObj;
+        return this._DEFAULT;
     }
 
-}
-
-function RocksDBLSM() {
-    var _T = document.querySelector("#rlsm-input-T").value;
-    var _E = document.querySelector("#rlsm-input-E").value;
-    var _N = document.querySelector("#rlsm-input-N").value;
-    var _M = document.querySelector("#rlsm-input-M").value;
-    var _MP = 0;    // leveling:0, tiering:1
-    var _DEFAULT = {
-        T: 2,
-        E: 16,
-        N: 4294967296,
-        M: 256,
-        MP: 0
-    };
-
-    this.getT = function() {return _T;}
-    this.getE = function() {return _E;}
-    this.getN = function() {return _N;}
-    this.getM = function() {return _M;}
-    this.getMP = function() {return _MP;}
-    this.getDEFAULT = function() {return _DEFAULT;}
-
-    this.updateT = function(ratio) {
-        _T = ratio;
-        return _T;
-    }
-
-    this.updateE = function(entrySize) {
-        _E = entrySize;
-        return _E;
-    }
-
-    this.updateN = function(entryNum) {
-        _N = entryNum;
-        return _N;
-    }
-
-    this.updateM = function(bufferSize) {
-        _M = bufferSize;
-        return _M;
-    }
-
-    this.updateMP = function(mergePolicy) {
-        _MP = mergePolicy;
-        return _MP;
-    }
-    
-    /* Compute the levels of LSM-tree having ratio, #entry, entry size, Mbuffer
+    /* Compute the levels of LSM-tree having ratio, _entry, entry size, Mbuffer
      * Return 0 when all in buffer.
      */
-    function _getL() {
+    _getL() {
         var L;
-        var Mbytes = _M * Math.pow(10, 6);   // convert to bytes
-        var exp = ((_N * _E) / Mbytes) * ((_T - 1) / _T);
-        L = Math.ceil(getBaseLog(_T, exp));
+        var Mbytes = this._M * Math.pow(10, 6);   // convert to bytes
+        var exp = ((this._N * this._E) / Mbytes) * ((this._T - 1) / this._T);
+        L = Math.ceil(getBaseLog(this._T, exp));
         console.log("Computed Level = " + L);
         return (L < 1) ? 0 : L;
     }
-
     /* Having known the numer of levels,
-     * compute the number of entries per run in the ith level
+     * compute the number of entries per run in the ith level 
      */
-    function _getEntryNum(ith) {
+    _getEntryNum(ith) {
         var nr = 0; // number of entries each run
-        var Mbytes = _M * Math.pow(10, 6);   // convert to bytes
-        var nl = Math.floor(Mbytes * Math.pow(_T, ith) / _E);  // number of entries per level
-        if (_MP) nr = Math.floor(nl / _T);
+        var Mbytes = this._M * Math.pow(10, 6);   // convert to bytes
+        var nl = Math.floor(Mbytes * Math.pow(this._T, ith) / this._E);  // number of entries per level
+        if (this._MP) nr = Math.floor(nl / this._T);
         else nr = nl;
         return nr;
     }
 
     /* Compute the number of entries in ith level;
-     * Return a string to be displayed when triggering ToolTip 
+     * Return a string to be displayed when triggering ToolTip  
      */
-    function _getTipText(ith) {
-        var n = _getEntryNum(ith);
+    _getTipText(ith) {
+        var n = this._getEntryNum(ith);
         var text = "";
         if (ith === 0) {
-            text = "In buffer, it contains " + n + " entries";
+            text = "Memory Buffer: it contains " + n + " entries";
         } else {
             text = "Level: " + ith + ", this run contains " + n + " entries";
         }
         return text;
     }
-
-    this.update = function() {
-        var L = _getL();
-        var btnList = [];
-        var parent = document.querySelector("#rlsm-res");
-        if (_MP) btnList = getBtnGroups(parent, L, _T);
-        else btnList = getBtns(parent, L, _T);
-        clear(parent);
-
-        for (var i = 0; i <= L; i++) {
-            var res_wrap = document.createElement("div");
-            res_wrap.setAttribute("class", "row rlsm-result");
-            res_wrap.appendChild(btnList[i]);
-            parent.appendChild(res_wrap);
-        }
-
-        /* Calculate current amount and set the width of runs
-         * Return a list of button objects
-         */
-        function getBtns(elem, level, ratio) {
-            var runs = [];
-            var context = "At level: ";
-
-            var getWidth = function(i) {
-                // for leveling, margin = 0;
-                var coef = 1;  
-                var base_width = 10;
-                var clientWidth = elem.clientWidth - 1;  // -1 to avoid stacking
-                var m = clientWidth / Math.pow(ratio, level);   // level0 actual width;
-                if (m < base_width) {
-                    coef = Math.pow(clientWidth / base_width, 1 / level) / ratio;
-                    m  = base_width;
-                }
-                return m * Math.pow(coef * ratio, i) + "px";
-            };
-
-            for (var i = 0; i <= level; i++) {
-                var run_width = getWidth(i);
-                var button = createBtn(run_width);
-                var context = _getTipText(i);
-                setToolTip(button, "left", context);
-                runs[i] = button;
-            }
-            return runs;
-        }
-
-        function getBtnGroups(elem, level, ratio) {
-            // Return a list of lsm-btn-group obejcts
-            var btn_groups = [];
-            var max_runs = 5;
-            if (ratio < max_runs) {
-                if (level !== 0) max_runs = ratio;
-                else max_runs = 1;
-            }
-
-            var getWidth = function(i) {
-                // Return the width for each button in a btn-group regarding to tiering
-                if (level === 0) return elem.clientWidth + "px";
-                var base_width = 10;
-                var margin = (max_runs - 2) * 4 + 4;
-                var l1_width = max_runs * base_width + margin;   // invariant: level1 width
-                var coef = 1;
-                var clientWidth = elem.clientWidth - 1;  // -1 to avoid stacking 
-                var m = clientWidth / Math.pow(max_runs, level - 1);    // level1 acutal width
-
-                if (m < l1_width) {
-                    coef = Math.pow(clientWidth / l1_width, 1 / (level - 1)) / max_runs;
-                    m  = l1_width;
-                }
-                if (i > 1) return (m * Math.pow(coef * max_runs, i - 1) - margin) / max_runs + "px";
-                else return (m - margin) / max_runs + "px";
-            }
-
-            for (var i = 0; i <= level; i++) {
-                var run_width = getWidth(i);
-                var group_wrap = document.createElement("div");
-                group_wrap.setAttribute("class", "lsm-btn-group");
-                console.log("Level" + i + " width = " + run_width);
-               
-                for (var j = 0; j < max_runs; j++) {
-                    var child = null;
-                    var context = "";
-                    if ((max_runs >= 5) && (j == max_runs - 2)) {
-                        child = createDots(run_width);
-                        var context = "This level contains " + ratio + " runs in total";
-                    }
-                    else {
-                        child = createBtn(run_width);
-                        var context = _getTipText(i);
-                    }
-                    setToolTip(child, "left", context);
-                    group_wrap.appendChild(child);
-
-                    if (i === 0) break;  // only one run in buffer level 
-                }
-                btn_groups[i] = group_wrap;
-            }
-            return btn_groups;
-
-        }
-    }
-}
-
-function DostoevskyLSM() {
-    var _T = document.querySelector("#dlsm-input-T").value;
-    var _E = document.querySelector("#dlsm-input-E").value;
-    var _N = document.querySelector("#dlsm-input-N").value;
-    var _M = document.querySelector("#dlsm-input-M").value;
-    var _MP = 0;    // leveling:0, tiering:1
-    var _DEFAULT = {
-        T: 2,
-        E: 16,
-        N: 4294967296,
-        M: 256,
-        MP: 0
-    };
-
-    this.getT = function() {return _T;}
-    this.getE = function() {return _E;}
-    this.getN = function() {return _N;}
-    this.getM = function() {return _M;}
-    this.getMP = function() {return _MP;}
-    this.getDEFAULT = function() {return _DEFAULT;}
-
-    this.updateT = function(ratio) {
-        _T = ratio;
-        return _T;
-    }
-
-    this.updateE = function(entrySize) {
-        _E = entrySize;
-        return _E;
-    }
-
-    this.updateN = function(entryNum) {
-        _N = entryNum;
-        return _N;
-    }
-
-    this.updateM = function(bufferSize) {
-        _M = bufferSize;
-        return _M;
-    }
-
-    this.updateMP = function(mergePolicy) {
-        _MP = mergePolicy;
-        return _MP;
-    }
-    
-    /* Compute the levels of LSM-tree having ratio, #entry, entry size, Mbuffer
-       Return 0 when all in buffer.*/
-    function _getL() {
-        var L;
-        var Mbytes = _M * Math.pow(10, 6);   // convert to bytes
-        var exp = ((_N * _E) / Mbytes) * ((_T - 1) / _T);
-        L = Math.ceil(getBaseLog(_T, exp));
-        console.log("Computed Level = " + L);
-        return (L < 1) ? 0 : L;
-    }
-
-    /* Having known the numer of levels,
-     * compute the number of entries per run in the ith level*/
-    function _getEntryNum(ith) {
-        var nr = 0; // number of entries each run
-        var Mbytes = _M * Math.pow(10, 6);   // convert to bytes
-        var nl = Math.floor(Mbytes * Math.pow(_T, ith) / _E);  // number of entries per level
-        if (_MP) nr = Math.floor(nl / _T);
-        else nr = nl;
-        return nr;
-    }
-
-    /* Compute the number of entries in ith level;
-     * Return a string to be displayed when triggering ToolTip 
+    /* Calculate current amount and set the width of runs
+     * Return a list of button objects 
      */
-    function _getTipText(ith) {
-        var n = _getEntryNum(ith);
-        var text = "";
-        if (ith === 0) {
-            text = "In buffer, it contains " + n + " entries";
-        } else {
-            text = "Level: " + ith + ", this run contains " + n + " entries";
+    _getBtns(elem, level, ratio) {
+
+        var runs = [];
+        var context = "At level: ";
+
+        var getWidth = function(i) {
+            var coef = 1;  
+            var base_width = 10;
+            var clientWidth = elem.clientWidth - 1;  // -1 to avoid stacking
+            var m = clientWidth / Math.pow(ratio, level);   // level0 actual width;
+            if (m < base_width) {
+                coef = Math.pow(clientWidth / base_width, 1 / level) / ratio;
+                m  = base_width;
+            }
+            return m * Math.pow(coef * ratio, i) + "px";
+        };
+
+        for (var i = 0; i <= level; i++) {
+            var run_width = getWidth(i);
+            var button = createBtn(run_width);
+            var context = this._getTipText(i);
+            setToolTip(button, "left", context);
+            runs[i] = button;
         }
-        return text;
+        return runs;
     }
 
-    this.update = function() {
-        var L = _getL();
+    _getBtnGroups(elem, level, ratio) {
+        // Return a list of lsm-btn-group obejcts
+        var btn_groups = [];
+        var max_runs = 5;
+        if (ratio < max_runs) {
+            if (level !== 0) max_runs = ratio;
+            else max_runs = 1;
+        }
+
+        var getWidth = function(i) {
+            // Return the width for each button in a btn-group regarding to tiering
+            if (level === 0) return elem.clientWidth + "px";
+            var base_width = 10;
+            var margin = (max_runs - 2) * 4 + 4;
+            var l1_width = max_runs * base_width + margin;   // invariant: level1 width
+            var coef = 1;
+            var clientWidth = elem.clientWidth - 1;  // -1 to avoid stacking 
+            var m = clientWidth / Math.pow(max_runs, level - 1);    // level1 acutal width
+
+            if (m < l1_width) {
+                coef = Math.pow(clientWidth / l1_width, 1 / (level - 1)) / max_runs;
+                m  = l1_width;
+            }
+            if (i > 1) return (m * Math.pow(coef * max_runs, i - 1) - margin) / max_runs + "px";
+            else return (m - margin) / max_runs + "px";
+        }
+
+        for (var i = 0; i <= level; i++) {
+            var run_width = getWidth(i);
+            var group_wrap = document.createElement("div");
+            group_wrap.setAttribute("class", "lsm-btn-group");
+            console.log("Level" + i + " width = " + run_width);
+           
+            for (var j = 0; j < max_runs; j++) {
+                var child = null;
+                var context = "";
+                if ((max_runs >= 5) && (j == max_runs - 2)) {
+                    child = createDots(run_width);
+                    var context = "This level contains " + ratio + " runs in total";
+                }
+                else {
+                    child = createBtn(run_width);
+                    var context = this._getTipText(i);
+                }
+                setToolTip(child, "left", context);
+                group_wrap.appendChild(child);
+
+                if (i === 0) break;  // only one run in buffer level 
+            }
+            btn_groups[i] = group_wrap;
+        }
+        return btn_groups;
+    }
+
+    update() {
+        var L = this._getL();
         var btnList = [];
-        var parent = document.querySelector("#dlsm-res");
-        if (_MP) btnList = getBtnGroups(parent, L, _T);
-        else btnList = getBtns(parent, L, _T);
+        var parent = document.querySelector(`#${this._target}-res`);
+        if (this._MP) btnList = this._getBtnGroups(parent, L, this._T);
+        else btnList = this._getBtns(parent, L, this._T);
         clear(parent);
 
         for (var i = 0; i <= L; i++) {
             var res_wrap = document.createElement("div");
-            res_wrap.setAttribute("class", "row dlsm-result");
+            res_wrap.setAttribute("class", `row ${this._target}-result`);
             res_wrap.appendChild(btnList[i]);
             parent.appendChild(res_wrap);
-        }
-
-        function getBtns(elem, level, ratio) {
-            /* Calculate current amount and set the width of runs
-             * Return a list of button objects
-             */
-            var runs = [];
-            var context = "At level: ";
-            var getWidth = function(i) {
-                // for leveling, margin = 0;
-                var coef = 1;  
-                var base_width = 10;
-                var clientWidth = elem.clientWidth - 1;  // -1 to avoid stacking
-                var m = clientWidth / Math.pow(ratio, level);   // level0 actual width;
-                if (m < base_width) {
-                    coef = Math.pow(clientWidth / base_width, 1 / level) / ratio;
-                    m  = base_width;
-                }
-                return m * Math.pow(coef * ratio, i) + "px";
-            };
-
-            for (var i = 0; i <= level; i++) {
-                var run_width = getWidth(i);
-                var button = createBtn(run_width);
-                var context = _getTipText(i);
-                setToolTip(button, "left", context);
-                runs[i] = button;
-            }
-            return runs;
-        }
-
-        function getBtnGroups(elem, level, ratio) {
-            // Return a list of lsm-btn-group obejcts
-            var btn_groups = [];
-            var max_runs = 5;
-            if (ratio < max_runs) {
-                if (level !== 0) max_runs = ratio;
-                else max_runs = 1;
-            }
-
-            var getWidth = function(i) {
-                // Return the width for each button in a btn-group regarding to tiering
-                // *Customized for lazy leveling 
-                if (level === 0 || level === i ) return elem.clientWidth + "px";    //*Customized
-                var base_width = 10;
-                var margin = (max_runs - 2) * 4 + 4;
-                var l1_width = max_runs * base_width + margin;   // invariant: level1 width
-                var coef = 1;
-                var clientWidth = elem.clientWidth - 1;  // -1 to avoid stacking 
-                var m = clientWidth / Math.pow(max_runs, level - 1);    // level1 acutal width
-
-                if (m < l1_width) {
-                    coef = Math.pow(clientWidth / l1_width, 1 / (level - 1)) / max_runs;
-                    m  = l1_width;
-                }
-                if (i > 1) return (m * Math.pow(coef * max_runs, i - 1) - margin) / max_runs + "px";
-                else return (m - margin) / max_runs + "px";
-            }
-
-            for (var i = 0; i <= level; i++) {
-                var run_width = getWidth(i);
-                var group_wrap = document.createElement("div");
-                group_wrap.setAttribute("class", "lsm-btn-group");
-                console.log("Level" + i + " width = " + run_width);
-               
-                for (var j = 0; j < max_runs; j++) {
-                    var child = null;
-                    var context = "";
-                    if ((max_runs >= 5) && (j == max_runs - 2)) {
-                        child = createDots(run_width);
-                        var context = "This level contains " + ratio + " runs in total";
-                    }
-                    else {
-                        child = createBtn(run_width);
-                        var context = _getTipText(i);
-                    }
-                    setToolTip(child, "left", context);
-                    group_wrap.appendChild(child);
-
-                    if (i === 0 || i === level) break;  //*Customized, only one run in buffer and last level 
-                }
-                btn_groups[i] = group_wrap;
-            }
-            return btn_groups;
-
         }
     }
 
 }
 
-function OSMLSM() {
-    var _T = document.querySelector("#olsm-input-T").value;
-    var _E = document.querySelector("#olsm-input-E").value;
-    var _N = document.querySelector("#olsm-input-N").value;
-    var _M = document.querySelector("#olsm-input-M").value;
-    var _MP = 0;    // leveling:0, tiering:1
-    var _DEFAULT = {
-        T: 2,
-        E: 16,
-        N: 4294967296,
-        M: 256,
-        MP: 0
-    };
 
-    this.getT = function() {return _T;}
-    this.getE = function() {return _E;}
-    this.getN = function() {return _N;}
-    this.getM = function() {return _M;}
-    this.getMP = function() {return _MP;}
-    this.getDEFAULT = function() {return _DEFAULT;}
-
-    this.updateT = function(ratio) {
-        _T = ratio;
-        return _T;
+class VanillaLSM extends LSM{
+    constructor(target) {
+        super(target);
     }
-
-    this.updateE = function(entrySize) {
-        _E = entrySize;
-        return _E;
-    }
-
-    this.updateN = function(entryNum) {
-        _N = entryNum;
-        return _N;
-    }
-
-    this.updateM = function(bufferSize) {
-        _M = bufferSize;
-        return _M;
-    }
-
-    this.updateMP = function(mergePolicy) {
-        _MP = mergePolicy;
-        return _MP;
-    }
-    
-    /* Compute the levels of LSM-tree having ratio, #entry, entry size, Mbuffer
-       Return 0 when all in buffer.*/
-    function _getL() {
-        var L;
-        var Mbytes = _M * Math.pow(10, 6);   // convert to bytes
-        var exp = ((_N * _E) / Mbytes) * ((_T - 1) / _T);
-        L = Math.ceil(getBaseLog(_T, exp));
-        console.log("Computed Level = " + L);
-        return (L < 1) ? 0 : L;
-    }
-
-    /* Having known the numer of levels,
-     * compute the number of entries per run in the ith level*/
-    function _getEntryNum(ith) {
-        var nr = 0; // number of entries each run
-        var Mbytes = _M * Math.pow(10, 6);   // convert to bytes
-        var nl = Math.floor(Mbytes * Math.pow(_T, ith) / _E);  // number of entries per level
-        if (_MP) nr = Math.floor(nl / _T);
-        else nr = nl;
-        return nr;
-    }
-
-    /* Compute the number of entries in ith level;
-     * Return a string to be displayed when triggering ToolTip 
-     */
-    function _getTipText(ith) {
-        var n = _getEntryNum(ith);
-        var text = "";
-        if (ith === 0) {
-            text = "In buffer, it contains " + n + " entries";
-        } else {
-            text = "Level: " + ith + ", this run contains " + n + " entries";
-        }
-        return text;
-    }
-
-    this.update = function() {
-        var L = _getL();
-        var btnList = [];
-        var parent = document.querySelector("#olsm-res");
-        if (_MP) btnList = getBtnGroups(parent, L, _T);
-        else btnList = getBtns(parent, L, _T);
-        clear(parent);
-
-        for (var i = 0; i <= L; i++) {
-            var res_wrap = document.createElement("div");
-            res_wrap.setAttribute("class", "row olsm-result");
-            res_wrap.appendChild(btnList[i]);
-            parent.appendChild(res_wrap);
-        }
-
-        function getBtns(elem, level, ratio) {
-            /* Calculate current amount and set the width of runs
-             * Return a list of button objects
-             */
-            var runs = [];
-            var context = "At level: ";
-            var getWidth = function(i) {
-                // for leveling, margin = 0;
-                var coef = 1;  
-                var base_width = 10;
-                var clientWidth = elem.clientWidth - 1;  // -1 to avoid stacking
-                var m = clientWidth / Math.pow(ratio, level);   // level0 actual width;
-                if (m < base_width) {
-                    coef = Math.pow(clientWidth / base_width, 1 / level) / ratio;
-                    m  = base_width;
-                }
-                return m * Math.pow(coef * ratio, i) + "px";
-            };
-
-            for (var i = 0; i <= level; i++) {
-                var run_width = getWidth(i);
-                var button = createBtn(run_width);
-                var context = _getTipText(i);
-                setToolTip(button, "left", context);
-                runs[i] = button;
-            }
-            return runs;
-        }
-
-        function getBtnGroups(elem, level, ratio) {
-            // Return a list of lsm-btn-group obejcts
-            var btn_groups = [];
-            var max_runs = 5;
-            if (ratio < max_runs) {
-                if (level !== 0) max_runs = ratio;
-                else max_runs = 1;
-            }
-
-            var getWidth = function(i) {
-                // Return the width for each button in a btn-group regarding to tiering
-                if (level === 0) return elem.clientWidth + "px";
-                var base_width = 10;
-                var margin = (max_runs - 2) * 4 + 4;
-                var l1_width = max_runs * base_width + margin;   // invariant: level1 width
-                var coef = 1;
-                var clientWidth = elem.clientWidth - 1;  // -1 to avoid stacking 
-                var m = clientWidth / Math.pow(max_runs, level - 1);    // level1 acutal width
-
-                if (m < l1_width) {
-                    coef = Math.pow(clientWidth / l1_width, 1 / (level - 1)) / max_runs;
-                    m  = l1_width;
-                }
-                if (i > 1) return (m * Math.pow(coef * max_runs, i - 1) - margin) / max_runs + "px";
-                else return (m - margin) / max_runs + "px";
-            }
-
-            for (var i = 0; i <= level; i++) {
-                var run_width = getWidth(i);
-                var group_wrap = document.createElement("div");
-                group_wrap.setAttribute("class", "lsm-btn-group");
-                console.log("Level" + i + " width = " + run_width);
-               
-                for (var j = 0; j < max_runs; j++) {
-                    var child = null;
-                    var context = "";
-                    if ((max_runs >= 5) && (j == max_runs - 2)) {
-                        child = createDots(run_width);
-                        var context = "This level contains " + ratio + " runs in total";
-                    }
-                    else {
-                        child = createBtn(run_width);
-                        var context = _getTipText(i);
-                    }
-                    setToolTip(child, "left", context);
-                    group_wrap.appendChild(child);
-
-                    if (i === 0) break;  // only one run in buffer level 
-                }
-                btn_groups[i] = group_wrap;
-            }
-            return btn_groups;
-
-        }
-    }
-
 }
- 
+
+class RocksDBLSM extends LSM {
+    constructor(target) {
+        super(target);
+    }
+}
+
+class DostoevskyLSM extends LSM {
+    constructor(target) {
+        super(target);
+    }
+    // @Override
+    _getBtnGroups(elem, level, ratio) {
+        // Return a list of lsm-btn-group obejcts
+        var btn_groups = [];
+        var max_runs = 5;
+        if (ratio < max_runs) {
+            if (level !== 0) max_runs = ratio;
+            else max_runs = 1;
+        }
+
+        var getWidth = function(i) {
+            // Return the width for each button in a btn-group regarding to tiering
+            // *Customized for lazy leveling 
+            if (level === 0 || level === i ) return elem.clientWidth + "px";    //*Customized
+            var base_width = 10;
+            var margin = (max_runs - 2) * 4 + 4;
+            var l1_width = max_runs * base_width + margin;   // invariant: level1 width
+            var coef = 1;
+            var clientWidth = elem.clientWidth - 1;  // -1 to avoid stacking 
+            var m = clientWidth / Math.pow(max_runs, level - 1);    // level1 acutal width
+
+            if (m < l1_width) {
+                coef = Math.pow(clientWidth / l1_width, 1 / (level - 1)) / max_runs;
+                m  = l1_width;
+            }
+            if (i > 1) return (m * Math.pow(coef * max_runs, i - 1) - margin) / max_runs + "px";
+            else return (m - margin) / max_runs + "px";
+        }
+
+        for (var i = 0; i <= level; i++) {
+            var run_width = getWidth(i);
+            var group_wrap = document.createElement("div");
+            group_wrap.setAttribute("class", "lsm-btn-group");
+            console.log("Level" + i + " width = " + run_width);
+           
+            for (var j = 0; j < max_runs; j++) {
+                var child = null;
+                var context = "";
+                if ((max_runs >= 5) && (j == max_runs - 2)) {
+                    child = createDots(run_width);
+                    var context = "This level contains " + ratio + " runs in total";
+                }
+                else {
+                    child = createBtn(run_width);
+                    var context = super._getTipText(i);
+                }
+                setToolTip(child, "left", context);
+                group_wrap.appendChild(child);
+
+                if (i === 0 || i === level) break;  //*Customized, only one run in buffer and last level 
+            }
+            btn_groups[i] = group_wrap;
+        }
+        return btn_groups;
+    }
+}
+
+class OSM extends LSM {
+    constructor(target) {
+        super(target);
+    }
+}
+
 function runVanillaLSM() {
     var input_T = document.querySelector("#vlsm-input-T").value;
     var input_E = document.querySelector("#vlsm-input-E").value;
     var input_N = document.querySelector("#vlsm-input-N").value;
     var input_M = document.querySelector("#vlsm-input-M").value;
+    var input = {T: input_T, E: input_E, N: input_N, M: input_M};
 
-    validate(this);
+    validate(this, "vlsm", input);
 
-    vlsm.updateT(document.querySelector("#vlsm-input-T").value);
-    vlsm.updateE(document.querySelector("#vlsm-input-E").value);
-    vlsm.updateN(document.querySelector("#vlsm-input-N").value);
-    vlsm.updateM(document.querySelector("#vlsm-input-M").value);
+    vlsm.T = document.querySelector("#vlsm-input-T").value;
+    vlsm.E = document.querySelector("#vlsm-input-E").value;
+    vlsm.N = document.querySelector("#vlsm-input-N").value;
+    vlsm.M = document.querySelector("#vlsm-input-M").value;
 
-    if (this.id === "v-leveling") {
+    if (this.id === "vlsm-leveling") {
         console.log("update leveling demo");
-        vlsm.updateMP(0);
-    } else if (this.id === "v-tiering") {
+        vlsm.MP = 0;
+    } else if (this.id === "vlsm-tiering") {
         console.log("update tiering demo");
-        vlsm.updateMP(1);
+        vlsm.MP = 1;
     } else {
         console.log("simply update");
     }
 
     vlsm.update();
-
-
-    function validate(self) {
-        // T >= 2, N, E > 1, M > 0
-        if (!self.classList.contains("vlsm-input")) {
-            alert("Invalid: Unknown Vanilla LSM-Tree configuration input");
-            return;
-        }
-        switch (self.id) {
-            case "vlsm-input-T":
-                if (input_T <= 1) {
-                    document.querySelector("#vlsm-input-T").value = vlsm.getDEFAULT().T;
-                    // alert("Invalid: The minimal ratio of LSM-Tree is 2");
-                }
-                break;
-            case "vlsm-input-N":
-                if (input_N < 1) {
-                    document.querySelector("#vlsm-input-N").value = 1;
-                    // alert("Invalid: The minimal number of entries of LSM-Tree is 1");
-                }
-                break;
-            case "vlsm-input-E":
-                    if (input_E < 1) {
-                    document.querySelector("#vlsm-input-E").value = 1;
-                    // alert("Invalid: The minimal entry size of LSM-Tree is 1 bytes");
-                }
-                break;
-            case "vlsm-input-M":
-                    if (input_M <= 0) {
-                    document.querySelector("#vlsm-input-M").value = 1;
-                    // alert("Invalid: The buffer size of LSM-Tree must > 0");
-                }
-                break;
-            case "v-tiering":
-            case "v-leveling":
-                break;
-            default:
-                console.log(self.id);
-                alert("Invalid: Unknown Vanilla LSM-Tree configuration input");
-        }
-        return;
-    }
 }
 
 function runRocksDBLSM() {
@@ -864,67 +365,26 @@ function runRocksDBLSM() {
     var input_E = document.querySelector("#rlsm-input-E").value;
     var input_N = document.querySelector("#rlsm-input-N").value;
     var input_M = document.querySelector("#rlsm-input-M").value;
+    var input = {T: input_T, E: input_E, N: input_N, M: input_M};
 
-    validate(this);
+    validate(this, "rlsm", input);
 
-    rlsm.updateT(document.querySelector("#rlsm-input-T").value);
-    rlsm.updateE(document.querySelector("#rlsm-input-E").value);
-    rlsm.updateN(document.querySelector("#rlsm-input-N").value);
-    rlsm.updateM(document.querySelector("#rlsm-input-M").value);
+    rlsm.T = document.querySelector("#rlsm-input-T").value;
+    rlsm.E = document.querySelector("#rlsm-input-E").value;
+    rlsm.N = document.querySelector("#rlsm-input-N").value;
+    rlsm.M = document.querySelector("#rlsm-input-M").value;
 
-    if (this.id === "r-leveling") {
+    if (this.id === "rlsm-leveling") {
         console.log("update leveling demo");
-        rlsm.updateMP(0);
-    } else if (this.id === "r-tiering") {
+        rlsm.MP = 0;
+    } else if (this.id === "rlsm-tiering") {
         console.log("update tiering demo");
-        rlsm.updateMP(1);
+        rlsm.MP = 1;
     } else {
         console.log("simply update");
     }
 
     rlsm.update();
-
-
-    function validate(self) {
-        // T >= 2, N, E > 1, M > 0
-        if (!self.classList.contains("rlsm-input")) {
-            alert("Invalid: Unknown RocksDB LSM-Tree configuration input");
-            return;
-        }
-        switch (self.id) {
-            case "rlsm-input-T":
-                if (input_T <= 1) {
-                    document.querySelector("#rlsm-input-T").value = vlsm.getDEFAULT().T;
-                    // alert("Invalid: The minimal ratio of LSM-Tree is 2");
-                }
-                break;
-            case "rlsm-input-N":
-                if (input_N < 1) {
-                    document.querySelector("#rlsm-input-N").value = 1;
-                    // alert("Invalid: The minimal number of entries of LSM-Tree is 1");
-                }
-                break;
-            case "rlsm-input-E":
-                    if (input_E < 1) {
-                    document.querySelector("#rlsm-input-E").value = 1;
-                    // alert("Invalid: The minimal entry size of LSM-Tree is 1 bytes");
-                }
-                break;
-            case "rlsm-input-M":
-                    if (input_M <= 0) {
-                    document.querySelector("#rlsm-input-M").value = 1;
-                    // alert("Invalid: The buffer size of LSM-Tree must > 0");
-                }
-                break;
-            case "r-tiering":
-            case "r-leveling":
-                break;
-            default:
-                console.log(self.id);
-                alert("Invalid: Unknown RocksDB LSM-Tree configuration input");
-        }
-        return;
-    }
 }
 
 function runDostoevskyLSM() {
@@ -932,135 +392,53 @@ function runDostoevskyLSM() {
     var input_E = document.querySelector("#dlsm-input-E").value;
     var input_N = document.querySelector("#dlsm-input-N").value;
     var input_M = document.querySelector("#dlsm-input-M").value;
+    var input = {T: input_T, E: input_E, N: input_N, M: input_M};
 
-    validate(this);
+    validate(this, "dlsm", input);
 
-    dlsm.updateT(document.querySelector("#dlsm-input-T").value);
-    dlsm.updateE(document.querySelector("#dlsm-input-E").value);
-    dlsm.updateN(document.querySelector("#dlsm-input-N").value);
-    dlsm.updateM(document.querySelector("#dlsm-input-M").value);
+    dlsm.T = document.querySelector("#dlsm-input-T").value;
+    dlsm.E = document.querySelector("#dlsm-input-E").value;
+    dlsm.N = document.querySelector("#dlsm-input-N").value;
+    dlsm.M = document.querySelector("#dlsm-input-M").value;
 
-    if (this.id === "d-leveling") {
+    if (this.id === "dlsm-leveling") {
         console.log("update leveling demo");
-        dlsm.updateMP(0);
-    } else if (this.id === "d-tiering") {
+        dlsm.MP = 0;
+    } else if (this.id === "dlsm-tiering") {
         console.log("update tiering demo");
-        dlsm.updateMP(1);
+        dlsm.MP = 1;
     } else {
         console.log("simply update");
     }
 
     dlsm.update();
-
-
-    function validate(self) {
-        // T >= 2, N, E > 1, M > 0
-        if (!self.classList.contains("dlsm-input")) {
-            alert("Invalid: Unknown Dostoevsky LSM-Tree configuration input");
-            return;
-        }
-        switch (self.id) {
-            case "dlsm-input-T":
-                if (input_T <= 1) {
-                    document.querySelector("#dlsm-input-T").value = dlsm.getDEFAULT().T;
-                    // alert("Invalid: The minimal ratio of LSM-Tree is 2");
-                }
-                break;
-            case "dlsm-input-N":
-                if (input_N < 1) {
-                    document.querySelector("#dlsm-input-N").value = 1;
-                    // alert("Invalid: The minimal number of entries of LSM-Tree is 1");
-                }
-                break;
-            case "dlsm-input-E":
-                    if (input_E < 1) {
-                    document.querySelector("#dlsm-input-E").value = 1;
-                    // alert("Invalid: The minimal entry size of LSM-Tree is 1 bytes");
-                }
-                break;
-            case "dlsm-input-M":
-                    if (input_M <= 0) {
-                    document.querySelector("#dlsm-input-M").value = 1;
-                    // alert("Invalid: The buffer size of LSM-Tree must > 0");
-                }
-                break;
-            case "d-tiering":
-            case "d-leveling":
-                break;
-            default:
-                console.log(self.id);
-                alert("Invalid: Unknown Dostoevsky LSM-Tree configuration input");
-        }
-        return;
-    }
 }
 
-function runOSMLSM() {
-    var input_T = document.querySelector("#olsm-input-T").value;
-    var input_E = document.querySelector("#olsm-input-E").value;
-    var input_N = document.querySelector("#olsm-input-N").value;
-    var input_M = document.querySelector("#olsm-input-M").value;
+function runOSM() {
+    var input_T = document.querySelector("#osm-input-T").value;
+    var input_E = document.querySelector("#osm-input-E").value;
+    var input_N = document.querySelector("#osm-input-N").value;
+    var input_M = document.querySelector("#osm-input-M").value;
+    var input = {T: input_T, E: input_E, N: input_N, M: input_M};
 
-    validate(this);
+    validate(this, "osm", input);
 
-    olsm.updateT(document.querySelector("#olsm-input-T").value);
-    olsm.updateE(document.querySelector("#olsm-input-E").value);
-    olsm.updateN(document.querySelector("#olsm-input-N").value);
-    olsm.updateM(document.querySelector("#olsm-input-M").value);
+    osm.T = document.querySelector("#osm-input-T").value;
+    osm.E = document.querySelector("#osm-input-E").value;
+    osm.N = document.querySelector("#osm-input-N").value;
+    osm.M = document.querySelector("#osm-input-M").value;
 
-    if (this.id === "o-leveling") {
+    if (this.id === "osm-leveling") {
         console.log("update leveling demo");
-        olsm.updateMP(0);
-    } else if (this.id === "o-tiering") {
+        osm.MP = 0;
+    } else if (this.id === "osm-tiering") {
         console.log("update tiering demo");
-        olsm.updateMP(1);
+        osm.MP = 1;
     } else {
         console.log("simply update");
     }
 
-    olsm.update();
-
-
-    function validate(self) {
-        // T >= 2, N, E > 1, M > 0
-        if (!self.classList.contains("olsm-input")) {
-            alert("Invalid: Unknown OSM LSM-Tree configuration input");
-            return;
-        }
-        switch (self.id) {
-            case "olsm-input-T":
-                if (input_T <= 1) {
-                    document.querySelector("#olsm-input-T").value = olsm.getDEFAULT().T;
-                    // alert("Invalid: The minimal ratio of LSM-Tree is 2");
-                }
-                break;
-            case "olsm-input-N":
-                if (input_N < 1) {
-                    document.querySelector("#olsm-input-N").value = 1;
-                    // alert("Invalid: The minimal number of entries of LSM-Tree is 1");
-                }
-                break;
-            case "olsm-input-E":
-                    if (input_E < 1) {
-                    document.querySelector("#olsm-input-E").value = 1;
-                    // alert("Invalid: The minimal entry size of LSM-Tree is 1 bytes");
-                }
-                break;
-            case "olsm-input-M":
-                    if (input_M <= 0) {
-                    document.querySelector("#olsm-input-M").value = 1;
-                    // alert("Invalid: The buffer size of LSM-Tree must > 0");
-                }
-                break;
-            case "o-tiering":
-            case "o-leveling":
-                break;
-            default:
-                console.log(self.id);
-                alert("Invalid: Unknown OSM LSM-Tree configuration input");
-        }
-        return;
-    }
+    osm.update();
 }
 
 
@@ -1158,25 +536,117 @@ function display() {
             alert("Invalid: Unknown anlysis model selected");
     }
 }
+/* General API for runing different tree bush
+ * Event driven
+ */
+function run() {
+    var target = "";
+    switch (this.id.charAt(0)) {
+        case 'v': 
+            target = "vlsm";
+            break;
+        case 'r':
+            target = "rlsm";
+            break;
+        case 'd':
+            target = "dlsm";
+            break;
+        case 'o':
+            target = "osm";
+            break;
+        default:
+            console.log(self.id);
+            alert("Invalid: Unknown event target");
+    }
+    var obj = window.obj[target]; 
+    var input_T = document.querySelector(`#${target}-input-T`).value;
+    var input_E = document.querySelector(`#${target}-input-E`).value;
+    var input_N = document.querySelector(`#${target}-input-N`).value;
+    var input_M = document.querySelector(`#${target}-input-M`).value;
+    var input = {T: input_T, E: input_E, N: input_N, M: input_M};
+
+    validate(this, target, input);
+
+    obj.T = document.querySelector(`#${target}-input-T`).value;
+    obj.E = document.querySelector(`#${target}-input-E`).value;
+    obj.N = document.querySelector(`#${target}-input-N`).value;
+    obj.M = document.querySelector(`#${target}-input-M`).value;
+
+    if (this.id === `${target}-leveling`) {
+        console.log("update leveling demo");
+        obj.MP = 0;
+    } else if (this.id === `${target}-tiering`) {
+        console.log("update tiering demo");
+        obj.MP = 1;
+    } else {
+        console.log("simply update");
+    }
+    obj.update();
+}
+
+/* Validate and correct the input */
+function validate(self, target, input) {
+    // T >= 2, N, E > 1, M > 0
+    if (!self.classList.contains(`${target}-input`)) {
+        alert(`Invalid: Unknown ${target} configuration input`);
+        return;
+    }
+    switch (self.id) {
+        case `${target}-input-T`:
+            if (input.T <= 1) {
+                document.querySelector(`#${target}-input-T`).value = 2;
+                // alert("Invalid: The minimal ratio of LSM-Tree is 2");
+            }
+            break;
+        case `${target}-input-N`:
+            if (input.N < 1) {
+                document.querySelector(`#${target}-input-N`).value = 1;
+                // alert("Invalid: The minimal number of entries of LSM-Tree is 1");
+            }
+            break;
+        case `${target}-input-E`:
+                if (input.E < 1) {
+                document.querySelector(`#${target}-input-E`).value = 1;
+                // alert("Invalid: The minimal entry size of LSM-Tree is 1 bytes");
+            }
+            break;
+        case `${target}-input-M`:
+                if (input.M <= 0) {
+                document.querySelector(`#${target}-input-M`).value = 1;
+                // alert("Invalid: The buffer size of LSM-Tree must > 0");
+            }
+            break;
+        case `${target}-tiering`:
+        case `${target}-leveling`:
+            break;
+        default:
+            console.log(self.id);
+            alert(`Invalid: Unknown ${target} configuration input`);
+    }
+    return;
+}
 
 /* Initialize the configuration and tree bush reuslt
  * when indiv-analysis being displayed
  */
 function initIndiv() {
-    var vlsm = new VanillaLSM();
-    var rlsm = new RocksDBLSM();
-    var dlsm = new DostoevskyLSM();
-    var olsm = new OSMLSM;
+    var vlsm = new VanillaLSM("vlsm");
+    var rlsm = new RocksDBLSM("rlsm");
+    var dlsm = new DostoevskyLSM("dlsm");
+    var osm = new OSM("osm");
     window.rlsm = rlsm;     // pass to global
     window.vlsm = vlsm;
     window.dlsm = dlsm;
-    window.olsm = olsm;
+    window.osm = osm;
+    window.obj = {rlsm:window.rlsm, vlsm:window.vlsm, dlsm:window.dlsm, osm:window.osm};
     vlsm.update();
     rlsm.update();
     dlsm.update();
-    olsm.update();
+    osm.update();
 }
 
+function initCmp() {
+}
 // function setStep(element, default_value) {
 //     // Having every input gone through this
 //     // If step == 0, compute and reset input based on direction && prev_value, 

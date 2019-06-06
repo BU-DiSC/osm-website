@@ -162,6 +162,10 @@
         </div>
       </div> <!-- END of comparative configurations of Interactive Demo -->
 
+
+
+
+
       <!-- Individual configuration starts here -->
       <div id="indiv-conf-row" class="row" style="display: none;">
         <!-- Vanilla LSM-Tree Configuration starts here-->
@@ -172,8 +176,8 @@
 
           <div class="row vlsm-conf-row mb-2">
             <div class="mp-btn-group btn-group" role="group" aria-label="LSM Merge Policy" >
-              <button id="v-leveling" type="button" class="vlsm-input btn btn-custom">Leveling</button>
-              <button id="v-tiering" type="button" class="vlsm-input btn btn-custom">Tiering</button>
+              <button id="vlsm-leveling" type="button" class="vlsm-input btn btn-custom">Leveling</button>
+              <button id="vlsm-tiering" type="button" class="vlsm-input btn btn-custom">Tiering</button>
             </div>
           </div>
         
@@ -232,8 +236,8 @@
 
           <div class="row rlsm-conf-row mb-2">
             <div class="mp-btn-group btn-group" role="group" aria-label="LSM Merge Policy" >
-              <button id="r-leveling" type="button" class="rlsm-input btn btn-custom">Leveling</button>
-              <button id="r-tiering"  type="button" class="rlsm-input btn btn-custom">Tiering</button>
+              <button id="rlsm-leveling" type="button" class="rlsm-input btn btn-custom">Leveling</button>
+              <button id="rlsm-tiering"  type="button" class="rlsm-input btn btn-custom">Tiering</button>
             </div>
           </div>
 
@@ -282,8 +286,8 @@
 
           <div class="row dlsm-conf-row mb-2">
             <div class="mp-btn-group btn-group" role="group" aria-label="LSM Merge Policy" >
-              <button id="d-leveling" type="button" class="dlsm-input btn btn-custom">Leveling</button>
-              <button id="d-tiering"  type="button" class="dlsm-input btn btn-custom">Tiering</button>
+              <button id="dlsm-leveling" type="button" class="dlsm-input btn btn-custom">Leveling</button>
+              <button id="dlsm-tiering"  type="button" class="dlsm-input btn btn-custom">Tiering</button>
             </div>
           </div>
 
@@ -324,52 +328,52 @@
           </div>
         </div> <!-- END of Demo3-conf-col -->
 
-        <!-- OSM LSM-Tree Configuration starts here-->
-        <div class="olsm-conf-col col-lg-3 col-md-3 col-sm-3">
-          <div class="row olsm-conf-row">
-            <span class="div-title">OSM-LSM</span>
+        <!-- OSM Tree Configuration starts here-->
+        <div class="osm-conf-col col-lg-3 col-md-3 col-sm-3">
+          <div class="row osm-conf-row">
+            <span class="div-title">OSM</span>
           </div>
 
-          <div class="row olsm-conf-row mb-2">
+          <div class="row osm-conf-row mb-2">
             <div class="mp-btn-group btn-group" role="group" aria-label="LSM Merge Policy" >
-              <button id="o-leveling" type="button" class="olsm-input btn btn-custom">Leveling</button>
-              <button id="o-tiering"  type="button" class="olsm-input btn btn-custom">Tiering</button>
+              <button id="osm-leveling" type="button" class="osm-input btn btn-custom">Leveling</button>
+              <button id="osm-tiering"  type="button" class="osm-input btn btn-custom">Tiering</button>
             </div>
           </div>
 
-          <div class="row olsm-conf-row">
+          <div class="row osm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text"># Entries</label>
               </div>
-              <input id="olsm-input-N" value="4294967296" min="1" type="number" class="olsm-input form-control" aria-label="#Entries">
+              <input id="osm-input-N" value="4294967296" min="1" type="number" class="osm-input form-control" aria-label="#Entries">
             </div>
           </div>
 
-          <div class="row olsm-conf-row">
+          <div class="row osm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Entry Size (Bytes)</label>
               </div>
-              <input id="olsm-input-E" value="16" min="1" type="number" class="olsm-input form-control" aria-label="Entry Size">
+              <input id="osm-input-E" value="16" min="1" type="number" class="osm-input form-control" aria-label="Entry Size">
             </div>
           </div>
 
-          <div class="row olsm-conf-row">
+          <div class="row osm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Buffer Size (MB)</label>
               </div>
-              <input id="olsm-input-M" value="256" min="0" type="number" class="olsm-input form-control" aria-label="Buffer Capacity">
+              <input id="osm-input-M" value="256" min="0" type="number" class="osm-input form-control" aria-label="Buffer Capacity">
             </div>
           </div>
 
-          <div class="row olsm-conf-row">
+          <div class="row osm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text">Ratio</label>
               </div>
-              <input id="olsm-input-T" value="2" min="2" type="number" class="olsm-input form-control" aria-label="Ratio">
+              <input id="osm-input-T" value="2" min="2" type="number" class="osm-input form-control" aria-label="Ratio">
             </div>
           </div>
         </div> <!-- END of Demo4-conf-col -->
@@ -381,7 +385,7 @@
       <!-- Diagram result starts here -->
       <div id="indiv-bush-row" class="row" style="display: none;">
         <!-- Vanilla LSM-Tree diagram results starts here -->
-        <div class="vlsm-col-res col-lg-3 col-md-3 col-sm-3"> 
+        <div class="vlsm-res-col col-lg-3 col-md-3 col-sm-3"> 
           <div id ="vlsm-res" class="bush-res">
             <div class="row vlsm-reuslt">
               <button type="button" class="lsm-btn btn btn-secondary" ></button>
@@ -396,10 +400,10 @@
               <button type="button" class="lsm-btn btn btn-secondary" ></button>
             </div>
           </div>
-        </div> <!-- END of vlsm-col-result -->
+        </div> <!-- END of vlsm-res-col result -->
 
         <!-- RocksDB LSM-Tree diagram results starts here -->
-        <div class="rlsm-col-res col-lg-3 col-md-3 col-sm-3">
+        <div class="rlsm-res-col col-lg-3 col-md-3 col-sm-3">
           <div id="rlsm-res" class="bush-res">
             <div class="row rlsm-result">
               <div class="lsm-btn-group">
@@ -436,7 +440,7 @@
         </div> <!-- END of rlsm-col-res -->
 
         <!-- Dostoevsky LSM-Tree diagram results starts here -->
-        <div class="dlsm-col-res col-lg-3 col-md-3 col-sm-3">
+        <div class="dlsm-res-col col-lg-3 col-md-3 col-sm-3">
           <div id="dlsm-res" class="bush-res">
             <div class="row dlsm-reuslt">
               <div class="lsm-btn-group">
@@ -472,10 +476,10 @@
           </div>
         </div> <!-- END of dlsm3-col-res -->
 
-        <!-- OSM LSM-Tree diagram results starts here -->
-        <div class="olsm-col-res col-lg-3 col-md-3 col-sm-3">
-          <div id="olsm-res" class="bush-res">
-            <div class="row olsm">
+        <!-- OSM Tree diagram results starts here -->
+        <div class="osm-res-col col-lg-3 col-md-3 col-sm-3">
+          <div id="osm-res" class="bush-res">
+            <div class="row osm">
               <div class="lsm-btn-group">
                 <button type="button" class="lsm-btn btn btn-secondary"></button>
                 <button type="button" class="lsm-btn btn btn-secondary"></button>
@@ -483,7 +487,7 @@
               </div>
             </div>
 
-            <div class="row olsm">
+            <div class="row osm">
               <div class="lsm-btn-group">
                 <button type="button" class="lsm-btn btn btn-secondary"></button>
                 <button type="button" class="lsm-btn btn btn-secondary"></button>
@@ -491,7 +495,7 @@
               </div>
             </div>
 
-            <div class="row olsm">
+            <div class="row osm">
               <div class="lsm-btn-group">
                 <button type="button" class="lsm-btn btn btn-secondary"></button>
                 <button type="button" class="lsm-btn btn btn-secondary"></button>
@@ -499,7 +503,7 @@
               </div>
             </div>
 
-            <div class="row olsm">
+            <div class="row osm">
               <div class="lsm-btn-group">
                 <button type="button" class="lsm-btn btn btn-secondary"></button>
                 <button type="button" class="lsm-btn btn btn-secondary"></button>
