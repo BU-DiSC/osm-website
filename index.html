@@ -164,8 +164,6 @@
 
 
 
-
-
       <!-- Individual configuration starts here -->
       <div id="indiv-conf-row" class="row" style="display: none;">
         <!-- Vanilla LSM-Tree Configuration starts here-->
@@ -383,9 +381,16 @@
       
       <!-- Interactive Demo result starts here -->
       <!-- Diagram result starts here -->
-      <div id="indiv-bush-row" class="row" style="display: none;">
+      <div id="indiv-bush-row" class="row" >
         <!-- Vanilla LSM-Tree diagram results starts here -->
         <div class="vlsm-res-col col-lg-3 col-md-3 col-sm-3"> 
+          <div id="cmp-vlsm-mp" class="row cmp-indiv-mp">
+            <span class="div-title">Vanilla-LSM</span>
+            <div class="mp-btn-group btn-group mb-2" role="group" aria-label="LSM Merge Policy" >
+              <button id="cmp-vlsm-leveling" type="button" class="cmp-input btn btn-custom">Leveling</button>
+              <button id="cmp-vlsm-tiering"  type="button" class="cmp-input btn btn-custom">Tiering</button>
+            </div>
+          </div>
           <div id ="vlsm-res" class="bush-res">
             <div class="row vlsm-reuslt">
               <button type="button" class="lsm-btn btn btn-secondary" ></button>
@@ -404,6 +409,13 @@
 
         <!-- RocksDB LSM-Tree diagram results starts here -->
         <div class="rlsm-res-col col-lg-3 col-md-3 col-sm-3">
+          <div id="cmp-rlsm-mp" class="row cmp-indiv-mp">
+            <span class="div-title">RocksDB-LSM</span>
+            <div class="mp-btn-group btn-group mb-2" role="group" aria-label="LSM Merge Policy" >
+              <button id="cmp-rlsm-leveling" type="button" class="cmp-input btn btn-custom">Leveling</button>
+              <button id="cmp-rlsm-tiering"  type="button" class="cmp-input btn btn-custom">Tiering</button>
+            </div>
+          </div>
           <div id="rlsm-res" class="bush-res">
             <div class="row rlsm-result">
               <div class="lsm-btn-group">
@@ -441,6 +453,13 @@
 
         <!-- Dostoevsky LSM-Tree diagram results starts here -->
         <div class="dlsm-res-col col-lg-3 col-md-3 col-sm-3">
+          <div id="cmp-dlsm-mp" class="row cmp-indiv-mp">
+            <span class="div-title">Dostoevsky-LSM</span>
+            <div class="mp-btn-group btn-group mb-2" role="group" aria-label="LSM Merge Policy" >
+              <button id="cmp-dlsm-leveling" type="button" class="cmp-input btn btn-custom">Leveling</button>
+              <button id="cmp-dlsm-tiering"  type="button" class="cmp-input btn btn-custom">Tiering</button>
+            </div>
+          </div>
           <div id="dlsm-res" class="bush-res">
             <div class="row dlsm-reuslt">
               <div class="lsm-btn-group">
@@ -478,6 +497,13 @@
 
         <!-- OSM Tree diagram results starts here -->
         <div class="osm-res-col col-lg-3 col-md-3 col-sm-3">
+          <div id="cmp-osm-mp" class="row cmp-indiv-mp">
+            <span class="div-title">OSM</span>
+            <div class="mp-btn-group btn-group mb-2" role="group" aria-label="LSM Merge Policy" >
+              <button id="cmp-osm-leveling" type="button" class="cmp-input btn btn-custom">Leveling</button>
+              <button id="cmp-osm-tiering"  type="button" class="cmp-input btn btn-custom">Tiering</button>
+            </div>
+          </div>
           <div id="osm-res" class="bush-res">
             <div class="row osm">
               <div class="lsm-btn-group">
