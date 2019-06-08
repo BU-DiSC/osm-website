@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -117,25 +117,15 @@
 
       <!-- Comparative configuration starts here -->
       <div id="cmp-conf-row" class="row">
-        <div class="cmp-conf-col col-lg-12 col-md-12 col-sm-12">
-          <div class="mp-btn-group btn-group mb-2" role="group" aria-label="LSM Merge Policy" >
-            <button id="cmp-leveling" type="button" class="cmp-input btn btn-custom">Leveling</button>
-            <button id="cmp-tiering"  type="button" class="cmp-input btn btn-custom">Tiering</button>
-            <button id="cmp-lazy-leveling"  type="button" class="cmp-input btn btn-custom">Lazy Leveling</button>
-          </div>
-        </div>
-      
-        <div class="cmp-conf-col col-lg-12 col-md-12 col-sm-12">
-          <div class="input-group input-group-md mb-2">
+        <div class="cmp-conf-col col-lg-4 col-md-4 col-sm-4" >
+          <h4 class="text-center">Dataset</h4>
+          <div class="input-group input-group-md mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text"># Entries</label>
             </div>
             <input id="cmp-input-N" value="4294967296" min="1" type="number" class="cmp-input form-control" aria-label="#Entries">
           </div>
-        </div>
-
-        <div class="cmp-conf-col col-lg-12 col-md-12 col-sm-12">
-          <div class="input-group input-group-md mb-2">
+          <div class="input-group input-group-md mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text">Entry Size (Bytes)</label>
             </div>
@@ -143,25 +133,55 @@
           </div>
         </div>
 
-        <div class="cmp-conf-col col-lg-12 col-md-12 col-sm-12">
+  <!--       <div class="cmp-conf-col col-lg-6 col-md-6 col-sm-6">
           <div class="input-group input-group-md mb-2">
+            <div class="input-group-prepend">
+              <label class="input-group-text">Entry Size (Bytes)</label>
+            </div>
+            <input id="cmp-input-E" value="16" min="1" type="number" class="cmp-input form-control" aria-label="Entry Size">
+          </div>
+        </div> -->
+
+        <div class="cmp-conf-col col-lg-4 col-md-4 col-sm-4">
+          <h4 class="text-center">Main Memory Allocation</h4>
+          <div class="input-group input-group-md mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text">Buffer Size (MB)</label>
             </div>
             <input id="cmp-input-M" value="256" min="0" type="number" class="cmp-input form-control" aria-label="Buffer Capacity">
           </div>
+          <div class="input-group input-group-md mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text">Bloom filters occupancy (MB)</label>
+            </div>
+            <input id="cmp-input-Mbf" value="64" min="0" type="number" class="cmp-input form-control" aria-label="Bloom Filter">
+          </div>
+          <div class="input-group input-group-md mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text">Fence pointers occupancy (MB)</label>
+            </div>
+            <input id="cmp-input-Mf" value="32" min="0" type="number" class="cmp-input form-control" aria-label="Fence Pointer">
+          </div>
         </div>
 
-        <div class="cmp-conf-col col-lg-12 col-md-12 col-sm-12">
-          <div class="input-group input-group-md mb-2">
+        
+        <div class="cmp-conf-col col-lg-4 col-md-4 col-sm-4">
+          <h4 class="text-center">Merge Operation Frequency</h4>
+          <div class="input-group input-group-md mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text">Ratio</label>
             </div>
             <input id="cmp-input-T" value="2" min="2" type="number" class="cmp-input form-control" aria-label="Ratio">
           </div>
+  
+            
+          <div class="mp-btn-group btn-group mb-3" role="group" aria-label="LSM Merge Policy">
+            <button id="cmp-leveling" type="button" class="cmp-input btn btn-custom">Leveling</button>
+            <button id="cmp-tiering"  type="button" class="cmp-input btn btn-custom">Tiering</button>
+         </div>
         </div>
+          
       </div> <!-- END of comparative configurations of Interactive Demo -->
-
 
 
       <!-- Individual configuration starts here -->
@@ -377,7 +397,7 @@
         </div> <!-- END of Demo4-conf-col -->
       </div> <!-- END of indivaidual configurations of Interactive Demo -->
 
-      <br>
+      <hr>
       
       <!-- Interactive Demo result starts here -->
       <!-- Diagram result starts here -->

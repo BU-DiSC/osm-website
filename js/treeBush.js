@@ -92,34 +92,85 @@ class LSM {
      */
     _getL() {
         var L;
-        var Mbytes = this.M * Math.pow(10, 6);   // convert to bytes
-        var exp = ((this.N * this.E) / Mbytes) * ((this.T - 1) / this.T);
-        L = Math.ceil(getBaseLog(this.T, exp));
-        console.log("Computed Level = " + L);
+        var Mbytes = this.M * Math.pow(2, 20);   // convert to bytes
+        var log = ((this.N * this.E / Mbytes) * (this.T - 1)) + 1;
+        L = Math.ceil(getBaseLog(this.T, log) - 1);
+        console.log("L: " + L);
         return (L < 1) ? 0 : L;
     }
+    _getLALT() {
+        var L;
+        var Mbytes = this.M * Math.pow(2, 20);
+        var nEntry_M = Math.floor(Mbytes / this.E);
+        var log = ((this.N / nEntry_M) * (this.T - 1)) + 1;
+        L = Math.ceil(getBaseLog(this.T, log) - 1);
+        console.log("L: " + L);
+        return (L < 1) ? 0 : L;
+    }
+
     /* Having known the numer of levels,
-     * compute the number of entries per run in the ith level 
+     * compute the number of entries per run for jth run in ith level; 
      */
-    _getEntryNum(ith) {
-        var nr = 0; // number of entries each run
-        var Mbytes = this.M * Math.pow(10, 6);   // convert to bytes
-        var nl = Math.floor(Mbytes * Math.pow(this.T, ith) / this.E);  // number of entries per level
-        if (this.MP) nr = Math.floor(nl / this.T);
-        else nr = nl;
-        return nr;
+    _getEntryNum(ith, jth) {
+        var Mbytes = this.M * Math.pow(2, 20);
+        var cap_run = this._getRunCapacity(ith);
+        var capacity = Mbytes * ((Math.pow(this.T, ith + 1) - 1) / (this.T - 1));   // Total capacity reaching ith level;
+        console.log(capacity);
+        var excess = this.N * this.E - capacity;
+        console.log(excess);
+        if (excess >= 0) {
+            return cap_run;
+        } else {
+            var offset = excess + Mbytes * Math.pow(this.T, ith);
+            console.log("offset: " + offset);
+            if (this.MP) {
+                for (var j = 0; j < this.T; j++) {
+                    if ((j + 1) * cap_run * this.E >= offset) break;
+                }
+                if (jth > j) return 0;
+                else if (jth < j) return cap_run;
+                else return Math.ceil(( offset - (jth * cap_run * this.E)) / this.E);
+            } else {    // leveling
+                return Math.ceil(offset / this.E);
+            }
+        }
+    }
+
+    /* Having known the ith level,
+     * Return #entires per run could contain at that level 
+     * Computing based on the SIZE capacity of each level
+     */
+    _getRunCapacity(ith) {
+        var cap_run = 0; // capacity of entries each run
+        var Mbytes = this.M * Math.pow(2, 20);   // convert to bytes
+        var cap_level = Mbytes * Math.pow(this.T, ith);
+        if (this.MP && ith) cap_run = Math.floor(cap_level / (this.T * this.E));
+        else cap_run = Math.floor(cap_level / this.E);
+        return cap_run;
+    }
+    /* Having known the ith level,
+     * Return #entires per run could contain at that level 
+     * Computing based on the #ENTRY capacity of buffer
+     */
+    _getRunCapacityALT(ith) {
+        var Mbytes = this.M * Math.pow(2, 20);   // convert to bytes
+        var nEntry_M = Math.floor(Mbytes / this.E);
+        var nEntry_L = nEntry_M * Math.pow(this.T, ith);
+        if (this.MP && ith) return nEntry_L / this.T;
+        else return nEntry_L;
     }
 
     /* Compute the number of entries in ith level;
      * Return a string to be displayed when triggering ToolTip  
      */
-    _getTipText(ith) {
-        var n = this._getEntryNum(ith);
+    _getTipText(ith, jth) {
+        var cap_run = this._getRunCapacity(ith);
+        var entryNum = this._getEntryNum(ith, jth);
         var text = "";
         if (ith === 0) {
-            text = "Memory Buffer: it contains " + n + " entries";
+            text = "Memory Buffer: it contains " + entryNum + "/" + cap_run + " entries";
         } else {
-            text = "Level: " + ith + ", this run contains " + n + " entries";
+            text = "Level: " + ith + ", this run contains " + entryNum + "/" + cap_run + " entries";
         }
         return text;
     }
@@ -146,7 +197,7 @@ class LSM {
         for (var i = 0; i <= level; i++) {
             var run_width = getWidth(i);
             var button = createBtn(run_width);
-            var context = this._getTipText(i);
+            var context = this._getTipText(i, 0);   // jth run = 0;
             setToolTip(button, "left", context);
             runs[i] = button;
         }
@@ -184,7 +235,7 @@ class LSM {
             var run_width = getWidth(i);
             var group_wrap = document.createElement("div");
             group_wrap.setAttribute("class", "lsm-btn-group");
-            console.log("Level" + i + " width = " + run_width);
+            // console.log("Level" + i + " width = " + run_width);
            
             for (var j = 0; j < max_runs; j++) {
                 var child = null;
@@ -195,7 +246,7 @@ class LSM {
                 }
                 else {
                     child = createBtn(run_width);
-                    var context = this._getTipText(i);
+                    var context = this._getTipText(i, j);
                 }
                 setToolTip(child, "left", context);
                 group_wrap.appendChild(child);
@@ -283,7 +334,7 @@ class DostoevskyLSM extends LSM {
             var run_width = getWidth(i);
             var group_wrap = document.createElement("div");
             group_wrap.setAttribute("class", "lsm-btn-group");
-            console.log("Level" + i + " width = " + run_width);
+            // console.log("Level" + i + " width = " + run_width);
            
             for (var j = 0; j < max_runs; j++) {
                 var child = null;
@@ -294,7 +345,7 @@ class DostoevskyLSM extends LSM {
                 }
                 else {
                     child = createBtn(run_width);
-                    var context = super._getTipText(i);
+                    var context = super._getTipText(i, j);
                 }
                 setToolTip(child, "left", context);
                 group_wrap.appendChild(child);
@@ -311,42 +362,6 @@ class OSM extends LSM {
     constructor(tarConf, tarRes) {
         super(tarConf, tarRes);
     }
-}
-
-function runCmp() {
-    var target = "cmp";
-    var input_T = document.querySelector("#cmp-input-T").value;
-    var input_E = document.querySelector("#cmp-input-E").value;
-    var input_N = document.querySelector("#cmp-input-N").value;
-    var input_M = document.querySelector("#cmp-input-M").value;
-    var input = {T: input_T, E: input_E, N: input_N, M: input_M};
-    validate(this, target, input);
-
-    if (this.id.includes("leveling")) {
-        console.log("update leveling demo");
-        vlsm.update(target, 0);
-        rlsm.update(target, 0);
-        dlsm.update(target, 0);
-        osm.update(target, 0);
-    } else if (this.id.includes("tiering")) {
-        console.log("update tiering demo");
-        vlsm.update(target, 1);
-        rlsm.update(target, 1);
-        dlsm.update(target, 1);
-        osm.update(target, 1);
-    } else {
-        console.log("simply update");
-        vlsm.update(target);
-        rlsm.update(target);
-        dlsm.update(target);
-        osm.update(target);
-    }
-
-    vlsm.showBush();
-    rlsm.showBush();
-    dlsm.showBush();
-    osm.showBush();
-
 }
 
 
@@ -401,7 +416,6 @@ function display() {
             // update("cmp") and show 
             for (var key in window.obj) {
                 var obj = window.obj[key];
-                console.log(obj);
                 var tmpMP = obj.MP;
                 obj.MP = obj.preMP;
                 obj.preMP = tmpMP;
@@ -410,9 +424,7 @@ function display() {
             }
         } else {    // ... update(indiv)
             for (var key in window.obj) {
-                console.log(target);
                 var obj = window.obj[key];
-                console.log(obj);
                 var tmpMP = obj.MP;
                 obj.MP = obj.preMP;
                 obj.preMP = tmpMP;
@@ -420,6 +432,84 @@ function display() {
                 obj.showBush();
             }
         }
+    }
+}
+
+function runCmp() {
+    var target = "cmp";
+    var input_T = document.querySelector("#cmp-input-T").value;
+    var input_E = document.querySelector("#cmp-input-E").value;
+    var input_N = document.querySelector("#cmp-input-N").value;
+    var input_M = document.querySelector("#cmp-input-M").value;
+    var input = {T: input_T, E: input_E, N: input_N, M: input_M};
+    validate(this, target, input);
+
+
+    switch (this.id) {
+        case "cmp-vlsm-leveling": 
+            vlsm.update(target, 0);
+            vlsm.showBush();
+            break;
+        case "cmp-vlsm-tiering":
+            vlsm.update(target, 1);
+            vlsm.showBush();
+            break;
+        case "cmp-rlsm-leveling": 
+            rlsm.update(target, 0);
+            rlsm.showBush();
+            break;
+        case "cmp-rlsm-tiering": 
+            rlsm.update(target, 1);
+            rlsm.showBush();
+            break;
+        case "cmp-dlsm-leveling": 
+            dlsm.update(target, 0);
+            dlsm.showBush();
+            break;
+        case "cmp-dlsm-tiering": 
+            dlsm.update(target, 1);
+            dlsm.showBush();
+            break;
+        case "cmp-osm-leveling": 
+            osm.update(target, 0);
+            osm.showBush();
+            break;
+        case "cmp-osm-tiering": 
+            osm.update(target, 1);
+            osm.showBush();
+            break;
+        case "cmp-leveling":
+            console.log("update all to leveling");
+            vlsm.update(target, 0);
+            rlsm.update(target, 0);
+            dlsm.update(target, 0);
+            osm.update(target, 0);
+            vlsm.showBush();
+            rlsm.showBush();
+            dlsm.showBush();
+            osm.showBush();
+            break;
+        case "cmp-tiering":
+            console.log("update all to tiering");
+            vlsm.update(target, 1);
+            rlsm.update(target, 1);
+            dlsm.update(target, 1);
+            osm.update(target, 1);
+            vlsm.showBush();
+            rlsm.showBush();
+            dlsm.showBush();
+            osm.showBush();
+            break;
+        default:
+            console.log("simply update all");
+            vlsm.update(target);
+            rlsm.update(target);
+            dlsm.update(target);
+            osm.update(target);
+            vlsm.showBush();
+            rlsm.showBush();
+            dlsm.showBush();
+            osm.showBush();
     }
 }
 
@@ -501,6 +591,14 @@ function validate(self, target, input) {
             break;
         case `${target}-tiering`:
         case `${target}-leveling`:
+        case `${target}-vlsm-tiering`:
+        case `${target}-vlsm-leveling`:
+        case `${target}-rlsm-tiering`:
+        case `${target}-rlsm-leveling`:
+        case `${target}-dlsm-tiering`:
+        case `${target}-dlsm-leveling`:
+        case `${target}-osm-tiering`:
+        case `${target}-osm-leveling`:
             break;
         default:
             console.log(self.id);
@@ -520,6 +618,7 @@ function getBaseLog(x, y) {
     if (!(x > 0 && y > 0)) {
         throw new RangeError("x: " + x +", y: " + y + " both must > 0");
     } else {
+        console.log(Math.log(y) / Math.log(x));
         return Math.log(y) / Math.log(x);
     }
 }
@@ -597,13 +696,14 @@ function clear(element) {
 }
 
 
+ 
 initCmp();
 
 // Event attributes, trigger
 // Analysis mode selection trigger
 document.querySelector("#customRadio1").onclick = display;
 document.querySelector("#customRadio2").onclick = display;
-
+// Comparative LSM analysis event trigger
 document.querySelector("#cmp-input-T").onchange = runCmp;
 document.querySelector("#cmp-input-T").onwheel = runCmp;
 document.querySelector("#cmp-input-E").onchange = runCmp;
@@ -612,9 +712,17 @@ document.querySelector("#cmp-input-N").onchange = runCmp;
 document.querySelector("#cmp-input-N").onwheel = runCmp;
 document.querySelector("#cmp-input-M").onchange = runCmp;
 document.querySelector("#cmp-input-M").onwheel = runCmp;
-document.querySelector("#cmp-tiering").onclick = runCmp;
 document.querySelector("#cmp-leveling").onclick = runCmp;
-// Individual LSM configuration trigger
+document.querySelector("#cmp-tiering").onclick = runCmp;
+document.querySelector("#cmp-vlsm-leveling").onclick = runCmp;
+document.querySelector("#cmp-vlsm-tiering").onclick = runCmp;
+document.querySelector("#cmp-rlsm-leveling").onclick = runCmp;
+document.querySelector("#cmp-rlsm-tiering").onclick = runCmp;
+document.querySelector("#cmp-dlsm-leveling").onclick = runCmp;
+document.querySelector("#cmp-dlsm-tiering").onclick = runCmp;
+document.querySelector("#cmp-osm-leveling").onclick = runCmp;
+document.querySelector("#cmp-osm-tiering").onclick = runCmp;
+// Individual LSM analysis event trigger
 document.querySelector("#vlsm-input-T").onchange = runIndiv;
 document.querySelector("#vlsm-input-T").onwheel = runIndiv;
 document.querySelector("#vlsm-input-E").onchange = runIndiv;

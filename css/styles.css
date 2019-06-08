@@ -15,6 +15,9 @@ section h3 {
 section .section-title {
 	margin-bottom: 30px;
 }
+h4 {
+	font-weight: 700;
+}
 
 /* Custom tooltip style */
 .tooltip{
@@ -62,12 +65,11 @@ ul > .nav-item{
 /* Comparative analysis conf */
 #cmp-conf-row {
 	display:flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center
+	flex-direction: row;
+	align-items: stretch;
+	justify-content: ;
 }
 .cmp-conf-col {
-	max-width: 50%;
 }
 .cmp-input {
 
@@ -100,7 +102,7 @@ ul > .nav-item{
 }
 
 .div-title { /* LSM name title */
-	font-size: 24px;
+	font-size: 20px;
 	margin-bottom: 5px;
 	margin-left: auto;
 	margin-right: auto;
