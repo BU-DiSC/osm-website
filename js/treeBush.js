@@ -124,7 +124,6 @@ class LSM {
         var isLastLevel = size <= cap_current;
         if (isLastLevel) {
             var offset = size - cap_current + cap_level;
-            console.log(offset);
             if(this.MP) {
                 for (var j = 0; j < this.T; j++) {
                     if ((j + 1) * cap_run * this.E >= offset) break;
@@ -152,9 +151,6 @@ class LSM {
         var isLastLevel = this.N <= cap_current;
         if (isLastLevel) {
             var offset = this.N - cap_current + nEntry_L;
-            console.log(offset);
-            console.log(cap_current);
-            console.log(nEntry_L);
             if(this.MP) {
                 for (var j = 0; j < this.T; j++) {
                     if ((j + 1) * cap_run >= offset) break;
@@ -234,6 +230,7 @@ class LSM {
             var button = createBtn(run_width);
             var context = this._getTipText(i, 0);   // jth run = 0;
             setToolTip(button, "left", context);
+            setRunGradient(button, this._getEntryNumALT(i,0)/this._getRunCapacityALT(i), !i);
             runs[i] = button;
         }
         return runs;
@@ -284,6 +281,7 @@ class LSM {
                     var context = this._getTipText(i, j);
                 }
                 setToolTip(child, "left", context);
+                setRunGradient(child, this._getEntryNumALT(i,0)/this._getRunCapacityALT(i), !i);
                 group_wrap.appendChild(child);
 
                 if (i === 0) break;  // only one run in buffer level 
@@ -383,6 +381,7 @@ class DostoevskyLSM extends LSM {
                     var context = super._getTipText(i, j);
                 }
                 setToolTip(child, "left", context);
+                setRunGradient(child, super._getEntryNumALT(i,j)/super._getRunCapacityALT(i), !i);
                 group_wrap.appendChild(child);
 
                 if (i === 0 || i === level) break;  //@Custom, only one run in buffer and last level 
@@ -698,6 +697,20 @@ function setToolTip(elem, pos, text) {
     elem.setAttribute("data-toggle", "tooltip");
     elem.setAttribute("data-placement", pos);
     elem.setAttribute("title", "" + text);
+}
+
+function setRunGradient(elem, rate, isBuffer) {
+    var color1;
+    var color2;
+    var prev_style = elem.getAttribute("style");
+    if (isBuffer) {
+        color1 = "#2C3E50";
+        color2 = "#fff";
+    } else {
+        color1 = "#95a5a6";
+        color2 = "#fff";
+    }
+    elem.setAttribute("style", prev_style + `; background:linear-gradient(to right, ${color1} ${rate*100}%, ${color2} ${(1-rate)*100}%)`);
 }
 
 function createDots(width) {
