@@ -15,8 +15,8 @@ class LSM {
     _DEFAULT = {
         T: 2,
         E: 16,
-        N: 4294967296,
-        M: 256,
+        N: 1048576,
+        M: 2,
         MP: 0
     };
     _prefix;    // configurate target{cmp: comparative analysis, indiv: inidividual analysis}
@@ -98,11 +98,15 @@ class LSM {
         console.log("L: " + L);
         return (L < 1) ? 0 : L;
     }
+    /* Compute the levels of LSM-tree based on the buffer capacity of #ENTRY,
+     * and total number of entries.
+     * FIXED: level goes run when #entry = 4096 ceil(2.0000000000000004)
+     */
     _getLALT() {
         var L;
         var Mbytes = this.M * Math.pow(2, 20);
-        var nEntry_M = Math.floor(Mbytes / this.E);
-        var log = ((this.N / nEntry_M) * (this.T - 1)) + 1;
+        var nEntry_M = Math.floor(Mbytes / this.E);     // number of entries fit into buffer
+        var log = this.N * (this.T - 1) / nEntry_M + 1;
         L = Math.ceil(getBaseLog(this.T, log) - 1);
         console.log("L: " + L);
         return (L < 1) ? 0 : L;
@@ -114,27 +118,58 @@ class LSM {
     _getEntryNum(ith, jth) {
         var Mbytes = this.M * Math.pow(2, 20);
         var cap_run = this._getRunCapacity(ith);
-        var capacity = Mbytes * ((Math.pow(this.T, ith + 1) - 1) / (this.T - 1));   // Total capacity reaching ith level;
-        console.log(capacity);
-        var excess = this.N * this.E - capacity;
-        console.log(excess);
-        if (excess >= 0) {
-            return cap_run;
-        } else {
-            var offset = excess + Mbytes * Math.pow(this.T, ith);
-            console.log("offset: " + offset);
-            if (this.MP) {
+        var cap_level = Mbytes * Math.pow(this.T, ith);
+        var size = this.N * this.E;
+        var cap_current = Mbytes * ((Math.pow(this.T, ith + 1) - 1) / (this.T - 1));   // Total capacity reaching ith level;
+        var isLastLevel = size <= cap_current;
+        if (isLastLevel) {
+            var offset = size - cap_current + cap_level;
+            console.log(offset);
+            if(this.MP) {
                 for (var j = 0; j < this.T; j++) {
                     if ((j + 1) * cap_run * this.E >= offset) break;
                 }
                 if (jth > j) return 0;
                 else if (jth < j) return cap_run;
                 else return Math.ceil(( offset - (jth * cap_run * this.E)) / this.E);
-            } else {    // leveling
+            } else {     // not reaching the last level
                 return Math.ceil(offset / this.E);
             }
-        }
+        } else {
+            return cap_run;
+        }     
     }
+
+    /* Based on the buffer capacity of #ENTRY,
+     * compute the number of entries per run for jth run in ith level; 
+     */
+    _getEntryNumALT(ith, jth) {
+        var Mbytes = this.M * Math.pow(2, 20);
+        var nEntry_M = Math.floor(Mbytes / this.E);
+        var nEntry_L = nEntry_M * Math.pow(this.T, ith);
+        var cap_run = this._getRunCapacityALT(ith);
+        var cap_current = nEntry_M * ((Math.pow(this.T, ith + 1) - 1) / (this.T - 1));   // Total capacity of #Entries reaching ith level;
+        var isLastLevel = this.N <= cap_current;
+        if (isLastLevel) {
+            var offset = this.N - cap_current + nEntry_L;
+            console.log(offset);
+            console.log(cap_current);
+            console.log(nEntry_L);
+            if(this.MP) {
+                for (var j = 0; j < this.T; j++) {
+                    if ((j + 1) * cap_run >= offset) break;
+                }
+                if (jth > j) return 0;
+                else if (jth < j) return cap_run;
+                else return offset - jth * cap_run;
+            } else {     // not reaching the last level
+                return offset;
+            }
+        } else {
+            return cap_run;
+        }     
+    }
+
 
     /* Having known the ith level,
      * Return #entires per run could contain at that level 
@@ -150,7 +185,7 @@ class LSM {
     }
     /* Having known the ith level,
      * Return #entires per run could contain at that level 
-     * Computing based on the #ENTRY capacity of buffer
+     * Computing based on the buffer capacity of #ENTRY
      */
     _getRunCapacityALT(ith) {
         var Mbytes = this.M * Math.pow(2, 20);   // convert to bytes
@@ -164,8 +199,8 @@ class LSM {
      * Return a string to be displayed when triggering ToolTip  
      */
     _getTipText(ith, jth) {
-        var cap_run = this._getRunCapacity(ith);
-        var entryNum = this._getEntryNum(ith, jth);
+        var cap_run = this._getRunCapacityALT(ith);
+        var entryNum = this._getEntryNumALT(ith, jth);
         var text = "";
         if (ith === 0) {
             text = "Memory Buffer: it contains " + entryNum + "/" + cap_run + " entries";
@@ -259,7 +294,7 @@ class LSM {
     }
 
     showBush() {
-        var L = this._getL();
+        var L = this._getLALT();
         var btnList = [];
         var parent = document.querySelector(`#${this.suffix}-res`);
         if (this.MP) btnList = this._getBtnGroups(parent, L, this.T);
@@ -613,13 +648,19 @@ function validate(self, target, input) {
 
 //Common Methods
 
+/* FIXED precision of decimal eg. 0.1 + 0.2 = 0.3000000000000004
+ * by rounding to a fixed number of decimal places of 15
+ */
+function correctDecimal(number) {
+    return (parseFloat(number).toPrecision(15));
+}
+
 function getBaseLog(x, y) {
     if (isNaN(x) || isNaN(y)) throw new TypeError("x: " + x +", y: " + y + " must be numbers");
     if (!(x > 0 && y > 0)) {
         throw new RangeError("x: " + x +", y: " + y + " both must > 0");
     } else {
-        console.log(Math.log(y) / Math.log(x));
-        return Math.log(y) / Math.log(x);
+        return correctDecimal(Math.log(y) / Math.log(x));
     }
 }
 
@@ -694,7 +735,6 @@ function clear(element) {
         element.removeChild(element.firstChild);
     }
 }
-
 
  
 initCmp();
