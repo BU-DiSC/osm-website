@@ -341,7 +341,51 @@ class DostoevskyLSM extends LSM {
         this._DEFAULT.MP = 1;
         this._preMP = 1;
     }
-    // @Override
+    //@Overide
+    _getRunCapacityALT(ith, level) {
+        var Mbytes = this.M * Math.pow(2, 20);   // convert to bytes
+        var nEntry_M = Math.floor(Mbytes / this.E);
+        var nEntry_L = nEntry_M * Math.pow(this.T, ith);
+        if (ith === 0 || ith === level ) return nEntry_L;
+        else return nEntry_L / this.T;
+    }
+    //@Overide
+    _getEntryNumALT(ith, jth, level) {
+        var Mbytes = this.M * Math.pow(2, 20);
+        var nEntry_M = Math.floor(Mbytes / this.E);
+        var nEntry_L = nEntry_M * Math.pow(this.T, ith);
+        var cap_run = this._getRunCapacityALT(ith, level);
+        var cap_current = nEntry_M * ((Math.pow(this.T, ith + 1) - 1) / (this.T - 1));   // Total capacity of #Entries reaching ith level;
+        var isLastLevel = this.N <= cap_current;
+        if (isLastLevel) {
+            var offset = this.N - cap_current + nEntry_L;
+            if(this.MP) {
+                for (var j = 0; j < this.T; j++) {
+                    if ((j + 1) * cap_run >= offset) break;
+                }
+                if (jth > j) return 0;
+                else if (jth < j) return cap_run;
+                else return offset - jth * cap_run;
+            } else {     // not reaching the last level
+                return offset;
+            }
+        } else {
+            return cap_run;
+        }     
+    }
+    //@Overide
+    _getTipText(ith, jth, level) {
+        var cap_run = this._getRunCapacityALT(ith, level);
+        var entryNum = this._getEntryNumALT(ith, jth, level);
+        var text = "";
+        if (ith === 0) {
+            text = "Memory Buffer: it contains " + entryNum + "/" + cap_run + " entries";
+        } else {
+            text = "Level: " + ith + ", this run contains " + entryNum + "/" + cap_run + " entries";
+        }
+        return text;
+    }
+    //@Override
     _getBtnGroups(elem, level, ratio) {
         // Return a list of lsm-btn-group obejcts
         var btn_groups = [];
@@ -384,11 +428,11 @@ class DostoevskyLSM extends LSM {
                 }
                 else {
                     child = createBtn(run_width);
-                    var context = super._getTipText(i, j);
+                    var context = this._getTipText(i, j, level);
                 }
                 setToolTip(child, "left", context);
                 if (child.tagName === "BUTTON") {
-                    setRunGradient(child, super._getEntryNumALT(i,j)/super._getRunCapacityALT(i), !i);
+                    setRunGradient(child, this._getEntryNumALT(i,j,level)/this._getRunCapacityALT(i,level),!i);    // @Custom
                 }
                 
                 group_wrap.appendChild(child);
@@ -399,6 +443,7 @@ class DostoevskyLSM extends LSM {
         }
         return btn_groups;
     }
+
 }
 
 class OSM extends LSM {
@@ -704,7 +749,6 @@ function setToolTip(elem, pos, text) {
 }
 
 function setRunGradient(elem, rate, isBuffer) {
-    console.log("rate: " + rate);
     var color1;
     var color2;
     var rate1 = rate;
