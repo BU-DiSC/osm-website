@@ -136,13 +136,16 @@ ul > .nav-item{
 /* LSM performance result display */
 #cost-result {
 	line-height: 2;
-	font-size: 1.10rem;
+	font-size: 1vw;/*1.10rem;*/
 	font-weight: 300;
 	color: #343a40;
 }
 .metrics {
 	padding-left: 0px;
 
+}
+.cost-col {
+	padding: 0px;
 }
 
 
@@ -250,6 +253,10 @@ ul > .nav-item{
     max-width: 100%;
 }
 
+
+@media (min-width: 1200px) {
+
+}
 
 @media(max-width:991px) {
 	ul > .nav-item {

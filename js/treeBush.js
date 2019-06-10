@@ -281,7 +281,10 @@ class LSM {
                     var context = this._getTipText(i, j);
                 }
                 setToolTip(child, "left", context);
-                setRunGradient(child, this._getEntryNumALT(i,0)/this._getRunCapacityALT(i), !i);
+                if (child.tagName === "BUTTON") {
+                    setRunGradient(child, this._getEntryNumALT(i,j)/this._getRunCapacityALT(i), !i);
+                }
+            
                 group_wrap.appendChild(child);
 
                 if (i === 0) break;  // only one run in buffer level 
@@ -334,6 +337,9 @@ class RocksDBLSM extends LSM {
 class DostoevskyLSM extends LSM {
     constructor(tarConf, tarRes) {
         super(tarConf, tarRes);
+        this._MP = 1;
+        this._DEFAULT.MP = 1;
+        this._preMP = 1;
     }
     // @Override
     _getBtnGroups(elem, level, ratio) {
@@ -381,7 +387,10 @@ class DostoevskyLSM extends LSM {
                     var context = super._getTipText(i, j);
                 }
                 setToolTip(child, "left", context);
-                setRunGradient(child, super._getEntryNumALT(i,j)/super._getRunCapacityALT(i), !i);
+                if (child.tagName === "BUTTON") {
+                    setRunGradient(child, super._getEntryNumALT(i,j)/super._getRunCapacityALT(i), !i);
+                }
+                
                 group_wrap.appendChild(child);
 
                 if (i === 0 || i === level) break;  //@Custom, only one run in buffer and last level 
@@ -496,14 +505,10 @@ function runCmp() {
             rlsm.update(target, 1);
             rlsm.showBush();
             break;
-        case "cmp-dlsm-leveling": 
-            dlsm.update(target, 0);
-            dlsm.showBush();
-            break;
-        case "cmp-dlsm-tiering": 
-            dlsm.update(target, 1);
-            dlsm.showBush();
-            break;
+        // case "cmp-dlsm-lazyLevel":   // currently untriggered by event, unchanged merge policy
+        //     dlsm.update(target, 1);
+        //     dlsm.showBush();
+        //     break;
         case "cmp-osm-leveling": 
             osm.update(target, 0);
             osm.showBush();
@@ -516,7 +521,7 @@ function runCmp() {
             console.log("update all to leveling");
             vlsm.update(target, 0);
             rlsm.update(target, 0);
-            dlsm.update(target, 0);
+            // dlsm.update(target, 1);     // currently untriggered by event, unchanged merge policy
             osm.update(target, 0);
             vlsm.showBush();
             rlsm.showBush();
@@ -527,7 +532,7 @@ function runCmp() {
             console.log("update all to tiering");
             vlsm.update(target, 1);
             rlsm.update(target, 1);
-            dlsm.update(target, 1);
+            // dlsm.update(target, 1);     // currently untriggered by event, unchanged merge policy
             osm.update(target, 1);
             vlsm.showBush();
             rlsm.showBush();
@@ -629,8 +634,7 @@ function validate(self, target, input) {
         case `${target}-vlsm-leveling`:
         case `${target}-rlsm-tiering`:
         case `${target}-rlsm-leveling`:
-        case `${target}-dlsm-tiering`:
-        case `${target}-dlsm-leveling`:
+        // case `${target}-dlsm-lazyLevel`: // currently untriggered by event, unchanged merge policy
         case `${target}-osm-tiering`:
         case `${target}-osm-leveling`:
             break;
@@ -700,8 +704,15 @@ function setToolTip(elem, pos, text) {
 }
 
 function setRunGradient(elem, rate, isBuffer) {
+    console.log("rate: " + rate);
     var color1;
     var color2;
+    var rate1 = rate;
+    var rate2 = 1 - rate;
+    if (rate === 0) {
+        rate1 = 0;
+        rate2 = 0;
+    }
     var prev_style = elem.getAttribute("style");
     if (isBuffer) {
         color1 = "#2C3E50";
@@ -710,7 +721,7 @@ function setRunGradient(elem, rate, isBuffer) {
         color1 = "#95a5a6";
         color2 = "#fff";
     }
-    elem.setAttribute("style", prev_style + `; background:linear-gradient(to right, ${color1} ${rate*100}%, ${color2} ${(1-rate)*100}%)`);
+    elem.setAttribute("style", prev_style + `; background:linear-gradient(to right, ${color1} ${rate1*100}%, ${color2} ${(rate2)*100}%)`);
 }
 
 function createDots(width) {
@@ -771,8 +782,6 @@ document.querySelector("#cmp-vlsm-leveling").onclick = runCmp;
 document.querySelector("#cmp-vlsm-tiering").onclick = runCmp;
 document.querySelector("#cmp-rlsm-leveling").onclick = runCmp;
 document.querySelector("#cmp-rlsm-tiering").onclick = runCmp;
-document.querySelector("#cmp-dlsm-leveling").onclick = runCmp;
-document.querySelector("#cmp-dlsm-tiering").onclick = runCmp;
 document.querySelector("#cmp-osm-leveling").onclick = runCmp;
 document.querySelector("#cmp-osm-tiering").onclick = runCmp;
 // Individual LSM analysis event trigger
@@ -804,8 +813,6 @@ document.querySelector("#dlsm-input-N").onchange = runIndiv;
 document.querySelector("#dlsm-input-N").onwheel = runIndiv;
 document.querySelector("#dlsm-input-M").onchange = runIndiv;
 document.querySelector("#dlsm-input-M").onwheel = runIndiv;
-document.querySelector("#dlsm-tiering").onclick = runIndiv;
-document.querySelector("#dlsm-leveling").onclick = runIndiv;
 document.querySelector("#osm-input-T").onchange = runIndiv
 document.querySelector("#osm-input-T").onwheel = runIndiv;
 document.querySelector("#osm-input-E").onchange = runIndiv;

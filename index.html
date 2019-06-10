@@ -304,8 +304,7 @@
 
           <div class="row dlsm-conf-row mb-2">
             <div class="mp-btn-group btn-group" role="group" aria-label="LSM Merge Policy" >
-              <button id="dlsm-leveling" type="button" class="dlsm-input btn btn-custom">Leveling</button>
-              <button id="dlsm-tiering"  type="button" class="dlsm-input btn btn-custom">Tiering</button>
+              <button id="dlsm-lazyLevel" type="button" class="dlsm-input btn btn-custom">Lazy Leveling</button>
             </div>
           </div>
 
@@ -476,8 +475,7 @@
           <div id="cmp-dlsm-mp" class="row cmp-indiv-mp">
             <span class="div-title">Dostoevsky-LSM</span>
             <div class="mp-btn-group btn-group mb-2" role="group" aria-label="LSM Merge Policy" >
-              <button id="cmp-dlsm-leveling" type="button" class="cmp-input btn btn-custom">Leveling</button>
-              <button id="cmp-dlsm-tiering"  type="button" class="cmp-input btn btn-custom">Tiering</button>
+              <button id="cmp-dlsm-lazyLevel" type="button" class="cmp-input btn btn-custom">Lazy Leveling</button>
             </div>
           </div>
           <div id="dlsm-res" class="bush-res">
@@ -570,7 +568,7 @@
           <div class="metrics col-lg-7 col-md-7 col-sm-7">
             <span class="metric-title">Write</span>
           </div>
-          <div class="col-lg-5 col-md-5 col-sm-5 text-center">
+          <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
             <span class="cost">XXX I/O</span>
           </div>
         </div>
@@ -578,7 +576,7 @@
           <div class="metrics col-lg-7 col-md-7 col-sm-7">
             <span class="metric-title">Range Lookup</span>
           </div>
-          <div class="col-lg-5 col-md-5 col-sm-5 text-center">
+          <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
             <span class="cost">XXX I/O</span>
           </div>
         </div>
@@ -586,7 +584,7 @@
           <div class="metrics col-lg-7 col-md-7 col-sm-7">
             <span class="metric-title">Point Lookup</span>
           </div>
-          <div class="col-lg-5 col-md-5 col-sm-5 text-center">
+          <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
             <span class="cost">XXX I/O</span>
           </div>
         </div>
@@ -594,7 +592,7 @@
           <div class="metrics col-lg-7 col-md-7 col-sm-7">
             <span class="metric-title">Storage Space</span>
           </div>
-          <div class="col-lg-5 col-md-5 col-sm-5 text-center">
+          <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
             <span class="cost">XXX TB</span>
           </div>
         </div>
@@ -602,7 +600,7 @@
           <div class="metrics col-lg-7 col-md-7 col-sm-7">
             <span class="metric-title">Memory Footprint</span>
           </div>
-          <div class="col-lg-5 col-md-5 col-sm-5 text-center">
+          <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
             <span class="cost">XXX GB</span>
           </div>
         </div>
@@ -610,7 +608,7 @@
           <div class="metrics col-lg-7 col-md-7 col-sm-7">
             <span class="metric-title">Throughput</span>
           </div>
-          <div class="col-lg-5 col-md-5 col-sm-5 text-center">
+          <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
             <span class="cost">XXX ops/s</span>
           </div>
         </div>
@@ -619,32 +617,32 @@
       <!-- Demo2 cost result starts here -->
       <div class="d2cost-col-res col-lg-3 col-md-3 col-sm-3">
         <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
             <span class="cost">XXX I/O</span>
           </div>  
         </div>
         <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
             <span class="cost">XXX I/O</span>
           </div>  
         </div>
         <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
             <span class="cost">XXX I/O</span>
           </div>  
         </div>
         <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
             <span class="cost">XXX TB</span>
           </div>  
         </div>
         <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
             <span class="cost">XXX GB</span>
           </div>  
         </div>
         <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
             <span class="cost">XXX ops/s</span>
           </div>  
         </div>
@@ -652,31 +650,31 @@
 
       <!-- Demo3 cost result starts here -->
       <div class="d3cost-col-res col-lg-3 col-md-3 col-sm-3">
-        <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+        <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
             <span class="cost">XXX I/O</span>
         </div>
         <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
-            <span class="cost">XXX I/O</span>
-          </div>  
-        </div>
-        <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
             <span class="cost">XXX I/O</span>
           </div>  
         </div>
         <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
+            <span class="cost">XXX I/O</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
             <span class="cost">XXX TB</span>
           </div>  
         </div>
         <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
             <span class="cost">XXX GB</span>
           </div>  
         </div>
         <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
             <span class="cost">XXX ops/s</span>
           </div>  
         </div>
@@ -685,32 +683,32 @@
       <!-- Demo4 cost result starts here -->
       <div class="d4cost-col-res col-lg-3 col-md-3 col-sm-3">
         <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
             <span class="cost">XXX I/O</span>
           </div>  
         </div>
         <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
             <span class="cost">XXX I/O</span>
           </div>  
         </div>
         <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
             <span class="cost">XXX I/O</span>
           </div>  
         </div>
         <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
             <span class="cost">XXX TB</span>
           </div>  
         </div>
         <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
             <span class="cost">XXX GB</span>
           </div>  
         </div>
         <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
             <span class="cost">XXX ops/s</span>
           </div>  
         </div>
