@@ -765,7 +765,7 @@ function setRunGradient(elem, rate, isBuffer) {
         color1 = "#95a5a6";
         color2 = "#fff";
     }
-    elem.setAttribute("style", prev_style + `; background:linear-gradient(to right, ${color1} ${rate1*100}%, ${color2} ${(rate2)*100}%)`);
+    elem.setAttribute("style", prev_style + `; background:linear-gradient(to right, ${color1} ${rate1*100}%, 0, ${color2} ${(rate2)*100}%)`);
 }
 
 function createDots(width) {

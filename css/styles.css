@@ -19,6 +19,8 @@ h4 {
 	font-weight: 700;
 }
 
+
+
 /* Custom tooltip style */
 .tooltip{
 	font-size: 12px;
@@ -81,6 +83,10 @@ ul > .nav-item{
 }
 .input-group-text {
 	color: #343a40;
+}
+input[type=number]::-webkit-inner-spin-button {	/* Styling number input spinner button, not support on Firefox, Edge, IE */  
+  width: 25px;
+  height: 25px;
 }
 
 /* Merge policy selecting bar */
