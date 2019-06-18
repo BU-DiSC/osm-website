@@ -7,28 +7,19 @@ function (event) {
 // T : size ratio
 // M : buffer capacity(MB);
 class LSM {
-    _T
-    _E;
-    _N;
-    _M;
-    _MP;
-    _L;
-    _DEFAULT = {
-        T: 2,
-        E: 16,
-        N: 1048576,
-        M: 2,
-        MP: 0
-    };
-    _prefix;    // configurate target{cmp: comparative analysis, indiv: inidividual analysis}
-    _suffix;    // result targets subclasses {vlsm, rlsm, dlsm, osm}
-    _preMP;     // previous state of merge policy before switching analysis mode
-
     constructor(prefix = "", suffix = "") {
+        this._DEFAULT = {
+            T: 2,
+            E: 16,
+            N: 1048576,
+            M: 2,
+            MP: 0
+        };
         this._MP =this._DEFAULT.MP;
-        this._prefix = prefix;
-        this._suffix = suffix;
-        this._preMP = this._MP;
+        this._prefix = prefix;  // configurate target{cmp: comparative analysis, indiv: inidividual analysis}
+        this._suffix = suffix;  // result targets subclasses {vlsm, rlsm, dlsm, osm}
+        this._preMP = this._MP; // previous state of merge policy before switching analysis mode
+
         if(prefix) {
             this._T = document.querySelector(`#${prefix}-input-T`).value;
             this._E = document.querySelector(`#${prefix}-input-E`).value;
