@@ -15,8 +15,14 @@ section h3 {
 section .section-title {
 	margin-bottom: 30px;
 }
+
 h4 {
 	font-weight: 700;
+}
+
+hr {
+	margin-top: 1.5rem;
+	margin-bottom: 1.5rem;
 }
 
 
@@ -62,7 +68,7 @@ ul > .nav-item{
 
 /* Custom interactiveDemo section style */
 #interactiveDemo .container-fluid {
-	width: 85%;
+	width: 80%;
 }
 /* Comparative analysis conf */
 #cmp-conf-row {
@@ -74,9 +80,7 @@ ul > .nav-item{
 .cmp-conf-col {
 }
 .cmp-input {
-
 }
-
 
 .input-group > input {
 	text-align: right;
@@ -85,8 +89,10 @@ ul > .nav-item{
 	color: #343a40;
 }
 input[type=number]::-webkit-inner-spin-button {	/* Styling number input spinner button, not support on Firefox, Edge, IE */  
-  width: 25px;
-  height: 25px;
+  width: 27px;
+  height: 27px;
+  margin-right: -15px;
+  margin-left: 10px;
 }
 
 /* Merge policy selecting bar */
@@ -117,8 +123,8 @@ input[type=number]::-webkit-inner-spin-button {	/* Styling number input spinner 
 /* LSM tree bush diagram reuslt display */
 .bush-res > div:first-child > button:first-child, 
 .bush-res > div:first-child >  div:first-child > button:first-child  { /* Custom buffer color */
-	background-color:#2C3E50;
-	border-color: #2C3E50;
+	/*background-color:#2C3E50;
+	border-color: #2C3E50;*/
 }
 .lsm-btn-group, .lsm-btn { /* Default, tree bush result */
 	height: 18px;
