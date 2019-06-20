@@ -345,27 +345,20 @@ class VanillaLSM extends LSM{
         return (L < 1) ? 1 : L;
     }
 
-    _getEntryNum(ith, jth, run_capacity) {
-        var Mbytes = this.M * Math.pow(2, 20);
-        var level_capacity = Mbytes * Math.pow(this.T, ith);
-        var size = this.N * this.E;
-        var cur_capacity = Mbytes * ((Math.pow(this.T, ith + 1) - 1) / (this.T - 1));   // Total capacity reaching ith level;
-        var isLastLevel = size <= cur_capacity;
-        if (isLastLevel) {
-            var offset = size - cur_capacity + level_capacity;
-            if(this.MP) {
-                for (var j = 0; j < this.T; j++) {
-                    if ((j + 1) * run_capacity * this.E >= offset) break;
-                }
-                if (jth > j) return 0;
-                else if (jth < j) return run_capacity;
-                else return Math.ceil(( offset - (jth * run_capacity * this.E)) / this.E);
-            } else {     // not reaching the last level
-                return Math.ceil(offset / this.E);
+    _getEntryNumALT(jth, run_capacity, n) {
+        console.log("offset: ", n);
+        console.log("run capacity: ", run_capacity);
+        var offset = n;
+        if(this.MP) {
+            for (var j = 0; j < this.T; j++) {
+                if ((j + 1) * run_capacity >= offset) break;
             }
-        } else {
-            return run_capacity;
-        }     
+            if (jth > j) return 0;
+            else if (jth < j) return run_capacity;
+            else return offset - jth * run_capacity;
+        } else {     // not reaching the last level
+            return offset;
+        }
     }
 
     _getBtns(elem, level, ratio) {
@@ -386,24 +379,76 @@ class VanillaLSM extends LSM{
             var run_width = getWidth(i);
             var button = createBtn(run_width);
             var run_capacity = this._getRunCapacityALT(i);
-            var entry_num = this._getEntryNumALT(i, 0, run_capacity);
             var context = this._getTipText(i, run_capacity, 0);   // jth run = 0;
             setToolTip(button, "left", context);
             setRunGradient(button, 0);
             runs[i] = button;
         }
-
-        this._render(runs, this.N);
+        this._renderLevel(runs, this.N);
         return runs;
     }
+    _getBtnGroups(elem, level, ratio) {
+        // Return a list of lsm-btn-group obejcts
+        var btn_groups = [];
+        var max_runs = 5;
+        if (ratio < max_runs) {
+            if (level !== 0) max_runs = ratio;
+            else max_runs = 1;
+        }
+        var getWidth = function(i) {
+            // Return the width for each button in a btn-group regarding to tiering
+            if (level === 0) return elem.clientWidth + "px";
+            var base_width = 10;
+            var margin = (max_runs - 2) * 4 + 4;
+            var l1_width = max_runs * base_width + margin;   // invariant: level1 width
+            var coef = 1;
+            var client_width = elem.clientWidth - 1;  // -1 to avoid stacking 
+            var m = client_width / Math.pow(max_runs, level - 1);    // level1 acutal width
 
-    _render(elem, n) {
+            if (m < l1_width) {
+                coef = Math.pow(client_width / l1_width, 1 / (level - 1)) / max_runs;
+                m  = l1_width;
+            }
+            if (i > 1) return (m * Math.pow(coef * max_runs, i - 1) - margin) / max_runs + "px";
+            else return (m - margin) / max_runs + "px";
+        }
+
+        for (var i = 1; i <= level; i++) {
+            var run_width = getWidth(i);
+            var group_wrap = document.createElement("div");
+            group_wrap.setAttribute("class", "lsm-btn-group");
+            var run_capacity = this._getRunCapacityALT(i);
+            // console.log("Level" + i + " width = " + run_width);
+           
+            for (var j = 0; j < max_runs; j++) {
+                var child = null;
+                var context = "";
+                if ((max_runs >= 5) && (j == max_runs - 2)) {
+                    child = createDots(run_width);
+                    var context = "This level contains " + ratio + " runs in total";
+                }
+                else {
+                    child = createBtn(run_width);
+                    var context = this._getTipText(i, run_capacity, 0);
+                    setRunGradient(child, 0);
+                }
+                setToolTip(child, "left", context);
+                group_wrap.appendChild(child);
+            }
+            btn_groups[i] = group_wrap;
+        }
+        this._renderTier(btn_groups, this.N, max_runs);
+        return btn_groups;
+    }
+
+
+    _renderLevel(elem, n) {
         var l = this._getLALT(n);
         var l_capacity = this._getLevelCapacity(l);
         var context = "";
         var rate = 0;
         var entry_num = 0;
-        if (l === 1) {
+        if (l == 1) {
             // set n on l 1
             var entry_num = n;
             rate = n / l_capacity;
@@ -412,7 +457,8 @@ class VanillaLSM extends LSM{
             setRunGradient(elem[l], rate);
             return;
         }
-        if (n === l_capacity) {
+        // TOFIX: manual input N is a string
+        if (n == l_capacity) {
             // set full on l
             entry_num = l_capacity;
             rate = 1;
@@ -424,29 +470,102 @@ class VanillaLSM extends LSM{
             // set full on l
             entry_num = l_capacity;
             rate = 1;
+            context = context = this._getTipText(l, l_capacity, entry_num);
             setToolTip(elem[l], "left", context);
             setRunGradient(elem[l], rate);
             n = n - this._getLevelCapacity(l);
-            return this._render(elem, n);
+            return this._renderLevel(elem, n);
         } else {
             // since l != 1 here, n must >= this._getLevelCapacity(l - 1)
             // set this._getLevelCapacity(l - 1) on l
             var prev_capacity = this._getLevelCapacity(l - 1);
-            entry_num = prev_capacity;
-            rate = 1 / this.T;
+            var index = correctDecimal(Math.floor(n / prev_capacity));  // must >= 1
+            entry_num = index * prev_capacity;
+            rate = entry_num / l_capacity;
             context = this._getTipText(l, l_capacity, entry_num);
             setToolTip(elem[l], "left", context);
             setRunGradient(elem[l], rate);
-            n = n - prev_capacity;
-            return this._render(elem, n);
+            n = n - index * prev_capacity;
+            return this._renderLevel(elem, n);
         }
-        // var l_capacity = this._getLevelCapacity(l);
-        // var entry_num = (n >= l_capacity) ? l_capacity : n; 
-        // var rate = (n >= l_capacity) ? 1 : n / l_capacity;
-        // var context = this._getTipText(l, l_capacity, entry_num);
-        // setToolTip(elem[l], "left", context);
-        // setRunGradient(elem[l], rate);
-        // return this._render(elem, n - l_capacity);
+    }
+    _renderTier(elem, n, max_runs) {
+        var l = this._getLALT(n);
+        console.log("l ", l);
+        var l_capacity = this._getLevelCapacity(l);
+        var r_capacity = this._getRunCapacityALT(l);
+        var context = "";
+        var rate = 0;
+        var entry_num = 0;
+        if (l == 1) {
+            // set n on l 1
+            for (var j = 0; j < max_runs; j++) {
+                if ((max_runs >= 5) && (j == max_runs - 2)) {
+                } else {
+                    entry_num = this._getEntryNumALT(j, r_capacity, n);
+                    console.log("run ", j, "=", entry_num);
+                    rate = entry_num / r_capacity;
+                    context = this._getTipText(l, r_capacity, entry_num);
+                    setToolTip(elem[l].childNodes[j], "left", context);
+                    setRunGradient(elem[l].childNodes[j], rate);
+                }
+            }  
+            return;
+        }
+
+        if (n == l_capacity) {
+            // set full on l
+            entry_num = r_capacity;
+            rate = 1;
+            context = this._getTipText(l, r_capacity, entry_num);
+            for (var j = 0; j < max_runs; j++) {
+                if ((max_runs >= 5) && (j == max_runs - 2)) {
+                } else {
+                    setToolTip(elem[l].childNodes[j], "left", context);
+                    setRunGradient(elem[l].childNodes[j], rate);
+                }
+            }  
+            return;
+        } else if (n > l_capacity) {
+            // set full on l
+            entry_num = r_capacity;
+            rate = 1;
+            context = this._getTipText(l, r_capacity, entry_num);
+            for (var j = 0; j < max_runs; j++) {
+                if ((max_runs >= 5) && (j == max_runs - 2)) {
+                } else {
+                    setToolTip(elem[l].childNodes[j], "left", context);
+                    setRunGradient(elem[l].childNodes[j], rate);
+                }
+            }  
+            n = n - this._getLevelCapacity(l);
+            return this._renderTier(elem, n, max_runs);
+        } else {
+            // since l != 1 here, n must >= this._getLevelCapacity(l - 1)
+            // set this._getLevelCapacity(l - 1) on l
+            var prev_capacity = this._getLevelCapacity(l - 1);
+            var index = correctDecimal(Math.floor(n / prev_capacity));  // must >= 1
+            for (var j = 0; j < max_runs; j++) {
+                if ((max_runs >= 5) && (j == max_runs - 2)) {
+                } else {
+                    if (j + 1 <= index) {
+                        entry_num = r_capacity;
+                        rate = 1
+                    } else {
+                        entry_num = 0;
+                        rate = 0;
+                    }
+                    context = this._getTipText(l, r_capacity, entry_num);
+                    setToolTip(elem[l].childNodes[j], "left", context);
+                    setRunGradient(elem[l].childNodes[j], rate);
+                }
+            }  
+            // context = this._getTipText(l, l_capacity, entry_num);
+            // setToolTip(elem[l], "left", context);
+            // setRunGradient(elem[l], rate);
+            n = n - index * prev_capacity;
+            return this._renderTier(elem, n, max_runs);
+        }
     }
 
     showBush() {
@@ -814,7 +933,7 @@ function validate(self, target, input) {
  * by rounding to a fixed number of decimal places of 15
  */
 function correctDecimal(number) {
-    return (parseFloat(number).toPrecision(15));
+    return parseFloat(number.toPrecision(15));
 }
 
 function getBaseLog(x, y) {
