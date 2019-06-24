@@ -8,6 +8,9 @@ function (event) {
 // M : buffer capacity(MB);
 // MP : Merge policy;
 // F : file size in terms of buffer
+// s : selectivity of a range lookup
+// mu(μ): storage sequential over random access speed
+// phi(Φ) : storage write over read speed
 // prefix: configurate target{cmp: comparative analysis, indiv: inidividual analysis}
 // suffix: result targets subclasses {vlsm, rlsm, dlsm, osm}
 // preMP : previous state of merge policy before switching analysis mode
@@ -19,25 +22,30 @@ class LSM {
             N: 1048576,
             M: 2,
             MP: 0,
-            F: 1
+            f: 1,
+            s: 0.5,
+            mu: 1,
+            phi: 1
         };
-        this._MP =this._DEFAULT.MP;
+        this._MP = this._DEFAULT.MP;
+        this._s = this._DEFAULT.s;
+        this._mu = this._DEFAULT.mu;
+        this._phi = this._DEFAULT.phi;
         this._prefix = prefix;
         this._suffix = suffix;
         this._preMP = this._MP;
-
         if(prefix) {
             this._T = document.querySelector(`#${prefix}-input-T`).value;
             this._E = document.querySelector(`#${prefix}-input-E`).value;
             this._N = document.querySelector(`#${prefix}-input-N`).value;
             this._M = document.querySelector(`#${prefix}-input-M`).value;
-            this._F = document.querySelector(`#${prefix}-input-F`).value;
+            this._f = document.querySelector(`#${prefix}-input-f`).value;
         } else {
             this._T = this._DEFAULT.T;
             this._E = this._DEFAULT.E;
             this._N = this._DEFAULT.N;
             this._M = this._DEFAULT.M;
-            this._F = this._DEFAULT.F;
+            this._f = this._DEFAULT.F;
         }
         this._L = this._getL();     
     }
@@ -48,11 +56,15 @@ class LSM {
     get M() {return this._M;}
     get MP() {return this._MP;}
     get L() {return this._L;}
-    get F() {return this._F;}
+    get f() {return this._f;}
+    get s() {return this._s;}
+    get mu() {return this._mu;}
+    get phi() {return this._phi;}
     get prefix() {return this._prefix;}
     get suffix() {return this._suffix;}
     get preMP() {return this._preMP;}
     get DEFAULT() {return this._DEFAULT;}
+    get name() { return this.__proto__.constructor.name;}
     set T(ratio) {
         this._T = ratio;
         return this._T;
@@ -73,9 +85,9 @@ class LSM {
         this._MP = mergePolicy;
         return this._MP;
     }
-    set F(fileSize) {
-        this._F = fileSize;
-        return this._F;
+    set f(fileSize) {
+        this._f = fileSize;
+        return this._f;
     }
     set L(level) {
         this._L = level;
@@ -118,7 +130,7 @@ class LSM {
         // in terms of #entries
         var Mbytes = this.M * Math.pow(2, 20);
         var nEntry_M = Math.floor(Mbytes / this.E);     // number of entries fit into buffer
-        return Math.floor(correctDecimal(nEntry_M * this.F));
+        return Math.floor(correctDecimal(nEntry_M * this.f));
     }
  
     /* Having known the ith level,
@@ -284,12 +296,12 @@ class LSM {
         this.E = document.querySelector(`#${this.prefix}-input-E`).value;
         this.N = document.querySelector(`#${this.prefix}-input-N`).value;
         this.M = document.querySelector(`#${this.prefix}-input-M`).value;
-        this.F = document.querySelector(`#${this.prefix}-input-F`).value;
+        this.f = document.querySelector(`#${this.prefix}-input-f`).value;
         this.MP = mergePolicy;
         this.L = this._getL();
         // set the range of input F
-        if (this.MP) document.querySelector(`#${this.prefix}-input-F`).max = "1";
-        else document.querySelector(`#${this.prefix}-input-F`).max = "" + this.T;
+        if (this.MP) document.querySelector(`#${this.prefix}-input-f`).max = "1";
+        else document.querySelector(`#${this.prefix}-input-f`).max = "" + this.T;
     }
 }
 
@@ -602,6 +614,60 @@ class RocksDBLSM extends LSM {
         return btn_groups;
     }
 
+    /* update current state */
+    update(prefix, mergePolicy = this.MP) {
+        this.prefix = prefix;
+        this.T = document.querySelector(`#${this.prefix}-input-T`).value;
+        this.E = document.querySelector(`#${this.prefix}-input-E`).value;
+        this.N = document.querySelector(`#${this.prefix}-input-N`).value;
+        this.M = document.querySelector(`#${this.prefix}-input-M`).value;
+        this.f = document.querySelector(`#${this.prefix}-input-f`).value;
+        this.MP = mergePolicy;
+        this.L = this._getL();
+        // set the range of input F
+        if (this.MP) document.querySelector(`#${this.prefix}-input-f`).max = "1";
+        else document.querySelector(`#${this.prefix}-input-f`).max = "" + this.T;
+        this._updateCostEquation();
+    }
+
+    _updateCostEquation() {
+        var W = "";
+        var R = "";
+        var V = "";
+        var sQ = "";
+        var lQ = "";
+        var sAMP = "";
+        if (this.MP) {
+            W = "$$O({L \\over B})$$";
+            R = "$$O(e^{-{M/N}} \\cdot T)$$";
+            V = "$$O(1+e^{-{M/N}} \\cdot T)$$";
+            sQ = "$$O(L \\cdot T)$$";
+            lQ = "$$O({{T \\cdot s} \\over B})$$";
+            sAMP = "$$O(T)$$";
+
+        } else {
+            W = "$$O({ L \\cdot T \\over B})$$";
+            R = "$$O(e^{-{M/N}})$$";
+            V = "$$O(1)$$";
+            sQ = "$$O(L)$$";
+            lQ = "$$O({s \\over B})$$";
+            sAMP = "$$O({1 \\over T})$$";
+        }
+        document.querySelector("#rlsm-W-cost").setAttribute("title", W);
+        document.querySelector("#rlsm-R-cost").setAttribute("title", R);
+        document.querySelector("#rlsm-V-cost").setAttribute("title", V);
+        document.querySelector("#rlsm-sQ-cost").setAttribute("title", sQ);
+        document.querySelector("#rlsm-lQ-cost").setAttribute("title", lQ);
+        document.querySelector("#rlsm-sAMP-cost").setAttribute("title", sAMP);
+        document.querySelector("#rlsm-W-cost").setAttribute("data-original-title", W);
+        document.querySelector("#rlsm-R-cost").setAttribute("data-original-title", R);
+        document.querySelector("#rlsm-V-cost").setAttribute("data-original-title", V);
+        document.querySelector("#rlsm-sQ-cost").setAttribute("data-original-title", sQ);
+        document.querySelector("#rlsm-lQ-cost").setAttribute("data-original-title", lQ);
+        document.querySelector("#rlsm-sAMP-cost").setAttribute("data-original-title", sAMP);
+    }
+
+
 
 }
 
@@ -676,6 +742,20 @@ class DostoevskyLSM extends LSM {
             btn_groups[i] = group_wrap;
         }
         return btn_groups;
+    }
+
+    update(prefix, mergePolicy = this.MP) {
+        this.prefix = prefix;
+        this.T = document.querySelector(`#${this.prefix}-input-T`).value;
+        this.E = document.querySelector(`#${this.prefix}-input-E`).value;
+        this.N = document.querySelector(`#${this.prefix}-input-N`).value;
+        this.M = document.querySelector(`#${this.prefix}-input-M`).value;
+        this.f = document.querySelector(`#${this.prefix}-input-f`).value;
+        this.MP = mergePolicy;
+        this.L = this._getL();
+        // set the range of input F
+        if (this.MP) document.querySelector(`#${this.prefix}-input-f`).max = "1";
+        else document.querySelector(`#${this.prefix}-input-f`).max = "" + this.T;
     }
 
     _getUpdateCost() {
@@ -787,7 +867,7 @@ function runCmp() {
     var input_E = document.querySelector("#cmp-input-E").value;
     var input_N = document.querySelector("#cmp-input-N").value;
     var input_M = document.querySelector("#cmp-input-M").value;
-    var input_F = document.querySelector("#cmp-input-F").value;
+    var input_F = document.querySelector("#cmp-input-f").value;
 
     var input = {T: input_T, E: input_E, N: input_N, M: input_M, F: input_F};
     validate(this, target, input);
@@ -929,10 +1009,10 @@ function validate(self, target, input) {
                 // alert("Invalid: The buffer size of LSM-Tree must > 0");
             }
             break;
-        case `${target}-input-F`:
+        case `${target}-input-f`:
             var min = 0;
-            var max = parseInt(document.querySelector(`#${target}-input-F`).max);
-            if (input.F <= min || input.F > max) document.querySelector(`#${target}-input-F`).value = 1;
+            var max = parseInt(document.querySelector(`#${target}-input-f`).max);
+            if (input.F <= min || input.F > max) document.querySelector(`#${target}-input-f`).value = 1;
             break;
         case `${target}-tiering`:
         case `${target}-leveling`:
@@ -1056,7 +1136,7 @@ function clear(element) {
     }
 }
 function checkF(target) {
-    var input_F = document.querySelector(`#${target}-input-F`).value;
+    var input_F = document.querySelector(`#${target}-input-f`).value;
     var obj = window.obj[target]; 
 
 
@@ -1078,8 +1158,8 @@ document.querySelector("#cmp-input-N").onchange = runCmp;
 document.querySelector("#cmp-input-N").onwheel = runCmp;
 document.querySelector("#cmp-input-M").onchange = runCmp;
 document.querySelector("#cmp-input-M").onwheel = runCmp;
-document.querySelector("#cmp-input-F").onchange = runCmp;
-document.querySelector("#cmp-input-F").onwheel = runCmp;
+document.querySelector("#cmp-input-f").onchange = runCmp;
+document.querySelector("#cmp-input-f").onwheel = runCmp;
 document.querySelector("#cmp-leveling").onclick = runCmp;
 document.querySelector("#cmp-tiering").onclick = runCmp;
 document.querySelector("#cmp-vlsm-leveling").onclick = runCmp;

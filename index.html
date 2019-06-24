@@ -119,15 +119,15 @@
 
       <!-- Comparative configuration starts here -->
       <div id="cmp-conf-row" class="row">
-        <div class="cmp-conf-col col-lg-6 col-md-6 col-sm-6" >
+        <div class="cmp-conf-col col-lg-3 col-md-6 col-sm-6" >
           <h4 class="text-center">Dataset</h4>
-          <div class="input-group input-group-md mb-3">
+          <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text"># Entries</label>
             </div>
             <input id="cmp-input-N" value="1048576" min="1" type="number" class="cmp-input form-control" aria-label="#Entries">
           </div>
-          <div class="input-group input-group-md mb-3">
+          <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text">Entry size</label>
             </div>
@@ -142,7 +142,7 @@
         </div>
 
   <!--       <div class="cmp-conf-col col-lg-6 col-md-6 col-sm-6">
-          <div class="input-group input-group-md mb-2">
+          <div class="input-group input-group-sm mb-2">
             <div class="input-group-prepend">
               <label class="input-group-text">Entry Size (Bytes)</label>
             </div>
@@ -150,9 +150,9 @@
           </div>
         </div> -->
 
-        <div class="cmp-conf-col col-lg-6 col-md-6 col-sm-6">
+        <div class="cmp-conf-col col-lg-3 col-md-6 col-sm-6">
           <h4 class="text-center">Main Memory Allocation</h4>
-          <div class="input-group input-group-md mb-3">
+          <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text">Buffer size</label>
             </div>
@@ -164,13 +164,13 @@
               <option value="3">GB</option>
             </select>
           </div>
-          <div class="input-group input-group-md mb-3">
+          <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text">Bloom filters</label>
             </div>
             <input id="cmp-input-Mbf" value="0" min="0" type="number" class="cmp-input form-control" aria-label="Bloom Filter">
           </div>
-          <div class="input-group input-group-md mb-3">
+          <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text">Fence pointers (MB)</label>
             </div>
@@ -178,15 +178,15 @@
           </div>
         </div>
 
-        <div class="cmp-conf-col col-lg-6 col-md-6 col-sm-6">
+        <div class="cmp-conf-col col-lg-3 col-md-6 col-sm-6">
           <h4 class="text-center">Environment</h4>
-          <div class="input-group input-group-md mb-3">
+          <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text">File size (in terms of buffer)</label>
             </div>
-            <input id="cmp-input-F" value="1" min="0" max="1" type="number"step="0.1" class="cmp-input form-control" aria-label="Size factor in terms of buffer size">
+            <input id="cmp-input-f" value="1" min="0" max="1" type="number"step="0.1" class="cmp-input form-control" aria-label="Size factor in terms of buffer size">
           </div>
-          <div class="input-group input-group-md mb-3">
+          <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text">Page size</label>
             </div>
@@ -195,9 +195,9 @@
         </div>
 
         
-        <div class="cmp-conf-col col-lg-6 col-md-6 col-sm-6">
+        <div class="cmp-conf-col col-lg-3 col-md-6 col-sm-6">
           <h4 class="text-center">Merge Operation Frequency</h4>
-          <div class="input-group input-group-md mb-3">
+          <div class="input-group input-group-sm mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text">Ratio</label>
             </div>
@@ -645,23 +645,47 @@
             <span class="metric-title">Update</span>
           </div>
           <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
-            <span id="vlsm-update-cost" class="cost">XXX I/O</span>
+            <span id="vlsm-W-cost" class="cost">XXX I/O</span>
           </div>
         </div>
         <div class="row">
           <div class="metrics col-lg-7 col-md-7 col-sm-7">
-            <span class="metric-title">Range Lookup</span>
+            <span class="metric-title">0 point lookup</span>
           </div>
           <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
-            <span id="vlsm-rlookup-cost" class="cost">XXX I/O</span>
+            <span id="vlsm-R-cost" class="cost">XXX I/O</span>
           </div>
         </div>
         <div class="row">
           <div class="metrics col-lg-7 col-md-7 col-sm-7">
-            <span class="metric-title">Point Lookup</span>
+            <span class="metric-title">Non-0 point lookup</span>
           </div>
           <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
-            <span id="vlsm-plookup-cost" class="cost">XXX I/O</span>
+            <span id="vlsm-V-cost" class="cost">XXX I/O</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="metrics col-lg-7 col-md-7 col-sm-7">
+            <span class="metric-title">Short range Lookup</span>
+          </div>
+          <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
+            <span id="vlsm-sQ-cost" class="cost">XXX I/O</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="metrics col-lg-7 col-md-7 col-sm-7">
+            <span class="metric-title">Long range Lookup</span>
+          </div>
+          <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
+            <span id="vlsm-lQ-cost" class="cost">XXX I/O</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="metrics col-lg-7 col-md-7 col-sm-7">
+            <span class="metric-title">Space Amplification</span>
+          </div>
+          <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
+            <span id="vlsm-sAMP-cost" class="cost">XXX</span>
           </div>
         </div>
         <div class="row">
@@ -694,17 +718,32 @@
       <div class="rlsm-cost-col col-lg-3 col-md-3 col-sm-3">
         <div class="row">
           <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
-            <span id="rlsm-update-cost" class="cost">XXX I/O</span>
+            <span id="rlsm-W-cost" data-toggle="tooltip" data-placement="right" title="$$O({ L \cdot T \over B})$$" class="cost">XXX I/O</span>
           </div>  
         </div>
         <div class="row">
           <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
-            <span id="rlsm-rlookup-cost" class="cost">XXX I/O</span>
+            <span id="rlsm-R-cost" data-toggle="tooltip" data-placement="right" title="$$O(e^{-{M/N}})$$" class="cost">XXX I/O</span>
           </div>  
         </div>
         <div class="row">
           <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
-            <span id="rlsm-plookup-cost" class="cost">XXX I/O</span>
+            <span id="rlsm-V-cost" data-toggle="tooltip" data-placement="right" title="$$O(1)$$" class="cost">XXX I/O</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
+            <span id="rlsm-sQ-cost" data-toggle="tooltip" data-placement="right" title="$$O(L)$$" class="cost">XXX I/O</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
+            <span id="rlsm-lQ-cost" data-toggle="tooltip" data-placement="right" title="$$O({s \over B})$$" class="cost">XXX I/O</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
+            <span id="rlsm-sAMP-cost" data-toggle="tooltip" data-placement="right" title="$$O({1 \over T})$$" class="cost">XXX</span>
           </div>  
         </div>
         <div class="row">
@@ -727,16 +766,31 @@
       <!-- Demo3 cost result starts here -->
       <div class="dlsm-cost-col col-lg-3 col-md-3 col-sm-3">
         <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
-            <span id="dlsm-update-cost" data-toggle="tooltip" data-placement="right" title="$$ O({ L+T \over B})$$" class="cost">XXX I/O</span>
+            <span id="dlsm-W-cost" data-toggle="tooltip" data-placement="right" title="$$O({ L+T \over B})$$" class="cost">XXX I/O</span>
         </div>
         <div class="row">
           <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
-            <span id="dlsm-rlookup-cost" class="cost">XXX I/O</span>
+            <span id="dlsm-R-cost" data-toggle="tooltip" data-placement="right" title="$$O(e^{-{M/N}})$$" class="cost">XXX I/O</span>
           </div>  
         </div>
         <div class="row">
           <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
-            <span id="dlsm-plookup-cost" data-toggle="tooltip" data-placement="right" title="$$ O(e^{-{M/N}})$$" class="cost">XXX I/O</span>
+            <span id="dlsm-V-cost" data-toggle="tooltip" data-placement="right" title="$$O(1)$$"  class="cost">XXX I/O</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
+            <span id="dlsm-sQ-cost" data-toggle="tooltip" data-placement="right" title="$$O(1+(L-1) \cdot T)$$" class="cost">XXX I/O</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
+            <span id="dlsm-lQ-cost" data-toggle="tooltip" data-placement="right" title="$$O({s \over B})$$" class="cost">XXX I/O</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
+            <span id="dlsm-sAMP-cost" data-toggle="tooltip" data-placement="right" title="$$O({1 \over T})$$" class="cost">XXX</span>
           </div>  
         </div>
         <div class="row">
@@ -760,17 +814,32 @@
       <div class="osm-cost-col col-lg-3 col-md-3 col-sm-3">
         <div class="row">
           <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
-            <span id="osm-update-cost" class="cost">XXX I/O</span>
+            <span id="osm-W-cost" class="cost">XXX I/O</span>
           </div>  
         </div>
         <div class="row">
           <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
-            <span id="osm-rlookup-cost" class="cost">XXX I/O</span>
+            <span id="osm-R-cost" class="cost">XXX I/O</span>
           </div>  
         </div>
         <div class="row">
           <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
-            <span id="osm-plookup-cost" class="cost">XXX I/O</span>
+            <span id="osm-V-cost" class="cost">XXX I/O</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
+            <span id="osm-sQ-cost" class="cost">XXX I/O</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
+            <span id="osm-lQ-cost" class="cost">XXX I/O</span>
+          </div>  
+        </div>
+        <div class="row">
+          <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
+            <span id="osm-sAMP-cost" class="cost">XXX</span>
           </div>  
         </div>
         <div class="row">
