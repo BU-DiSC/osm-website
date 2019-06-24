@@ -3,7 +3,13 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
   // $('[data-toggle="tooltip"]').tooltip()
   // enable tooltip for dynamic content
   $('body').tooltip({
-    selector: '[data-toggle="tooltip"]'
+    selector: '[data-toggle="tooltip"]',
+    html: true,
+  });
+  
+  $('span[data-toggle="tooltip"]').on('shown.bs.tooltip', function () {
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+
   });
 
   // Same as document.querySelector("#navbarToggle").addEventListener("blur",...

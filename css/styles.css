@@ -94,6 +94,15 @@ ul > .nav-item{
 .input-group > input {
 	text-align: right;
 }
+.input-group .cmp-input{
+	flex-grow: 14;
+}
+.input-group .custom-select {
+	flex-grow: 1;
+}
+.input-group .vlsm-input, .input-group .rlsm-input, .input-group .dlsm-input, .input-group .osm-input {
+	flex-grow: 5;
+}
 .input-group-text {
 	color: #343a40;
 }

@@ -7,6 +7,7 @@ function (event) {
 // T : size ratio
 // M : buffer capacity(MB);
 // MP : Merge policy;
+// F : file size in terms of buffer
 // prefix: configurate target{cmp: comparative analysis, indiv: inidividual analysis}
 // suffix: result targets subclasses {vlsm, rlsm, dlsm, osm}
 // preMP : previous state of merge policy before switching analysis mode
@@ -17,7 +18,8 @@ class LSM {
             E: 16,
             N: 1048576,
             M: 2,
-            MP: 0
+            MP: 0,
+            F: 1
         };
         this._MP =this._DEFAULT.MP;
         this._prefix = prefix;
@@ -29,11 +31,13 @@ class LSM {
             this._E = document.querySelector(`#${prefix}-input-E`).value;
             this._N = document.querySelector(`#${prefix}-input-N`).value;
             this._M = document.querySelector(`#${prefix}-input-M`).value;
+            this._F = document.querySelector(`#${prefix}-input-F`).value;
         } else {
             this._T = this._DEFAULT.T;
             this._E = this._DEFAULT.E;
             this._N = this._DEFAULT.N;
             this._M = this._DEFAULT.M;
+            this._F = this._DEFAULT.F;
         }
         this._L = this._getL();     
     }
@@ -44,6 +48,7 @@ class LSM {
     get M() {return this._M;}
     get MP() {return this._MP;}
     get L() {return this._L;}
+    get F() {return this._F;}
     get prefix() {return this._prefix;}
     get suffix() {return this._suffix;}
     get preMP() {return this._preMP;}
@@ -67,6 +72,10 @@ class LSM {
     set MP(mergePolicy) {
         this._MP = mergePolicy;
         return this._MP;
+    }
+    set F(fileSize) {
+        this._F = fileSize;
+        return this._F;
     }
     set L(level) {
         this._L = level;
@@ -104,6 +113,12 @@ class LSM {
         var log = entryNum * (this.T - 1) / (nEntry_M * this.T) + 1;
         L = Math.ceil(getBaseLog(this.T, log));
         return (L < 1) ? 1 : L;
+    }
+    _getFileCapacity() {
+        // in terms of #entries
+        var Mbytes = this.M * Math.pow(2, 20);
+        var nEntry_M = Math.floor(Mbytes / this.E);     // number of entries fit into buffer
+        return Math.floor(correctDecimal(nEntry_M * this.F));
     }
  
     /* Having known the ith level,
@@ -159,8 +174,8 @@ class LSM {
     /* Compute the number of entries in ith level;
      * Return a string to be displayed when triggering ToolTip  
      */
-    _getTipText(ith, run_capacity, entry_num) {
-        var text = "Level " + ith + ": This run contains " + entry_num + "/" + run_capacity + " entries";
+    _getTipText(ith, run_capacity, entry_num, file_num) {
+        var text = "Level " + ith + ": This run contains " + entry_num + "/" + run_capacity + " entries in " + file_num + " files";
         return text;
     }
     /* Calculate current amount and set the width of runs
@@ -188,7 +203,7 @@ class LSM {
             run_width = getWidth(i);
             button = createBtn(run_width);
             run_capacity = this._getRunCapacity(i);
-            context = this._getTipText(i, run_capacity, 0);   // jth run = 0;
+            context = this._getTipText(i, run_capacity, 0, 0);   // jth run = 0;
             setToolTip(button, "left", context);
             setRunGradient(button, 0);
             runs[i] = button;
@@ -237,7 +252,7 @@ class LSM {
                 }
                 else {
                     child = createBtn(run_width);
-                    context = this._getTipText(i, run_capacity, 0);
+                    context = this._getTipText(i, run_capacity, 0, 0);
                     setRunGradient(child, 0);
                 }
                 setToolTip(child, "left", context);
@@ -250,7 +265,7 @@ class LSM {
 
     showBush() {
         var btn_list = [];
-        var parent = document.querySelector(`#${this.suffix}-res`);
+        var parent = document.querySelector(`#${this.suffix}-bush`);
         if (this.MP) btn_list = this._getBtnGroups(parent, this.L, this.T);
         else btn_list = this._getBtns(parent, this.L, this.T);
         clear(parent);
@@ -269,10 +284,13 @@ class LSM {
         this.E = document.querySelector(`#${this.prefix}-input-E`).value;
         this.N = document.querySelector(`#${this.prefix}-input-N`).value;
         this.M = document.querySelector(`#${this.prefix}-input-M`).value;
+        this.F = document.querySelector(`#${this.prefix}-input-F`).value;
         this.MP = mergePolicy;
         this.L = this._getL();
+        // set the range of input F
+        if (this.MP) document.querySelector(`#${this.prefix}-input-F`).max = "1";
+        else document.querySelector(`#${this.prefix}-input-F`).max = "" + this.T;
     }
-
 }
 
 
@@ -325,7 +343,8 @@ class VanillaLSM extends LSM{
             // set n on l1
             entry_num = this._getEntryNum(n, l_capacity);
             rate = n / l_capacity;
-            context = super._getTipText(l, l_capacity, entry_num);
+            var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
+            context = super._getTipText(l, l_capacity, entry_num, file_num);
             setToolTip(elem[l], "left", context);
             setRunGradient(elem[l], rate);
             return;
@@ -334,12 +353,14 @@ class VanillaLSM extends LSM{
         if (this._isFull(n, l)) {
             entry_num = l_capacity;
             rate = entry_num / l_capacity;
-            context = super._getTipText(l, l_capacity, entry_num);
+            var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
+            context = super._getTipText(l, l_capacity, entry_num, file_num);
             n = n - l_capacity;
         } else {
             entry_num = this._getOffsetFactor(n, l) * super._getLevelCapacity(l - 1);
             rate = entry_num / l_capacity;
-            context = super._getTipText(l, l_capacity, entry_num);
+            var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
+            context = super._getTipText(l, l_capacity, entry_num, file_num);
             n = n - entry_num;
         }
         setToolTip(elem[l], "left", context);
@@ -362,7 +383,8 @@ class VanillaLSM extends LSM{
                 } else {
                     entry_num = this._getEntryNum(n, r_capacity, j);
                     rate = entry_num / r_capacity;
-                    context = super._getTipText(l, r_capacity, entry_num);
+                    var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
+                    context = super._getTipText(l, r_capacity, entry_num, file_num);
                     setToolTip(elem[l].childNodes[j], "left", context);
                     setRunGradient(elem[l].childNodes[j], rate);
                 }
@@ -373,7 +395,8 @@ class VanillaLSM extends LSM{
         if (this._isFull(n, l)) {
             entry_num = r_capacity;
             rate = entry_num / r_capacity;
-            context = super._getTipText(l, r_capacity, entry_num);
+            var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
+            context = super._getTipText(l, r_capacity, entry_num, file_num);
             for (var j = 0; j < max_runs; j++) {
                 if ((max_runs >= 5) && (j == max_runs - 2)) {
                 } else {
@@ -390,7 +413,8 @@ class VanillaLSM extends LSM{
                 } else {
                     entry_num = this._getEntryNum(offset, r_capacity, j);
                     rate = entry_num / r_capacity;
-                    context = super._getTipText(l, r_capacity, entry_num);
+                    var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
+                    context = super._getTipText(l, r_capacity, entry_num, file_num);
                     setToolTip(elem[l].childNodes[j], "left", context);
                     setRunGradient(elem[l].childNodes[j], rate);
                 }
@@ -423,7 +447,7 @@ class VanillaLSM extends LSM{
             run_width = getWidth(i);
             button = createBtn(run_width);
             run_capacity = super._getRunCapacity(i);
-            context = super._getTipText(i, run_capacity, 0);   // jth run = 0;
+            context = super._getTipText(i, run_capacity, 0, 0);   // jth run = 0;
             setToolTip(button, "left", context);
             setRunGradient(button, 0);
             runs[i] = button;
@@ -472,7 +496,7 @@ class VanillaLSM extends LSM{
                 }
                 else {
                     child = createBtn(run_width);
-                    context = super._getTipText(i, run_capacity, 0);
+                    context = super._getTipText(i, run_capacity, 0, 0);
                     setRunGradient(child, 0);
                 }
                 setToolTip(child, "left", context);
@@ -515,7 +539,8 @@ class RocksDBLSM extends LSM {
             run_capacity = super._getRunCapacity(i);
             entry_num = super._getEntryNum(i, 0, run_capacity);
             rate = correctDecimal(entry_num / run_capacity);
-            context = super._getTipText(i, run_capacity, entry_num);
+            var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
+            context = super._getTipText(i, run_capacity, entry_num, file_num);
             setToolTip(button, "left", context);
             setRunGradient(button, rate);
             runs[i] = button;
@@ -565,7 +590,8 @@ class RocksDBLSM extends LSM {
                     child = createBtn(run_width);
                     entry_num = super._getEntryNum(i, j, run_capacity);
                     rate = correctDecimal(entry_num / run_capacity);
-                    context = super._getTipText(i, run_capacity, entry_num);
+                    var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
+                    context = super._getTipText(i, run_capacity, entry_num, file_num);
                     setRunGradient(child, rate);
                 }
                 setToolTip(child, "left", context);
@@ -638,7 +664,8 @@ class DostoevskyLSM extends LSM {
                     child = createBtn(run_width);
                     entry_num = super._getEntryNum(i, j, run_capacity);
                     rate = correctDecimal(entry_num / run_capacity);
-                    context = super._getTipText(i, run_capacity, entry_num);
+                    var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
+                    context = super._getTipText(i, run_capacity, entry_num, file_num);
                     setRunGradient(child, rate);
 
                 }
@@ -649,6 +676,30 @@ class DostoevskyLSM extends LSM {
             btn_groups[i] = group_wrap;
         }
         return btn_groups;
+    }
+
+    _getUpdateCost() {
+        // O((L+T)/B)
+        return correctDecimal((this.L+this.T)/B);
+    }
+    _getZeroPointLookUpCost() {
+        //O(e^(-M/N))
+
+    }
+    _getExistPointLookUpCost() {
+        //O(1)
+
+    }
+    _getShortRangeLookUpCost(){
+        //O(1+(L-1)*T)
+
+    }
+    _getLongRangeLookUpCost(){
+        //O()
+
+    }
+    _getSpaceAmpCost() {
+
     }
 
 }
@@ -736,7 +787,9 @@ function runCmp() {
     var input_E = document.querySelector("#cmp-input-E").value;
     var input_N = document.querySelector("#cmp-input-N").value;
     var input_M = document.querySelector("#cmp-input-M").value;
-    var input = {T: input_T, E: input_E, N: input_N, M: input_M};
+    var input_F = document.querySelector("#cmp-input-F").value;
+
+    var input = {T: input_T, E: input_E, N: input_N, M: input_M, F: input_F};
     validate(this, target, input);
 
 
@@ -765,10 +818,6 @@ function runCmp() {
             osm.update(target, 0);
             osm.showBush();
             break;
-        case "cmp-osm-tiering": 
-            osm.update(target, 1);
-            osm.showBush();
-            break;
         case "cmp-leveling":
             console.log("update all to leveling");
             vlsm.update(target, 0);
@@ -785,11 +834,11 @@ function runCmp() {
             vlsm.update(target, 1);
             rlsm.update(target, 1);
             // dlsm.update(target, 1);     // currently untriggered by event, unchanged merge policy
-            osm.update(target, 1);
+            // osm.update(target, 1);
             vlsm.showBush();
             rlsm.showBush();
             dlsm.showBush();
-            osm.showBush();
+            // osm.showBush();
             break;
         default:
             console.log("simply update all");
@@ -869,16 +918,21 @@ function validate(self, target, input) {
             }
             break;
         case `${target}-input-E`:
-                if (input.E < 1) {
+            if (input.E < 1) {
                 document.querySelector(`#${target}-input-E`).value = 1;
                 // alert("Invalid: The minimal entry size of LSM-Tree is 1 bytes");
             }
             break;
         case `${target}-input-M`:
-                if (input.M <= 0) {
+            if (input.M <= 0) {
                 document.querySelector(`#${target}-input-M`).value = 1;
                 // alert("Invalid: The buffer size of LSM-Tree must > 0");
             }
+            break;
+        case `${target}-input-F`:
+            var min = 0;
+            var max = parseInt(document.querySelector(`#${target}-input-F`).max);
+            if (input.F <= min || input.F > max) document.querySelector(`#${target}-input-F`).value = 1;
             break;
         case `${target}-tiering`:
         case `${target}-leveling`:
@@ -887,7 +941,7 @@ function validate(self, target, input) {
         case `${target}-rlsm-tiering`:
         case `${target}-rlsm-leveling`:
         // case `${target}-dlsm-lazyLevel`: // currently untriggered by event, unchanged merge policy
-        case `${target}-osm-tiering`:
+        // case `${target}-osm-tiering`:
         case `${target}-osm-leveling`:
             break;
         default:
@@ -896,8 +950,6 @@ function validate(self, target, input) {
     }
     return;
 }
-
-
 
 
 
@@ -1003,6 +1055,12 @@ function clear(element) {
         element.removeChild(element.firstChild);
     }
 }
+function checkF(target) {
+    var input_F = document.querySelector(`#${target}-input-F`).value;
+    var obj = window.obj[target]; 
+
+
+}
 
  
 initCmp();
@@ -1020,6 +1078,8 @@ document.querySelector("#cmp-input-N").onchange = runCmp;
 document.querySelector("#cmp-input-N").onwheel = runCmp;
 document.querySelector("#cmp-input-M").onchange = runCmp;
 document.querySelector("#cmp-input-M").onwheel = runCmp;
+document.querySelector("#cmp-input-F").onchange = runCmp;
+document.querySelector("#cmp-input-F").onwheel = runCmp;
 document.querySelector("#cmp-leveling").onclick = runCmp;
 document.querySelector("#cmp-tiering").onclick = runCmp;
 document.querySelector("#cmp-vlsm-leveling").onclick = runCmp;
@@ -1027,7 +1087,7 @@ document.querySelector("#cmp-vlsm-tiering").onclick = runCmp;
 document.querySelector("#cmp-rlsm-leveling").onclick = runCmp;
 document.querySelector("#cmp-rlsm-tiering").onclick = runCmp;
 document.querySelector("#cmp-osm-leveling").onclick = runCmp;
-document.querySelector("#cmp-osm-tiering").onclick = runCmp;
+// document.querySelector("#cmp-osm-tiering").onclick = runCmp;
 // Individual LSM analysis event trigger
 document.querySelector("#vlsm-input-T").onchange = runIndiv;
 document.querySelector("#vlsm-input-T").onwheel = runIndiv;
@@ -1065,7 +1125,7 @@ document.querySelector("#osm-input-N").onchange = runIndiv;
 document.querySelector("#osm-input-N").onwheel = runIndiv;
 document.querySelector("#osm-input-M").onchange = runIndiv;
 document.querySelector("#osm-input-M").onwheel = runIndiv;
-document.querySelector("#osm-tiering").onclick = runIndiv;
+// document.querySelector("#osm-tiering").onclick = runIndiv;
 document.querySelector("#osm-leveling").onclick = runIndiv;
 
 
