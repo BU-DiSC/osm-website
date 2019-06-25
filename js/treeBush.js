@@ -6,12 +6,16 @@ function (event) {
 // E : size of an entry(bytes)
 // T : size ratio
 // M : buffer capacity(MB);
+// Mfilter: memory allocated to bloomFilter(B)
 // MP : Merge policy;
 // F : file size in terms of buffer
+// P : page size;
+// B : page size in #entries
 // s : selectivity of a range lookup
 // mu(μ): storage sequential over random access speed
 // phi(Φ) : storage write over read speed
-// prefix: configurate target{cmp: comparative analysis, indiv: inidividual analysis}
+// prefix: configurate target{cmp: comparative analysis, indiv: inidividual analysis}\
+// K, Z: tunning parameters
 // suffix: result targets subclasses {vlsm, rlsm, dlsm, osm}
 // preMP : previous state of merge policy before switching analysis mode
 class LSM {
@@ -20,20 +24,25 @@ class LSM {
             T: 2,
             E: 16,
             N: 1048576,
+            P: 128,
             M: 2,
+            Mfilter: 1024,
             MP: 0,
             f: 1,
             s: 0.5,
             mu: 1,
-            phi: 1
+            phi: 1,
         };
         this._MP = this._DEFAULT.MP;
+        this._P = this._DEFAULT.P;
+        this._Mfilter = this._DEFAULT.Mfilter;
         this._s = this._DEFAULT.s;
         this._mu = this._DEFAULT.mu;
         this._phi = this._DEFAULT.phi;
         this._prefix = prefix;
         this._suffix = suffix;
         this._preMP = this._MP;
+
         if(prefix) {
             this._T = document.querySelector(`#${prefix}-input-T`).value;
             this._E = document.querySelector(`#${prefix}-input-E`).value;
@@ -54,12 +63,23 @@ class LSM {
     get E() {return this._E;}
     get N() {return this._N;}
     get M() {return this._M;}
+    get Mfilter() {return this._Mfilter;}
+    get P() {return this._P;}
+    get B() {return Math.floor(correctDecimal(this.P/this.E));} //B = 8
     get MP() {return this._MP;}
     get L() {return this._L;}
     get f() {return this._f;}
     get s() {return this._s;}
     get mu() {return this._mu;}
     get phi() {return this._phi;}
+    get K(){
+        if(this.MP || this.name === "DostoevskyLSM") return this.T;
+        else return 1;
+    }
+    get Z() {
+        if (!this.MP || this.name === "DostoevskyLSM") return 1;
+        else return this.T
+    }
     get prefix() {return this._prefix;}
     get suffix() {return this._suffix;}
     get preMP() {return this._preMP;}
@@ -302,6 +322,50 @@ class LSM {
         // set the range of input F
         if (this.MP) document.querySelector(`#${this.prefix}-input-f`).max = "1";
         else document.querySelector(`#${this.prefix}-input-f`).max = "" + this.T;
+
+        this._updateCostResult();
+    }
+    _updateCostResult() {
+        
+        document.querySelector(`#${this.suffix}-W-cost`).textContent = this._getUpdateCost();
+        document.querySelector(`#${this.suffix}-R-cost`).textContent = this._getZeroPointLookUpCost();
+        document.querySelector(`#${this.suffix}-V-cost`).textContent = this._getExistPointLookUpCost();
+        document.querySelector(`#${this.suffix}-sQ-cost`).textContent = this._getShortRangeLookUpCost();
+        document.querySelector(`#${this.suffix}-lQ-cost`).textContent = this._getLongRangeLookUpCost();
+        document.querySelector(`#${this.suffix}-sAMP-cost`).textContent = this._getSpaceAmpCost();
+    }
+
+    _getUpdateCost() {
+        // W
+        var f1 = this.phi/(this.mu*this.B);
+        var f2 = (this.T-1)/(this.K+1) * (this.L-1) + (this.T-1)/(this.Z+1);
+        return f1*f2;
+    }
+    _getZeroPointLookUpCost() {
+        //R
+        var f1 = Math.exp(-(this.Mfilter/this.N)*Math.pow(Math.log(2), 2));
+        var f2 = Math.pow(this.Z, (this.T-1)/this.T);
+        var f3 = Math.pow(this.K, 1/this.T);
+        var f4 = Math.pow(this.T, this.T/(this.T-1)) / (this.T-1)
+        return f1*f2*f3*f4;
+    }
+    _getExistPointLookUpCost() {
+        //V
+        return 1 + this.Z * Math.exp(-(this.Mfilter/this.N));
+    }
+    _getShortRangeLookUpCost(){
+        //sQ
+        return this.Z + this.K * (this.L-1);
+    }
+    _getLongRangeLookUpCost(){
+        //lQ
+        var f1 = this._getShortRangeLookUpCost();
+        var f2 = (1/this.mu) * (this.s/this.B) * (this.Z + 1/this.T);
+        return f1 + f2;
+    }
+    _getSpaceAmpCost() {
+        //sAMP
+        return this.Z - 1 + 1/this.T;
     }
 }
 
@@ -628,6 +692,7 @@ class RocksDBLSM extends LSM {
         if (this.MP) document.querySelector(`#${this.prefix}-input-f`).max = "1";
         else document.querySelector(`#${this.prefix}-input-f`).max = "" + this.T;
         this._updateCostEquation();
+        super._updateCostResult();
     }
 
     _updateCostEquation() {
@@ -666,9 +731,6 @@ class RocksDBLSM extends LSM {
         document.querySelector("#rlsm-lQ-cost").setAttribute("data-original-title", lQ);
         document.querySelector("#rlsm-sAMP-cost").setAttribute("data-original-title", sAMP);
     }
-
-
-
 }
 
 class DostoevskyLSM extends LSM {
@@ -756,32 +818,9 @@ class DostoevskyLSM extends LSM {
         // set the range of input F
         if (this.MP) document.querySelector(`#${this.prefix}-input-f`).max = "1";
         else document.querySelector(`#${this.prefix}-input-f`).max = "" + this.T;
-    }
 
-    _getUpdateCost() {
-        // O((L+T)/B)
-        return correctDecimal((this.L+this.T)/B);
+        this._updateCostResult();
     }
-    _getZeroPointLookUpCost() {
-        //O(e^(-M/N))
-
-    }
-    _getExistPointLookUpCost() {
-        //O(1)
-
-    }
-    _getShortRangeLookUpCost(){
-        //O(1+(L-1)*T)
-
-    }
-    _getLongRangeLookUpCost(){
-        //O()
-
-    }
-    _getSpaceAmpCost() {
-
-    }
-
 }
 
 class OSM extends LSM {
@@ -805,10 +844,14 @@ function initCmp() {
     window.dlsm = dlsm;
     window.osm = osm;
     window.obj = {rlsm:window.rlsm, vlsm:window.vlsm, dlsm:window.dlsm, osm:window.osm};
-    vlsm.showBush();
-    rlsm.showBush();
-    dlsm.showBush();
-    osm.showBush();
+    window.vlsm.update("cmp");
+    window.rlsm.update("cmp");
+    window.dlsm.update("cmp");
+    window.osm.update("cmp");
+    window.vlsm.showBush();
+    window.rlsm.showBush();
+    window.dlsm.showBush();
+    window.osm.showBush();
 }
 
 /* Display one of analysis mode according to
