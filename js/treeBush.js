@@ -6,7 +6,7 @@ function (event) {
 // E : size of an entry(bytes)
 // T : size ratio
 // M : buffer capacity(MB);
-// Mfilter: memory allocated to bloomFilter(B)
+// Mbf: memory allocated to bloomfilter(B)
 // MP : Merge policy;
 // F : file size in terms of buffer
 // P : page size;
@@ -26,7 +26,7 @@ class LSM {
             N: 1048576,
             P: 128,
             M: 2,
-            Mfilter: 1024,
+            Mbf: 1024,
             MP: 0,
             f: 1,
             s: 0.5,
@@ -35,7 +35,7 @@ class LSM {
         };
         this.MP = this.DEFAULT.MP;
         this.P = this.DEFAULT.P;
-        this.Mfilter = this.DEFAULT.Mfilter;
+        this.Mbf = this.DEFAULT.Mbf;
         this.s = this.DEFAULT.s;
         this.mu = this.DEFAULT.mu;
         this.phi = this.DEFAULT.phi;
@@ -63,7 +63,7 @@ class LSM {
     get E() {return this._E;}
     get N() {return this._N;}
     get M() {return this._M;}
-    get Mfilter() {return this._Mfilter;}
+    get Mbf() {return this._Mbf;}
     get P() {return this._P;}
     get B() {return Math.floor(correctDecimal(this.P/this.E));} //B = 8
     get MP() {return this._MP;}
@@ -101,9 +101,9 @@ class LSM {
         this._M = parseFloat(bufferSize);
         return this._M;
     }
-    set Mfilter(filterSize) {
-        this._Mfilter = parseFloat(filterSize);
-        return this._Mfilter;
+    set Mbf(filterSize) {
+        this._Mbf = parseFloat(filterSize);
+        return this._Mbf;
     }
     set P(pageSize) {
         this._P = parseFloat(pageSize);
@@ -367,7 +367,7 @@ class LSM {
     }
     _getZeroPointLookUpCost() {
         //R
-        var f1 = Math.exp(-(this.Mfilter/this.N)*Math.pow(Math.log(2), 2));
+        var f1 = Math.exp(-(this.Mbf/this.N)*Math.pow(Math.log(2), 2));
         var f2 = Math.pow(this.Z, (this.T-1)/this.T);
         var f3 = Math.pow(this.K, 1/this.T);
         var f4 = Math.pow(this.T, this.T/(this.T-1)) / (this.T-1)

@@ -147,7 +147,7 @@
             <div class="input-group-prepend">
               <label class="input-group-text">Buffer size</label>
             </div>
-            <input id="cmp-input-M" value="2" min="0" type="number" class="cmp-input form-control" aria-label="Buffer Capacity">
+            <input id="cmp-input-M" value="2" min="0" type="number" class="cmp-input form-control" aria-label="Buffer capacity">
             <select class="custom-select">
               <option value="0"><span></span>B</option>
               <option value="1">KB</option>
@@ -159,11 +159,11 @@
             <div class="input-group-prepend">
               <label class="input-group-text">Bloom filters</label>
             </div>
-            <input id="cmp-input-Mbf" value="0" min="0" type="number" class="cmp-input form-control" aria-label="Bloom Filter">
+            <input id="cmp-input-Mbf" value="1024" min="0" type="number" class="cmp-input form-control" aria-label="Bloom filters size">
             <select class="custom-select">
-              <option value="0"><span></span>B</option>
+              <option value="0" selected><span></span>B</option>
               <option value="1">KB</option>
-              <option value="2" selected>MB</option>
+              <option value="2">MB</option>
               <option value="3">GB</option>
             </select>
           </div>
@@ -171,7 +171,7 @@
             <div class="input-group-prepend">
               <label class="input-group-text">Fence pointers</label>
             </div>
-            <input id="cmp-input-Mf" value="0" min="0" type="number" class="cmp-input form-control" aria-label="Fence Pointer">
+            <input id="cmp-input-Mf" value="0" min="0" type="number" class="cmp-input form-control" aria-label="Fence pointer size">
             <select class="custom-select">
               <option value="0"><span></span>B</option>
               <option value="1">KB</option>
@@ -193,7 +193,7 @@
             <div class="input-group-prepend">
               <label class="input-group-text">Page size</label>
             </div>
-            <input id="cmp-input-P" value="0" min="0" type="number" class="cmp-input form-control" aria-label="Page Size">
+            <input id="cmp-input-P" value="128" min="0" type="number" class="cmp-input form-control" aria-label="Page Size">
             <select class="custom-select">
               <option value="0" selected> B</option>
               <option value="1">KB</option>
@@ -201,33 +201,7 @@
               <option value="3">GB</option>
             </select>
           </div>
-          <div class="text-center"><a data-toggle="collapse" href="#cmp-adSetting" aria-expanded="false" aria-controls="cmp-adSetting">Advanced settings</a></div>
-          <div class="collapse" id="cmp-adSetting">
-            <div class="input-group input-group-sm mb-2">
-              <div class="input-group-prepend">
-                <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Selectivity of a range lookup">Selectivity</label>
-              </div>
-              <input id="cmp-input-s" value="0" min="0" type="number" class="cmp-input form-control" aria-label="Selectivity of a range lookup">
-              <div class="input-group-append">
-                <span class="input-group-text">%</span>
-              </div>
-            </div>
-            <div class="input-group input-group-sm mb-2">
-              <div class="input-group-prepend">
-                <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage sequential over random access speed">Storage s/r speed</label>
-              </div>
-              <input id="cmp-input-mu" value="0" min="0" type="number" class="cmp-input form-control" aria-label="Storage sequential over random access speed">
-            </div>
-            <div class="input-group input-group-sm mb-2">
-              <div class="input-group-prepend">
-                <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage write over read speed">Storage w/r speed</label>
-              </div>
-              <input id="cmp-input-phi" value="0" min="0" type="number" class="cmp-input form-control" aria-label="Storage write over read speed">
-            </div>
-          </div>
-
         </div>
-
         
         <div class="cmp-conf-col col-lg-3 col-md-6 col-sm-6">
           <h4 class="text-center">Merge Operation Frequency</h4>
@@ -237,15 +211,45 @@
             </div>
             <input id="cmp-input-T" value="2" min="2" type="number" class="cmp-input form-control" aria-label="Ratio">
           </div>
-  
-            
           <div class="mp-btn-group btn-group mb-2" role="group" aria-label="LSM Merge Policy">
             <button id="cmp-leveling" type="button" class="cmp-input btn-active leveler btn btn-custom">Leveling</button>
             <button id="cmp-tiering"  type="button" class="cmp-input tier btn btn-custom">Tiering</button>
          </div>
-        </div>
-          
-      </div> <!-- END of comparative configurations of Interactive Demo -->
+        </div> 
+        <div class="cmp-conf-col col-lg-12 col-md-12 col-sm-12">
+          <div class="text-center"><a data-toggle="collapse" href="#cmp-adSetting" aria-expanded="false" aria-controls="cmp-adSetting">Advanced settings</a></div>
+          <div class="collapse row" id="cmp-adSetting">
+            <div class="cmp-conf-col col-lg-4 col-md-4 col-sm-4">
+              <div class="input-group input-group-sm mb-2">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Selectivity of a range lookup">Selectivity</label>
+                </div>
+                <input id="cmp-input-s" value="50" min="0" type="number" class="cmp-input form-control" aria-label="Selectivity of a range lookup">
+                <div class="input-group-append">
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
+            </div>
+            <div class="cmp-conf-col col-lg-4 col-md-4 col-sm-4">
+              <div class="input-group input-group-sm mb-2">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage sequential over random access speed">Storage s/r speed</label>
+                </div>
+                <input id="cmp-input-mu" value="1" min="0" type="number" class="cmp-input form-control" aria-label="Storage sequential over random access speed">
+              </div>
+            </div>
+            <div class="cmp-conf-col col-lg-4 col-md-4 col-sm-4">
+              <div class="input-group input-group-sm mb-2">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage write over read speed">Storage w/r speed</label>
+                </div>
+                <input id="cmp-input-phi" value="1" min="0" type="number" class="cmp-input form-control" aria-label="Storage write over read speed">
+              </div>
+            </div>
+          </div> 
+        </div> 
+      </div>
+      <!-- END of comparative configurations of Interactive Demo -->
 
 
       <!-- Individual configuration starts here -->
@@ -258,20 +262,11 @@
 
           <div class="row vlsm-conf-row mb-2">
             <div class="mp-btn-group btn-group" role="group" aria-label="LSM Merge Policy" >
-              <button id="vlsm-leveling" type="button" class="vlsm-input leveler btn btn-custom">Leveling</button>
+              <button id="vlsm-leveling" type="button" class="vlsm-input leveler btn btn-custom btn-active">Leveling</button>
               <button id="vlsm-tiering" type="button" class="vlsm-input tier btn btn-custom">Tiering</button>
             </div>
           </div>
-        
-<!--           <div class="row vlsm-conf-row">
-            <div class="input-group input-group-sm mb-2">
-              <div class="input-group-prepend">
-                <label class="input-group-text">Levels</label>
-              </div>
-              <input id="vlsm-input-L" value="4" type="number" class="vlsm-input form-control" aria-label="Levels">
-            </div>
-          </div> -->
-
+      
           <div class="row vlsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
@@ -310,7 +305,56 @@
               </select>
             </div>
           </div>
-
+          <div class="row vlsm-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Bloom filters</label>
+              </div>
+              <input id="vlsm-input-Mbf" value="1024" min="0" type="number" class="vlsm-input form-control" aria-label="Bloom filters size">
+              <select class="custom-select">
+                <option value="0" selected><span></span>B</option>
+                <option value="1">KB</option>
+                <option value="2">MB</option>
+                <option value="3">GB</option>
+              </select>
+            </div>
+          </div>
+          <div class="row vlsm-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Fence pointers</label>
+              </div>
+              <input id="vlsm-input-Mf" value="0" min="0" type="number" class="vlsm-input form-control" aria-label="Fence pointer size">
+              <select class="custom-select">
+                <option value="0" selected><span></span>B</option>
+                <option value="1">KB</option>
+                <option value="2">MB</option>
+                <option value="3">GB</option>
+              </select>
+            </div>
+          </div>
+          <div class="row vlsm-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">File size(in terms of buffer)</label>
+              </div>
+              <input id="vlsm-input-f" value="1" min="0" type="number" class="vlsm-input form-control" aria-label="Size factor in terms of buffer size">
+            </div>
+          </div>
+          <div class="row vlsm-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Page Size</label>
+              </div>
+              <input id="vlsm-input-P" value="128" min="0" type="number" class="vlsm-input form-control" aria-label="Page size">
+              <select class="custom-select">
+                <option value="0" selected><span></span>B</option>
+                <option value="1">KB</option>
+                <option value="2">MB</option>
+                <option value="3">GB</option>
+              </select>
+            </div>
+          </div>
           <div class="row vlsm-conf-row">
             <div class="input-group input-group-sm mb-2">
               <div class="input-group-prepend">
@@ -318,6 +362,32 @@
               </div>
               <input id="vlsm-input-T" value="2" min="2" type="number" class="vlsm-input form-control" aria-label="Ratio">
             </div>
+          </div>
+          <div id="vlsm-adConf-row">
+            <div class="text-center"><a data-toggle="collapse" href="#vlsm-adSetting" aria-expanded="false" aria-controls="vlsm-adSetting">Advanced settings</a></div>
+            <div class="collapse" id="vlsm-adSetting">
+              <div class="input-group input-group-sm mb-2">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Selectivity of a range lookup">Selectivity</label>
+                </div>
+                <input id="vlsm-input-s" value="50" min="0" type="number" class="vlsm-input form-control" aria-label="Selectivity of a range lookup">
+                <div class="input-group-append">
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
+              <div class="input-group input-group-sm mb-2">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage sequential over random access speed">Storage s/r speed</label>
+                </div>
+                <input id="vlsm-input-mu" value="1" min="0" type="number" class="vlsm-input form-control" aria-label="Storage sequential over random access speed">
+              </div>
+              <div class="input-group input-group-sm mb-2">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage write over read speed">Storage w/r speed</label>
+                </div>
+                <input id="vlsm-input-phi" value="1" min="0" type="number" class="vlsm-input form-control" aria-label="Storage write over read speed">
+              </div>
+            </div> 
           </div>
         </div> <!-- END of Demo1-conf-col -->
 
@@ -330,7 +400,7 @@
 
           <div class="row rlsm-conf-row mb-2">
             <div class="mp-btn-group btn-group" role="group" aria-label="LSM Merge Policy" >
-              <button id="rlsm-leveling" type="button" class="rlsm-input leveler btn btn-custom">Leveling</button>
+              <button id="rlsm-leveling" type="button" class="rlsm-input leveler btn btn-custom btn-active">Leveling</button>
               <button id="rlsm-tiering"  type="button" class="rlsm-input tier btn btn-custom">Tiering</button>
             </div>
           </div>
@@ -373,6 +443,56 @@
               </select>
             </div>
           </div>
+          <div class="row rlsm-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Bloom filters</label>
+              </div>
+              <input id="rlsm-input-Mbf" value="1024" min="0" type="number" class="rlsm-input form-control" aria-label="Bloom filters size">
+              <select class="custom-select">
+                <option value="0" selected><span></span>B</option>
+                <option value="1">KB</option>
+                <option value="2">MB</option>
+                <option value="3">GB</option>
+              </select>
+            </div>
+          </div>
+          <div class="row rlsm-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Fence pointers</label>
+              </div>
+              <input id="rlsm-input-Mf" value="0" min="0" type="number" class="rlsm-input form-control" aria-label="Fence pointer size">
+              <select class="custom-select">
+                <option value="0" selected><span></span>B</option>
+                <option value="1">KB</option>
+                <option value="2">MB</option>
+                <option value="3">GB</option>
+              </select>
+            </div>
+          </div>
+          <div class="row rlsm-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">File size(in terms of buffer)</label>
+              </div>
+              <input id="rlsm-input-f" value="1" min="0" type="number" class="rlsm-input form-control" aria-label="Size factor in terms of buffer size">
+            </div>
+          </div>
+          <div class="row rlsm-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Page Size</label>
+              </div>
+              <input id="rlsm-input-P" value="128" min="0" type="number" class="rlsm-input form-control" aria-label="Page size">
+              <select class="custom-select">
+                <option value="0" selected><span></span>B</option>
+                <option value="1">KB</option>
+                <option value="2">MB</option>
+                <option value="3">GB</option>
+              </select>
+            </div>
+          </div>
 
           <div class="row rlsm-conf-row">
             <div class="input-group input-group-sm mb-2">
@@ -381,6 +501,32 @@
               </div>
               <input id="rlsm-input-T" value="2" min="2" type="number" class="rlsm-input form-control" aria-label="Ratio">
             </div>
+          </div>
+          <div id="rlsm-adConf-row">
+            <div class="text-center"><a data-toggle="collapse" href="#rlsm-adSetting" aria-expanded="false" aria-controls="rlsm-adSetting">Advanced settings</a></div>
+            <div class="collapse" id="rlsm-adSetting">
+              <div class="input-group input-group-sm mb-2">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Selectivity of a range lookup">Selectivity</label>
+                </div>
+                <input id="rlsm-input-s" value="50" min="0" type="number" class="rlsm-input form-control" aria-label="Selectivity of a range lookup">
+                <div class="input-group-append">
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
+              <div class="input-group input-group-sm mb-2">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage sequential over random access speed">Storage s/r speed</label>
+                </div>
+                <input id="rlsm-input-mu" value="1" min="0" type="number" class="rlsm-input form-control" aria-label="Storage sequential over random access speed">
+              </div>
+              <div class="input-group input-group-sm mb-2">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage write over read speed">Storage w/r speed</label>
+                </div>
+                <input id="rlsm-input-phi" value="1" min="0" type="number" class="rlsm-input form-control" aria-label="Storage write over read speed">
+              </div>
+            </div> 
           </div>
         </div> <!-- END of Demo2-conf-col -->
 
@@ -392,7 +538,7 @@
 
           <div class="row dlsm-conf-row mb-2">
             <div class="mp-btn-group btn-group" role="group" aria-label="LSM Merge Policy" >
-              <button id="dlsm-lazyLevel" type="button" class="dlsm-input btn btn-custom">Lazy Leveling</button>
+              <button id="dlsm-lazyLevel" type="button" class="dlsm-input btn btn-custom btn-active">Lazy Leveling</button>
             </div>
           </div>
 
@@ -434,6 +580,56 @@
               </select>
             </div>
           </div>
+          <div class="row dlsm-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Bloom filters</label>
+              </div>
+              <input id="dlsm-input-Mbf" value="1024" min="0" type="number" class="dlsm-input form-control" aria-label="Bloom filters size">
+              <select class="custom-select">
+                <option value="0" selected><span></span>B</option>
+                <option value="1">KB</option>
+                <option value="2">MB</option>
+                <option value="3">GB</option>
+              </select>
+            </div>
+          </div>
+          <div class="row dlsm-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Fence pointers</label>
+              </div>
+              <input id="dlsm-input-Mf" value="0" min="0" type="number" class="dlsm-input form-control" aria-label="Fence pointer size">
+              <select class="custom-select">
+                <option value="0" selected><span></span>B</option>
+                <option value="1">KB</option>
+                <option value="2">MB</option>
+                <option value="3">GB</option>
+              </select>
+            </div>
+          </div>
+          <div class="row dlsm-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">File size(in terms of buffer)</label>
+              </div>
+              <input id="dlsm-input-f" value="1" min="0" type="number" class="dlsm-input form-control" aria-label="Size factor in terms of buffer size">
+            </div>
+          </div>
+          <div class="row dlsm-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Page Size</label>
+              </div>
+              <input id="dlsm-input-P" value="128" min="0" type="number" class="dlsm-input form-control" aria-label="Page size">
+              <select class="custom-select">
+                <option value="0" selected><span></span>B</option>
+                <option value="1">KB</option>
+                <option value="2">MB</option>
+                <option value="3">GB</option>
+              </select>
+            </div>
+          </div>
 
           <div class="row dlsm-conf-row">
             <div class="input-group input-group-sm mb-2">
@@ -442,6 +638,32 @@
               </div>
               <input id="dlsm-input-T" value="2" min="2" type="number" class="dlsm-input form-control" aria-label="Ratio">
             </div>
+          </div>
+          <div id="dlsm-adConf-row">
+            <div class="text-center"><a data-toggle="collapse" href="#dlsm-adSetting" aria-expanded="false" aria-controls="dlsm-adSetting">Advanced settings</a></div>
+            <div class="collapse" id="dlsm-adSetting">
+              <div class="input-group input-group-sm mb-2">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Selectivity of a range lookup">Selectivity</label>
+                </div>
+                <input id="dlsm-input-s" value="50" min="0" type="number" class="dlsm-input form-control" aria-label="Selectivity of a range lookup">
+                <div class="input-group-append">
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
+              <div class="input-group input-group-sm mb-2">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage sequential over random access speed">Storage s/r speed</label>
+                </div>
+                <input id="dlsm-input-mu" value="1" min="0" type="number" class="dlsm-input form-control" aria-label="Storage sequential over random access speed">
+              </div>
+              <div class="input-group input-group-sm mb-2">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage write over read speed">Storage w/r speed</label>
+                </div>
+                <input id="dlsm-input-phi" value="1" min="0" type="number" class="dlsm-input form-control" aria-label="Storage write over read speed">
+              </div>
+            </div> 
           </div>
         </div> <!-- END of Demo3-conf-col -->
 
@@ -453,7 +675,7 @@
 
           <div class="row osm-conf-row mb-2">
             <div class="mp-btn-group btn-group" role="group" aria-label="LSM Merge Policy" >
-              <button id="osm-leveling" type="button" class="osm-input btn btn-custom">Leveling</button>
+              <button id="osm-leveling" type="button" class="osm-input btn btn-custom btn-active">Leveling</button>
             </div>
           </div>
 
@@ -496,6 +718,56 @@
               </select>
             </div>
           </div>
+          <div class="row osm-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Bloom filters</label>
+              </div>
+              <input id="osm-input-Mbf" value="1024" min="0" type="number" class="osm-input form-control" aria-label="Bloom filters size">
+              <select class="custom-select">
+                <option value="0" selected><span></span>B</option>
+                <option value="1">KB</option>
+                <option value="2">MB</option>
+                <option value="3">GB</option>
+              </select>
+            </div>
+          </div>
+          <div class="row osm-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Fence pointers</label>
+              </div>
+              <input id="osm-input-Mf" value="0" min="0" type="number" class="osm-input form-control" aria-label="Fence pointer size">
+              <select class="custom-select">
+                <option value="0" selected><span></span>B</option>
+                <option value="1">KB</option>
+                <option value="2">MB</option>
+                <option value="3">GB</option>
+              </select>
+            </div>
+          </div>
+          <div class="row osm-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">File size(in terms of buffer)</label>
+              </div>
+              <input id="osm-input-f" value="1" min="0" type="number" class="osm-input form-control" aria-label="Size factor in terms of buffer size">
+            </div>
+          </div>
+          <div class="row osm-conf-row">
+            <div class="input-group input-group-sm mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Page Size</label>
+              </div>
+              <input id="osm-input-P" value="128" min="0" type="number" class="osm-input form-control" aria-label="Page size">
+              <select class="custom-select">
+                <option value="0" selected><span></span>B</option>
+                <option value="1">KB</option>
+                <option value="2">MB</option>
+                <option value="3">GB</option>
+              </select>
+            </div>
+          </div>
 
           <div class="row osm-conf-row">
             <div class="input-group input-group-sm mb-2">
@@ -504,6 +776,32 @@
               </div>
               <input id="osm-input-T" value="2" min="2" type="number" class="osm-input form-control" aria-label="Ratio">
             </div>
+          </div>
+          <div id="osm-adConf-row">
+            <div class="text-center"><a data-toggle="collapse" href="#osm-adSetting" aria-expanded="false" aria-controls="osm-adSetting">Advanced settings</a></div>
+            <div class="collapse" id="osm-adSetting">
+              <div class="input-group input-group-sm mb-2">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Selectivity of a range lookup">Selectivity</label>
+                </div>
+                <input id="osm-input-s" value="50" min="0" type="number" class="osm-input form-control" aria-label="Selectivity of a range lookup">
+                <div class="input-group-append">
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
+              <div class="input-group input-group-sm mb-2">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage sequential over random access speed">Storage s/r speed</label>
+                </div>
+                <input id="osm-input-mu" value="1" min="0" type="number" class="osm-input form-control" aria-label="Storage sequential over random access speed">
+              </div>
+              <div class="input-group input-group-sm mb-2">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage write over read speed">Storage w/r speed</label>
+                </div>
+                <input id="osm-input-phi" value="1" min="0" type="number" class="osm-input form-control" aria-label="Storage write over read speed">
+              </div>
+            </div> 
           </div>
         </div> <!-- END of Demo4-conf-col -->
       </div> <!-- END of indivaidual configurations of Interactive Demo -->
@@ -585,7 +883,7 @@
           <div id="cmp-dlsm-mp" class="row cmp-indiv-mp">
             <span class="div-title">Dostoevsky-LSM</span>
             <div class="mp-btn-group btn-group mb-2" role="group" aria-label="LSM Merge Policy" >
-              <button id="cmp-dlsm-lazyLevel" type="button" class="cmp-input btn btn-custom">Lazy Leveling</button>
+              <button id="cmp-dlsm-lazyLevel" type="button" class="cmp-input btn btn-custom btn-active">Lazy Leveling</button>
             </div>
           </div>
           <div id="dlsm-bush" class="bush-res">
@@ -628,7 +926,7 @@
           <div id="cmp-osm-mp" class="row cmp-indiv-mp">
             <span class="div-title">OSM</span>
             <div class="mp-btn-group btn-group mb-2" role="group" aria-label="LSM Merge Policy" >
-              <button id="cmp-osm-leveling" type="button" class="cmp-input btn btn-custom">Leveling</button>
+              <button id="cmp-osm-leveling" type="button" class="cmp-input btn btn-custom btn-active">Leveling</button>
             </div>
           </div>
           <div id="osm-bush" class="bush-res">
@@ -683,7 +981,7 @@
         </div>
         <div class="row">
           <div class="metrics col-lg-7 col-md-7 col-sm-7">
-            <span class="metric-title">0 point lookup</span>
+            <span class="metric-title">ZR-point lookup</span>
           </div>
           <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
             <span id="vlsm-R-cost" class="cost">XXX I/O</span>
@@ -691,7 +989,7 @@
         </div>
         <div class="row">
           <div class="metrics col-lg-7 col-md-7 col-sm-7">
-            <span class="metric-title">Non-0 point lookup</span>
+            <span class="metric-title">NZR-point lookup</span>
           </div>
           <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
             <span id="vlsm-V-cost" class="cost">XXX I/O</span>
@@ -707,7 +1005,7 @@
         </div>
         <div class="row">
           <div class="metrics col-lg-7 col-md-7 col-sm-7">
-            <span class="metric-title">Long range Lookup</span>
+            <span class="metric-title">Long range lookup</span>
           </div>
           <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
             <span id="vlsm-lQ-cost" class="cost">XXX I/O</span>
@@ -715,7 +1013,7 @@
         </div>
         <div class="row">
           <div class="metrics col-lg-7 col-md-7 col-sm-7">
-            <span class="metric-title">Space Amplification</span>
+            <span class="metric-title">Space amplification</span>
           </div>
           <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
             <span id="vlsm-sAMP-cost" class="cost">XXX</span>
@@ -723,7 +1021,7 @@
         </div>
         <div class="row">
           <div class="metrics col-lg-7 col-md-7 col-sm-7">
-            <span class="metric-title">Storage Space</span>
+            <span class="metric-title">Storage space</span>
           </div>
           <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
             <span id="vlsm-storage-cost" class="cost">XXX TB</span>
@@ -731,7 +1029,7 @@
         </div>
         <div class="row">
           <div class="metrics col-lg-7 col-md-7 col-sm-7">
-            <span class="metric-title">Memory Footprint</span>
+            <span class="metric-title">Memory footprint</span>
           </div>
           <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
             <span id="vlsm-memory-cost" class="cost">XXX GB</span>
