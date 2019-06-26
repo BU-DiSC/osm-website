@@ -33,30 +33,30 @@ class LSM {
             mu: 1,
             phi: 1,
         };
-        this._MP = this._DEFAULT.MP;
-        this._P = this._DEFAULT.P;
-        this._Mfilter = this._DEFAULT.Mfilter;
-        this._s = this._DEFAULT.s;
-        this._mu = this._DEFAULT.mu;
-        this._phi = this._DEFAULT.phi;
-        this._prefix = prefix;
-        this._suffix = suffix;
-        this._preMP = this._MP;
+        this.MP = this.DEFAULT.MP;
+        this.P = this.DEFAULT.P;
+        this.Mfilter = this.DEFAULT.Mfilter;
+        this.s = this.DEFAULT.s;
+        this.mu = this.DEFAULT.mu;
+        this.phi = this.DEFAULT.phi;
+        this.prefix = prefix;
+        this.suffix = suffix;
+        this.preMP = this.MP;
 
         if(prefix) {
-            this._T = document.querySelector(`#${prefix}-input-T`).value;
-            this._E = document.querySelector(`#${prefix}-input-E`).value;
-            this._N = document.querySelector(`#${prefix}-input-N`).value;
-            this._M = document.querySelector(`#${prefix}-input-M`).value;
-            this._f = document.querySelector(`#${prefix}-input-f`).value;
+            this.T = document.querySelector(`#${prefix}-input-T`).value;
+            this.E = document.querySelector(`#${prefix}-input-E`).value;
+            this.N = document.querySelector(`#${prefix}-input-N`).value;
+            this.M = document.querySelector(`#${prefix}-input-M`).value;
+            this.f = document.querySelector(`#${prefix}-input-f`).value;
         } else {
-            this._T = this._DEFAULT.T;
-            this._E = this._DEFAULT.E;
-            this._N = this._DEFAULT.N;
-            this._M = this._DEFAULT.M;
-            this._f = this._DEFAULT.F;
+            this.T = this._DEFAULT.T;
+            this.E = this._DEFAULT.E;
+            this.N = this._DEFAULT.N;
+            this.M = this._DEFAULT.M;
+            this.f = this._DEFAULT.F;
         }
-        this._L = this._getL();     
+        this.L = this._getL();     
     }
 
     get T() {return this._T;}
@@ -73,7 +73,7 @@ class LSM {
     get mu() {return this._mu;}
     get phi() {return this._phi;}
     get K(){
-        if(this.MP || this.name === "DostoevskyLSM") return this.T;
+        if(this.MP || this.name === "DostoevskyLSM") return parseInt(this.T);
         else return 1;
     }
     get Z() {
@@ -86,32 +86,52 @@ class LSM {
     get DEFAULT() {return this._DEFAULT;}
     get name() { return this.__proto__.constructor.name;}
     set T(ratio) {
-        this._T = ratio;
+        this._T = parseInt(ratio);
         return this._T;
     }
     set E(entrySize) {
-        this._E = entrySize;
+        this._E = parseFloat(entrySize);
         return this._E;
     }
     set N(entryNum) {
-        this._N = entryNum;
+        this._N = parseFloat(entryNum);
         return this._N;
     }
     set M(bufferSize) {
-        this._M = bufferSize;
+        this._M = parseFloat(bufferSize);
         return this._M;
     }
+    set Mfilter(filterSize) {
+        this._Mfilter = parseFloat(filterSize);
+        return this._Mfilter;
+    }
+    set P(pageSize) {
+        this._P = parseFloat(pageSize);
+        return this._P;
+    }
     set MP(mergePolicy) {
-        this._MP = mergePolicy;
+        this._MP = parseInt(mergePolicy);
         return this._MP;
     }
     set f(fileSize) {
-        this._f = fileSize;
+        this._f = parseFloat(fileSize);
         return this._f;
     }
     set L(level) {
-        this._L = level;
+        this._L = parseInt(level);
         return this._L;
+    }
+    set s(selectivity) {
+        this._s = parseFloat(selectivity);
+        return this._s;
+    }
+    set mu(speedRatio) {
+        this._mu = parseFloat(speedRatio);
+        return this._s;
+    }
+    set phi(speedRatio) {
+        this._phi = parseFloat(speedRatio);
+        return this._phi;
     }
     set prefix(prefix) {
         this._prefix = prefix;
@@ -122,7 +142,7 @@ class LSM {
         return this._suffix;
     }
     set preMP(mergePolicy) {
-        this._preMP = mergePolicy;
+        this._preMP = parseInt(mergePolicy);
         return this._preMP;
     }
     set DEFAULT(defaultObj) {
@@ -207,7 +227,12 @@ class LSM {
      * Return a string to be displayed when triggering ToolTip  
      */
     _getTipText(ith, run_capacity, entry_num, file_num) {
-        var text = "Level " + ith + ": This run contains " + entry_num + "/" + run_capacity + " entries in " + file_num + " files";
+        var text = "";
+        if (this.MP) {
+            text =  "Level " + ith + ": This run contains " + entry_num + "/" + run_capacity + " entries in " + file_num + " files";
+        } else {
+             text = "Level " + ith + ": contains " + entry_num + "/" + run_capacity + " entries in " + file_num + " files";
+        }
         return text;
     }
     /* Calculate current amount and set the width of runs
@@ -326,13 +351,12 @@ class LSM {
         this._updateCostResult();
     }
     _updateCostResult() {
-        
-        document.querySelector(`#${this.suffix}-W-cost`).textContent = this._getUpdateCost();
-        document.querySelector(`#${this.suffix}-R-cost`).textContent = this._getZeroPointLookUpCost();
-        document.querySelector(`#${this.suffix}-V-cost`).textContent = this._getExistPointLookUpCost();
-        document.querySelector(`#${this.suffix}-sQ-cost`).textContent = this._getShortRangeLookUpCost();
-        document.querySelector(`#${this.suffix}-lQ-cost`).textContent = this._getLongRangeLookUpCost();
-        document.querySelector(`#${this.suffix}-sAMP-cost`).textContent = this._getSpaceAmpCost();
+        document.querySelector(`#${this.suffix}-W-cost`).textContent = roundTo(this._getUpdateCost(), 4) + " I/O";
+        document.querySelector(`#${this.suffix}-R-cost`).textContent = roundTo(this._getZeroPointLookUpCost(), 4) +" I/O";
+        document.querySelector(`#${this.suffix}-V-cost`).textContent = roundTo(this._getExistPointLookUpCost(), 4) +" I/O";
+        document.querySelector(`#${this.suffix}-sQ-cost`).textContent = roundTo(this._getShortRangeLookUpCost(), 4) +" I/O";
+        document.querySelector(`#${this.suffix}-lQ-cost`).textContent = roundTo(this._getLongRangeLookUpCost(), 4) +" I/O";
+        document.querySelector(`#${this.suffix}-sAMP-cost`).textContent = roundTo(this._getSpaceAmpCost(), 4);
     }
 
     _getUpdateCost() {
@@ -349,9 +373,10 @@ class LSM {
         var f4 = Math.pow(this.T, this.T/(this.T-1)) / (this.T-1)
         return f1*f2*f3*f4;
     }
-    _getExistPointLookUpCost() {
-        //V
-        return 1 + this.Z * Math.exp(-(this.Mfilter/this.N));
+    _getExistPointLookUpCost()  {
+        //V = 1 + R - R/Z * (T-1)/T
+        var R = this._getZeroPointLookUpCost();
+        return 1 + R - (R/this.Z) * (this.T-1)/this.T;
     }
     _getShortRangeLookUpCost(){
         //sQ
@@ -736,9 +761,9 @@ class RocksDBLSM extends LSM {
 class DostoevskyLSM extends LSM {
     constructor(tarConf, tarRes) {
         super(tarConf, tarRes);
-        this._MP = 1;
-        this._DEFAULT.MP = 1;
-        this._preMP = 1;
+        this.MP = 1;
+        this.DEFAULT.MP = 1;
+        this.preMP = 1;
     }
 
     _getRunCapacity(ith, level) {
@@ -1083,6 +1108,10 @@ function validate(self, target, input) {
  */
 function correctDecimal(number) {
     return parseFloat(number.toPrecision(15));
+}
+
+function roundTo(number, digits) {
+    return parseFloat(number.toFixed(digits));
 }
 
 function getBaseLog(x, y) {

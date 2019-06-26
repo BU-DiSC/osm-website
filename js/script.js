@@ -6,10 +6,67 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
     selector: '[data-toggle="tooltip"]',
     html: true,
   });
-  
+
   $('span[data-toggle="tooltip"]').on('shown.bs.tooltip', function () {
     MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 
+  });
+
+  $("#cmp-leveling").click(function (event) {
+    $("#cmp-tiering").removeClass("btn-active");
+    $("#cmp-vlsm-tiering").removeClass("btn-active");
+    $("#cmp-rlsm-tiering").removeClass("btn-active");
+    if (!$("#cmp-leveling").hasClass("btn-active")) {
+      $("#cmp-leveling").addClass("btn-active");
+    }
+    if (!$("#cmp-vlsm-leveling").hasClass("btn-active")) {
+      $("#cmp-vlsm-leveling").addClass("btn-active");
+    }
+    if (!$("#cmp-rlsm-leveling").hasClass("btn-active")) {
+      $("#cmp-rlsm-leveling").addClass("btn-active");
+    }
+  });
+  $("#cmp-tiering").click(function (event) {
+    $("#cmp-leveling").removeClass("btn-active");
+    $("#cmp-vlsm-leveling").removeClass("btn-active");
+    $("#cmp-rlsm-leveling").removeClass("btn-active");
+    if (!$("#cmp-tiering").hasClass("btn-active")) {
+      $("#cmp-tiering").addClass("btn-active");
+    }
+    if (!$("#cmp-vlsm-tiering").hasClass("btn-active")) {
+      $("#cmp-vlsm-tiering").addClass("btn-active");
+    }
+    if (!$("#cmp-rlsm-tiering").hasClass("btn-active")) {
+      $("#cmp-rlsm-tiering").addClass("btn-active");
+    }
+  });
+  $("#cmp-vlsm-leveling").click(function (event) {
+    $("#cmp-vlsm-tiering").removeClass("btn-active");
+    $("#cmp-tiering").removeClass("btn-active");
+    if (!$("#cmp-vlsm-leveling").hasClass("btn-active")) {
+      $("#cmp-vlsm-leveling").addClass("btn-active");
+    }
+  });
+  $("#cmp-vlsm-tiering").click(function (event) {
+    $("#cmp-vlsm-leveling").removeClass("btn-active");
+    $("#cmp-leveling").removeClass("btn-active");
+    if (!$("#cmp-vlsm-tiering").hasClass("btn-active")) {
+      $("#cmp-vlsm-tiering").addClass("btn-active");
+    }
+  });
+  $("#cmp-rlsm-leveling").click(function (event) {
+    $("#cmp-rlsm-tiering").removeClass("btn-active");
+    $("#cmp-tiering").removeClass("btn-active");
+    if (!$("#cmp-rlsm-leveling").hasClass("btn-active")) {
+      $("#cmp-rlsm-leveling").addClass("btn-active");
+    }
+  });
+  $("#cmp-rlsm-tiering").click(function (event) {
+    $("#cmp-rlsm-leveling").removeClass("btn-active");
+    $("#cmp-leveling").removeClass("btn-active");
+    if (!$("#cmp-rlsm-tiering").hasClass("btn-active")) {
+      $("#cmp-rlsm-tiering").addClass("btn-active");
+    }
   });
 
   // Same as document.querySelector("#navbarToggle").addEventListener("blur",...

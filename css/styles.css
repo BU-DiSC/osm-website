@@ -29,7 +29,9 @@ p {
 	font-size: 20px;
 	font-weight: 300;
 }
-
+select {
+	
+}
 hr {
 	margin-top: 1.5rem;
 	margin-bottom: 1.5rem;
@@ -85,7 +87,6 @@ ul > .nav-item{
 	display:flex;
 	flex-direction: row;
 	align-items: stretch;
-	justify-content: ;
 }
 .cmp-conf-col {
 }
@@ -96,10 +97,22 @@ ul > .nav-item{
 	text-align: right;
 }
 .input-group .cmp-input{
-	flex-grow: 5;
 }
 .input-group .custom-select {
-	flex-grow: 1;
+	flex: 0 0 40px;
+	background-position: right 5px center;
+    background-repeat: no-repeat;
+    background-size: 0.45rem auto;
+    background-image: url("data:image/svg+xml;charset=utf-8, \
+    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 40'> \
+      <polygon points='0,0 60,0 30,40' style='fill:grey;'/> \
+    </svg>");
+    text-align-last: center;
+    text-align: center;
+    padding-right: 13px;
+    padding-left: 5px;
+    color:#343a40;
+    background-color: #ecf0f1;
 }
 .input-group .vlsm-input, .input-group .rlsm-input, .input-group .dlsm-input, .input-group .osm-input {
 	flex-grow: 5;
@@ -112,8 +125,8 @@ ul > .nav-item{
 input[type=number]::-webkit-inner-spin-button {	/* Styling number input spinner button, not support on Firefox, Edge, IE */  
   width: 27px;
   height: 27px;
-  margin-right: -15px;
-  margin-left: 10px;
+  margin-right: -19px;
+  margin-left: 5px;
 }
 
 /* Merge policy selecting bar */
@@ -128,12 +141,30 @@ input[type=number]::-webkit-inner-spin-button {	/* Styling number input spinner 
 	border-color: rgb(206, 212, 218);
 	padding: 0.1875rem 0.75rem;
 }
-.mp-btn-group .btn:hover, .mp-btn-group .btn:focus {
+.mp-btn-group .btn:hover, .mp-btn-group .btn:active {
 	color: #fff;
 	background-color: #95a5a6;
     border-color: #798d8f;
 }
-
+.mp-btn-group .btn:focus {	/*Override original focus */
+	/*background-color: #ecf0f1;
+	color:#2C3E50;
+	border-color: rgb(206, 212, 218);*/
+	color: #fff;
+	background-color: #95a5a6;
+    border-color: #798d8f;
+    outline: 0;
+    -webkit-box-shadow: 0 0 0 0;
+    box-shadow: 0 0 0 0;
+    /*-webkit-box-shadow: 0 0 0 0.1rem rgba(44,62,80,0.25);
+    box-shadow: 0 0 0 0.1rem rgba(44,62,80,0.25);*/
+}
+.mp-btn-group .btn:active, .mp-btn-group .btn-active{
+	color: #fff;
+	background-color: #95a5a6;
+    border-color: #798d8f;
+    outline: 0;
+}
 .div-title { /* LSM name title */
 	font-size: 1.25vw;
 	margin-bottom: 5px;
@@ -169,7 +200,7 @@ input[type=number]::-webkit-inner-spin-button {	/* Styling number input spinner 
 /* LSM performance result display */
 #cost-result {
 	line-height: 2;
-	font-size: 1rem;/*1.10rem;*/
+	font-size: 1rem;
 	font-weight: 300;
 	color: #343a40;
 }
