@@ -1118,7 +1118,9 @@ function validate(self, target, input) {
         case `${target}-select-N`:
         case `${target}-select-E`:
         case `${target}-select-M`:
-        case `${target}-select-f`:
+        case `${target}-select-Mf`:
+        case `${target}-select-P`:
+        case `${target}-select-Mbf`:
         case `${target}-tiering`:
         case `${target}-leveling`:
         case `${target}-vlsm-tiering`:
