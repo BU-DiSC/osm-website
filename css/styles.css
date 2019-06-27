@@ -114,9 +114,6 @@ ul > .nav-item{
     color:#343a40;
     background-color: #ecf0f1;
 }
-.input-group .vlsm-input, .input-group .rlsm-input, .input-group .dlsm-input, .input-group .osm-input {
-	flex-grow: 5;
-}
 .input-group-text {
 	color: #343a40;
 }
@@ -143,7 +140,7 @@ input[type=number]::-webkit-inner-spin-button {	/* Styling number input spinner 
 }
 .mp-btn-group .btn:hover, .mp-btn-group .btn:active {
 	color: #fff;
-	background-color: #95a5a6;
+	background-color: #2C3E50; /*#95a5a6*/
     border-color: #798d8f;
 }
 .mp-btn-group .btn:focus {	/*Override original focus */
@@ -151,7 +148,7 @@ input[type=number]::-webkit-inner-spin-button {	/* Styling number input spinner 
 	color:#2C3E50;
 	border-color: rgb(206, 212, 218);*/
 	color: #fff;
-	background-color: #95a5a6;
+	background-color: #2C3E50; /*#95a5a6*/
     border-color: #798d8f;
     outline: 0;
     -webkit-box-shadow: 0 0 0 0;
@@ -161,7 +158,7 @@ input[type=number]::-webkit-inner-spin-button {	/* Styling number input spinner 
 }
 .mp-btn-group .btn:active, .mp-btn-group .btn-active{
 	color: #fff;
-	background-color: #95a5a6;
+	background-color: #2C3E50; /*#95a5a6*/
     border-color: #798d8f;
     outline: 0;
 }

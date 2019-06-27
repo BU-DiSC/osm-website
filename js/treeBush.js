@@ -6,7 +6,8 @@ function (event) {
 // E : size of an entry(bytes)
 // T : size ratio
 // M : buffer capacity(MB);
-// Mbf: memory allocated to bloomfilter(B)
+// Mbf: memory allocated to bloomFilters
+// Mf : memory allocated to FencePointers
 // MP : Merge policy;
 // F : file size in terms of buffer
 // P : page size;
@@ -25,8 +26,9 @@ class LSM {
             E: 16,
             N: 1048576,
             P: 128,
-            M: 2,
+            M: 2097152, //2MB
             Mbf: 1024,
+            Mf: 0,
             MP: 0,
             f: 1,
             s: 0.5,
@@ -34,27 +36,32 @@ class LSM {
             phi: 1,
         };
         this.MP = this.DEFAULT.MP;
-        this.P = this.DEFAULT.P;
-        this.Mbf = this.DEFAULT.Mbf;
-        this.s = this.DEFAULT.s;
-        this.mu = this.DEFAULT.mu;
-        this.phi = this.DEFAULT.phi;
         this.prefix = prefix;
         this.suffix = suffix;
         this.preMP = this.MP;
 
         if(prefix) {
             this.T = document.querySelector(`#${prefix}-input-T`).value;
-            this.E = document.querySelector(`#${prefix}-input-E`).value;
+            this.E = convertToBytes(`#${prefix}-select-E`, document.querySelector(`#${prefix}-input-E`).value);
             this.N = document.querySelector(`#${prefix}-input-N`).value;
-            this.M = document.querySelector(`#${prefix}-input-M`).value;
+            this.M = convertToBytes(`#${prefix}-select-M`, document.querySelector(`#${prefix}-input-M`).value);
             this.f = document.querySelector(`#${prefix}-input-f`).value;
+            this.P = convertToBytes(`#${prefix}-select-P`, document.querySelector(`#${prefix}-input-P`).value);
+            this.Mbf = convertToBytes(`#${prefix}-select-Mbf`, document.querySelector(`#${prefix}-input-Mbf`).value);
+            this.s = document.querySelector(`#${prefix}-input-s`).value;
+            this.mu = document.querySelector(`#${prefix}-input-mu`).value;
+            this.phi = document.querySelector(`#${prefix}-input-phi`).value;
         } else {
             this.T = this._DEFAULT.T;
             this.E = this._DEFAULT.E;
             this.N = this._DEFAULT.N;
             this.M = this._DEFAULT.M;
-            this.f = this._DEFAULT.F;
+            this.f = this._DEFAULT.f;
+            this.P = this.DEFAULT.P;
+            this.Mbf = this.DEFAULT.Mbf;
+            this.s = this.DEFAULT.s;
+            this.mu = this.DEFAULT.mu;
+            this.phi = this.DEFAULT.phi;
         }
         this.L = this._getL();     
     }
@@ -122,15 +129,15 @@ class LSM {
         return this._L;
     }
     set s(selectivity) {
-        this._s = parseFloat(selectivity);
+        this._s = parseFloat(selectivity/100);
         return this._s;
     }
-    set mu(speedRatio) {
-        this._mu = parseFloat(speedRatio);
+    set mu(constant) {
+        this._mu = parseFloat(constant);
         return this._s;
     }
-    set phi(speedRatio) {
-        this._phi = parseFloat(speedRatio);
+    set phi(constant) {
+        this._phi = parseFloat(constant);
         return this._phi;
     }
     set prefix(prefix) {
@@ -151,8 +158,7 @@ class LSM {
     }
 
     _isAllInBuffer() {
-        var Mbytes = this.M * Math.pow(2, 20);
-        var nEntry_M = Math.floor(Mbytes / this.E);     // number of entries fit into buffer
+        var nEntry_M = Math.floor(this.M / this.E);     // number of entries fit into buffer
         return this.N <= nEntry_M;
     }
 
@@ -160,16 +166,14 @@ class LSM {
         // entryNum must > 0
         if (entryNum == 0) return 1;
         var L;
-        var Mbytes = this.M * Math.pow(2, 20);
-        var nEntry_M = Math.floor(Mbytes / this.E);     // number of entries fit into buffer
+        var nEntry_M = Math.floor(this.M / this.E);     // number of entries fit into buffer
         var log = entryNum * (this.T - 1) / (nEntry_M * this.T) + 1;
         L = Math.ceil(getBaseLog(this.T, log));
         return (L < 1) ? 1 : L;
     }
     _getFileCapacity() {
         // in terms of #entries
-        var Mbytes = this.M * Math.pow(2, 20);
-        var nEntry_M = Math.floor(Mbytes / this.E);     // number of entries fit into buffer
+        var nEntry_M = Math.floor(this.M / this.E);     // number of entries fit into buffer
         return Math.floor(correctDecimal(nEntry_M * this.f));
     }
  
@@ -178,16 +182,14 @@ class LSM {
      * Computing based on the buffer capacity of #ENTRY
      */
     _getRunCapacity(ith) {
-        var Mbytes = this.M * Math.pow(2, 20);   // convert to bytes
-        var nEntry_M = Math.floor(Mbytes / this.E);
+        var nEntry_M = Math.floor(this.M / this.E);
         var nEntry_L = nEntry_M * Math.pow(this.T, ith);
         if (this.MP && ith) return nEntry_L / this.T;
         else return nEntry_L;
     }
 
     _getLevelCapacity(ith) {
-        var Mbytes = this.M * Math.pow(2, 20);   
-        var nEntry_M = Math.floor(Mbytes / this.E);
+        var nEntry_M = Math.floor(this.M / this.E);
         var nEntry_L = nEntry_M * Math.pow(this.T, ith);
         return nEntry_L;
     }
@@ -202,7 +204,6 @@ class LSM {
      * compute the number of entries per run for jth run in ith level; 
      */
     _getEntryNum(ith, jth, run_capacity) {
-        var Mbytes = this.M * Math.pow(2, 20);
         var cur_capacity = this._sumLevelsCapacity(ith);
         var li_capacity = this._getLevelCapacity(ith);
         var isLastLevel = this.N <= cur_capacity;
@@ -337,12 +338,17 @@ class LSM {
     /* update current state */
     update(prefix, mergePolicy = this.MP) {
         this.prefix = prefix;
-        this.T = document.querySelector(`#${this.prefix}-input-T`).value;
-        this.E = document.querySelector(`#${this.prefix}-input-E`).value;
-        this.N = document.querySelector(`#${this.prefix}-input-N`).value;
-        this.M = document.querySelector(`#${this.prefix}-input-M`).value;
-        this.f = document.querySelector(`#${this.prefix}-input-f`).value;
         this.MP = mergePolicy;
+        this.T = document.querySelector(`#${this.prefix}-input-T`).value;
+        this.E = convertToBytes(`#${this.prefix}-select-E`, document.querySelector(`#${this.prefix}-input-E`).value);
+        this.N = document.querySelector(`#${this.prefix}-input-N`).value;
+        this.M = convertToBytes(`#${this.prefix}-select-M`, document.querySelector(`#${this.prefix}-input-M`).value);
+        this.f = document.querySelector(`#${this.prefix}-input-f`).value;
+        this.P = convertToBytes(`#${prefix}-select-P`, document.querySelector(`#${prefix}-input-P`).value);
+        this.Mbf = convertToBytes(`#${prefix}-select-Mbf`, document.querySelector(`#${prefix}-input-Mbf`).value);
+        this.s = document.querySelector(`#${prefix}-input-s`).value;
+        this.mu = document.querySelector(`#${prefix}-input-mu`).value;
+        this.phi = document.querySelector(`#${prefix}-input-phi`).value;
         this.L = this._getL();
         // set the range of input F
         if (this.MP) document.querySelector(`#${this.prefix}-input-f`).max = "1";
@@ -706,12 +712,17 @@ class RocksDBLSM extends LSM {
     /* update current state */
     update(prefix, mergePolicy = this.MP) {
         this.prefix = prefix;
-        this.T = document.querySelector(`#${this.prefix}-input-T`).value;
-        this.E = document.querySelector(`#${this.prefix}-input-E`).value;
-        this.N = document.querySelector(`#${this.prefix}-input-N`).value;
-        this.M = document.querySelector(`#${this.prefix}-input-M`).value;
-        this.f = document.querySelector(`#${this.prefix}-input-f`).value;
         this.MP = mergePolicy;
+        this.T = document.querySelector(`#${this.prefix}-input-T`).value;
+        this.E = convertToBytes(`#${this.prefix}-select-E`, document.querySelector(`#${this.prefix}-input-E`).value);
+        this.N = document.querySelector(`#${this.prefix}-input-N`).value;
+        this.M = convertToBytes(`#${this.prefix}-select-M`, document.querySelector(`#${this.prefix}-input-M`).value);
+        this.f = document.querySelector(`#${this.prefix}-input-f`).value;
+        this.P = convertToBytes(`#${prefix}-select-P`, document.querySelector(`#${prefix}-input-P`).value);
+        this.Mbf = convertToBytes(`#${prefix}-select-Mbf`, document.querySelector(`#${prefix}-input-Mbf`).value);
+        this.s = document.querySelector(`#${prefix}-input-s`).value;
+        this.mu = document.querySelector(`#${prefix}-input-mu`).value;
+        this.phi = document.querySelector(`#${prefix}-input-phi`).value;
         this.L = this._getL();
         // set the range of input F
         if (this.MP) document.querySelector(`#${this.prefix}-input-f`).max = "1";
@@ -767,8 +778,7 @@ class DostoevskyLSM extends LSM {
     }
 
     _getRunCapacity(ith, level) {
-        var Mbytes = this.M * Math.pow(2, 20);   // convert to bytes
-        var nEntry_M = Math.floor(Mbytes / this.E);
+        var nEntry_M = Math.floor(this.M / this.E);
         var nEntry_L = nEntry_M * Math.pow(this.T, ith);
         if (ith === 0 || ith === level ) return nEntry_L;
         else return nEntry_L / this.T;
@@ -833,12 +843,17 @@ class DostoevskyLSM extends LSM {
 
     update(prefix, mergePolicy = this.MP) {
         this.prefix = prefix;
-        this.T = document.querySelector(`#${this.prefix}-input-T`).value;
-        this.E = document.querySelector(`#${this.prefix}-input-E`).value;
-        this.N = document.querySelector(`#${this.prefix}-input-N`).value;
-        this.M = document.querySelector(`#${this.prefix}-input-M`).value;
-        this.f = document.querySelector(`#${this.prefix}-input-f`).value;
         this.MP = mergePolicy;
+        this.T = document.querySelector(`#${this.prefix}-input-T`).value;
+        this.E = convertToBytes(`#${this.prefix}-select-E`, document.querySelector(`#${this.prefix}-input-E`).value);
+        this.N = document.querySelector(`#${this.prefix}-input-N`).value;
+        this.M = convertToBytes(`#${this.prefix}-select-M`, document.querySelector(`#${this.prefix}-input-M`).value);
+        this.f = document.querySelector(`#${this.prefix}-input-f`).value;
+        this.P = convertToBytes(`#${prefix}-select-P`, document.querySelector(`#${prefix}-input-P`).value);
+        this.Mbf = convertToBytes(`#${prefix}-select-Mbf`, document.querySelector(`#${prefix}-input-Mbf`).value);
+        this.s = document.querySelector(`#${prefix}-input-s`).value;
+        this.mu = document.querySelector(`#${prefix}-input-mu`).value;
+        this.phi = document.querySelector(`#${prefix}-input-phi`).value;
         this.L = this._getL();
         // set the range of input F
         if (this.MP) document.querySelector(`#${this.prefix}-input-f`).max = "1";
@@ -932,12 +947,18 @@ function display() {
 function runCmp() {
     var target = "cmp";
     var input_T = document.querySelector("#cmp-input-T").value;
-    var input_E = document.querySelector("#cmp-input-E").value;
+    var input_E = convertToBytes("#cmp-select-E", document.querySelector("#cmp-input-E").value);
     var input_N = document.querySelector("#cmp-input-N").value;
-    var input_M = document.querySelector("#cmp-input-M").value;
-    var input_F = document.querySelector("#cmp-input-f").value;
+    var input_M = convertToBytes("#cmp-select-M", document.querySelector("#cmp-input-M").value);
+    var input_f = document.querySelector("#cmp-input-f").value;
+    var input_P = convertToBytes("#cmp-select-P", document.querySelector("#cmp-input-P").value);
+    var input_Mbf = convertToBytes("#cmp-select-Mbf", document.querySelector("#cmp-select-Mbf").value);
+    var input_s = document.querySelector("#cmp-input-s").value;
+    var input_mu = document.querySelector("#cmp-input-mu").value;
+    var input_phi = document.querySelector("#cmp-input-phi").value;
 
-    var input = {T: input_T, E: input_E, N: input_N, M: input_M, F: input_F};
+
+    var input = {T: input_T, E: input_E, N: input_N, M: input_M, f: input_f, P: input_P, Mbf: input_Mbf, s: input_s, mu: input_mu, phi: input_phi};
     validate(this, target, input);
 
 
@@ -1026,10 +1047,16 @@ function runIndiv() {
     }
     var obj = window.obj[target]; 
     var input_T = document.querySelector(`#${target}-input-T`).value;
-    var input_E = document.querySelector(`#${target}-input-E`).value;
+    var input_E = convertToBytes(`#${target}-select-E`, document.querySelector(`#${target}-input-E`).value);
     var input_N = document.querySelector(`#${target}-input-N`).value;
-    var input_M = document.querySelector(`#${target}-input-M`).value;
-    var input = {T: input_T, E: input_E, N: input_N, M: input_M};
+    var input_M = convertToBytes(`#${target}-select-M`, document.querySelector(`#${target}-input-M`).value);
+    var input_f = document.querySelector(`#${target}-input-f`).value;
+    var input_P = convertToBytes(`#${target}-select-P`, document.querySelector(`#${target}-input-P`).value);
+    var input_Mbf = convertToBytes(`#${target}-select-Mbf`, document.querySelector(`#${target}-input-Mbf`).value);
+    var input_s = document.querySelector(`#${target}-input-s`).value;
+    var input_mu = document.querySelector(`#${target}-input-mu`).value;
+    var input_phi = document.querySelector(`#${target}-input-phi`).value;
+    var input = {T: input_T, E: input_E, N: input_N, M: input_M, f: input_f, P: input_P, Mbf: input_Mbf, s: input_s, mu: input_mu, phi: input_phi};
     validate(this, target, input);
 
     if (this.id.includes("leveling")) {
@@ -1082,6 +1109,16 @@ function validate(self, target, input) {
             var max = parseInt(document.querySelector(`#${target}-input-f`).max);
             if (input.F <= min || input.F > max) document.querySelector(`#${target}-input-f`).value = 1;
             break;
+        case `${target}-input-P`:  //TODO
+        case `${target}-input-Mbf`:  //TODO
+        case `${target}-input-s`:  //TODO
+        case `${target}-input-mu`:  //TODO
+        case `${target}-input-phi`:  //TODO
+        case `${target}-select-T`:
+        case `${target}-select-N`:
+        case `${target}-select-E`:
+        case `${target}-select-M`:
+        case `${target}-select-f`:
         case `${target}-tiering`:
         case `${target}-leveling`:
         case `${target}-vlsm-tiering`:
@@ -1112,6 +1149,25 @@ function correctDecimal(number) {
 
 function roundTo(number, digits) {
     return parseFloat(number.toFixed(digits));
+}
+
+function convertToBytes(target, input) {
+    var selector = document.querySelector(target);
+    var value = selector[selector.selectedIndex].value;
+    switch (value) {
+        case "0":  //B
+            return input;
+        case "1":  //KB
+            return input * Math.pow(2, 10);
+        case "2":  //MB
+            return input * Math.pow(2, 20);
+        case "3":  //GB
+            return input * Math.pow(2, 30);
+        default:
+        console.log(value);
+        alert(`Invalid: Unknown value of unit in ${target}`);
+    }
+
 }
 
 function getBaseLog(x, y) {
@@ -1207,12 +1263,11 @@ function clear(element) {
         element.removeChild(element.firstChild);
     }
 }
-function checkF(target) {
-    var input_F = document.querySelector(`#${target}-input-f`).value;
-    var obj = window.obj[target]; 
+// function checkF(target) {
+//     var input_f = document.querySelector(`#${target}-input-f`).value;
+//     var obj = window.obj[target]; 
+// }
 
-
-}
 
  
 initCmp();
@@ -1232,6 +1287,16 @@ document.querySelector("#cmp-input-M").onchange = runCmp;
 document.querySelector("#cmp-input-M").onwheel = runCmp;
 document.querySelector("#cmp-input-f").onchange = runCmp;
 document.querySelector("#cmp-input-f").onwheel = runCmp;
+document.querySelector("#cmp-input-P").onchange = runCmp;
+document.querySelector("#cmp-input-P").onwheel = runCmp;
+document.querySelector("#cmp-input-Mbf").onchange = runCmp;
+document.querySelector("#cmp-input-Mbf").onwheel = runCmp;
+document.querySelector("#cmp-input-s").onchange = runCmp;
+document.querySelector("#cmp-input-s").onwheel = runCmp;
+document.querySelector("#cmp-input-mu").onchange = runCmp;
+document.querySelector("#cmp-input-mu").onwheel = runCmp;
+document.querySelector("#cmp-input-phi").onchange = runCmp;
+document.querySelector("#cmp-input-phi").onwheel = runCmp;
 document.querySelector("#cmp-leveling").onclick = runCmp;
 document.querySelector("#cmp-tiering").onclick = runCmp;
 document.querySelector("#cmp-vlsm-leveling").onclick = runCmp;
@@ -1239,6 +1304,10 @@ document.querySelector("#cmp-vlsm-tiering").onclick = runCmp;
 document.querySelector("#cmp-rlsm-leveling").onclick = runCmp;
 document.querySelector("#cmp-rlsm-tiering").onclick = runCmp;
 document.querySelector("#cmp-osm-leveling").onclick = runCmp;
+document.querySelector("#cmp-select-M").onchange = runCmp;
+document.querySelector("#cmp-select-E").onchange = runCmp;
+document.querySelector("#cmp-select-P").onchange = runCmp;
+document.querySelector("#cmp-select-Mbf").onchange = runCmp;
 // document.querySelector("#cmp-osm-tiering").onclick = runCmp;
 // Individual LSM analysis event trigger
 document.querySelector("#vlsm-input-T").onchange = runIndiv;
@@ -1249,8 +1318,24 @@ document.querySelector("#vlsm-input-N").onchange = runIndiv;
 document.querySelector("#vlsm-input-N").onwheel = runIndiv;
 document.querySelector("#vlsm-input-M").onchange = runIndiv;
 document.querySelector("#vlsm-input-M").onwheel = runIndiv;
+document.querySelector("#vlsm-input-f").onchange = runIndiv;
+document.querySelector("#vlsm-input-f").onwheel = runIndiv;
+document.querySelector("#vlsm-input-P").onchange = runIndiv;
+document.querySelector("#vlsm-input-P").onwheel = runIndiv;
+document.querySelector("#vlsm-input-Mbf").onchange = runIndiv;
+document.querySelector("#vlsm-input-Mbf").onwheel = runIndiv;
+document.querySelector("#vlsm-input-s").onchange = runIndiv;
+document.querySelector("#vlsm-input-s").onwheel = runIndiv;
+document.querySelector("#vlsm-input-mu").onchange = runIndiv;
+document.querySelector("#vlsm-input-mu").onwheel = runIndiv;
+document.querySelector("#vlsm-input-phi").onchange = runIndiv;
+document.querySelector("#vlsm-input-phi").onwheel = runIndiv;
 document.querySelector("#vlsm-tiering").onclick = runIndiv;
 document.querySelector("#vlsm-leveling").onclick = runIndiv;
+document.querySelector("#vlsm-select-M").onchange = runIndiv;
+document.querySelector("#vlsm-select-E").onchange = runIndiv;
+document.querySelector("#vlsm-select-P").onchange = runIndiv;
+document.querySelector("#vlsm-select-Mbf").onchange = runIndiv;
 document.querySelector("#rlsm-input-T").onchange = runIndiv
 document.querySelector("#rlsm-input-T").onwheel = runIndiv;
 document.querySelector("#rlsm-input-E").onchange = runIndiv;
@@ -1259,8 +1344,24 @@ document.querySelector("#rlsm-input-N").onchange = runIndiv;
 document.querySelector("#rlsm-input-N").onwheel = runIndiv;
 document.querySelector("#rlsm-input-M").onchange = runIndiv;
 document.querySelector("#rlsm-input-M").onwheel = runIndiv;
+document.querySelector("#rlsm-input-f").onchange = runIndiv;
+document.querySelector("#rlsm-input-f").onwheel = runIndiv;
+document.querySelector("#rlsm-input-P").onchange = runIndiv;
+document.querySelector("#rlsm-input-P").onwheel = runIndiv;
+document.querySelector("#rlsm-input-Mbf").onchange = runIndiv;
+document.querySelector("#rlsm-input-Mbf").onwheel = runIndiv;
+document.querySelector("#rlsm-input-s").onchange = runIndiv;
+document.querySelector("#rlsm-input-s").onwheel = runIndiv;
+document.querySelector("#rlsm-input-mu").onchange = runIndiv;
+document.querySelector("#rlsm-input-mu").onwheel = runIndiv;
+document.querySelector("#rlsm-input-phi").onchange = runIndiv;
+document.querySelector("#rlsm-input-phi").onwheel = runIndiv;
 document.querySelector("#rlsm-tiering").onclick = runIndiv;
 document.querySelector("#rlsm-leveling").onclick = runIndiv;
+document.querySelector("#rlsm-select-M").onchange = runIndiv;
+document.querySelector("#rlsm-select-E").onchange = runIndiv;
+document.querySelector("#rlsm-select-P").onchange = runIndiv;
+document.querySelector("#rlsm-select-Mbf").onchange = runIndiv;
 document.querySelector("#dlsm-input-T").onchange = runIndiv
 document.querySelector("#dlsm-input-T").onwheel = runIndiv;
 document.querySelector("#dlsm-input-E").onchange = runIndiv;
@@ -1269,6 +1370,22 @@ document.querySelector("#dlsm-input-N").onchange = runIndiv;
 document.querySelector("#dlsm-input-N").onwheel = runIndiv;
 document.querySelector("#dlsm-input-M").onchange = runIndiv;
 document.querySelector("#dlsm-input-M").onwheel = runIndiv;
+document.querySelector("#dlsm-input-f").onchange = runIndiv;
+document.querySelector("#dlsm-input-f").onwheel = runIndiv;
+document.querySelector("#dlsm-input-P").onchange = runIndiv;
+document.querySelector("#dlsm-input-P").onwheel = runIndiv;
+document.querySelector("#dlsm-input-Mbf").onchange = runIndiv;
+document.querySelector("#dlsm-input-Mbf").onwheel = runIndiv;
+document.querySelector("#dlsm-input-s").onchange = runIndiv;
+document.querySelector("#dlsm-input-s").onwheel = runIndiv;
+document.querySelector("#dlsm-input-mu").onchange = runIndiv;
+document.querySelector("#dlsm-input-mu").onwheel = runIndiv;
+document.querySelector("#dlsm-input-phi").onchange = runIndiv;
+document.querySelector("#dlsm-input-phi").onwheel = runIndiv;
+document.querySelector("#dlsm-select-M").onchange = runIndiv;
+document.querySelector("#dlsm-select-E").onchange = runIndiv;
+document.querySelector("#dlsm-select-P").onchange = runIndiv;
+document.querySelector("#dlsm-select-Mbf").onchange = runIndiv;
 document.querySelector("#osm-input-T").onchange = runIndiv
 document.querySelector("#osm-input-T").onwheel = runIndiv;
 document.querySelector("#osm-input-E").onchange = runIndiv;
@@ -1277,8 +1394,24 @@ document.querySelector("#osm-input-N").onchange = runIndiv;
 document.querySelector("#osm-input-N").onwheel = runIndiv;
 document.querySelector("#osm-input-M").onchange = runIndiv;
 document.querySelector("#osm-input-M").onwheel = runIndiv;
+document.querySelector("#osm-input-f").onchange = runIndiv;
+document.querySelector("#osm-input-f").onwheel = runIndiv;
+document.querySelector("#osm-input-P").onchange = runIndiv;
+document.querySelector("#osm-input-P").onwheel = runIndiv;
+document.querySelector("#osm-input-Mbf").onchange = runIndiv;
+document.querySelector("#osm-input-Mbf").onwheel = runIndiv;
+document.querySelector("#osm-input-s").onchange = runIndiv;
+document.querySelector("#osm-input-s").onwheel = runIndiv;
+document.querySelector("#osm-input-mu").onchange = runIndiv;
+document.querySelector("#osm-input-mu").onwheel = runIndiv;
+document.querySelector("#osm-input-phi").onchange = runIndiv;
+document.querySelector("#osm-input-phi").onwheel = runIndiv;
 // document.querySelector("#osm-tiering").onclick = runIndiv;
 document.querySelector("#osm-leveling").onclick = runIndiv;
+document.querySelector("#osm-select-M").onchange = runIndiv;
+document.querySelector("#osm-select-E").onchange = runIndiv;
+document.querySelector("#osm-select-P").onchange = runIndiv;
+document.querySelector("#osm-select-Mbf").onchange = runIndiv;
 
 
 });
