@@ -358,7 +358,7 @@ class LSM {
         if (prefix === "cmp") {
             var percentage = document.querySelector(`#${prefix}-input-s`).value + "%";
             document.querySelector("#metric-lQ-title").textContent = "Long range lookup("+ percentage + ")";
-            var str = `Long range lookup cost: the average worst-case I/O cost performed by range lookups with ${percentage} unique keys among key ranges that are relative large and mostly target the largest level.`;
+            var str = `Long range lookup cost: the average worst-case I/O cost performed by range lookups with ${percentage} unique keys of the entire key space and mostly target the largest level.`;
             document.querySelector("#metric-lQ-title").setAttribute("data-original-title", str);
         } else {
             document.querySelector("#metric-lQ-title").textContent = "Long range lookup";
