@@ -356,7 +356,10 @@ class LSM {
 
         this._updateCostResult();
         if (prefix === "cmp") {
-            document.querySelector("#metric-lQ-title").textContent = "Long range lookup(" + document.querySelector(`#${prefix}-input-s`).value + "%)";
+            var percentage = document.querySelector(`#${prefix}-input-s`).value + "%";
+            document.querySelector("#metric-lQ-title").textContent = "Long range lookup("+ percentage + ")";
+            var str = `Long range lookup cost: the average worst-case I/O cost performed by range lookups with ${percentage} unique keys among key ranges that are relative large and mostly target the largest level.`;
+            document.querySelector("#metric-lQ-title").setAttribute("data-original-title", str);
         } else {
             document.querySelector("#metric-lQ-title").textContent = "Long range lookup";
         }
