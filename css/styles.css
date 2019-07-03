@@ -203,6 +203,10 @@ input[type=number]::-webkit-inner-spin-button {	/* Styling number input spinner 
 }
 .metrics {
 	padding-left: 0px;
+	padding-right: 0px;
+}
+.metric-title{
+	white-space: nowrap;
 }
 .cost-col {
 	padding: 0px;

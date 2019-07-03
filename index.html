@@ -973,7 +973,7 @@
       <div class="vlsm-cost-col col-lg-3 col-md-3 col-sm-3">
         <div class="row">
           <div class="metrics col-lg-7 col-md-7 col-sm-7">
-            <span class="metric-title">Update</span>
+            <span class="metric-title" data-toggle="tooltip" data-placement="left" title="Update cost: The amortized worst-case I/O cost performed by inserts, updates, and deletes, all of which are paid through the subsequent merge operations that the updated entries participates in.">Update</span>
           </div>
           <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
             <span id="vlsm-W-cost" class="cost uncertain">XXX I/O</span>
@@ -981,7 +981,7 @@
         </div>
         <div class="row">
           <div class="metrics col-lg-7 col-md-7 col-sm-7">
-            <span class="metric-title">ZR-point lookup</span>
+            <span class="metric-title" data-toggle="tooltip" data-placement="left" title="Zero-result lookup cost: the average worst-case I/O cost performed by point lookups to a key that does NOT exist in the LSM-tree.">ZR-point lookup</span>
           </div>
           <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
             <span id="vlsm-R-cost" class="cost uncertain">XXX I/O</span>
@@ -989,7 +989,7 @@
         </div>
         <div class="row">
           <div class="metrics col-lg-7 col-md-7 col-sm-7">
-            <span class="metric-title">NZR-point lookup</span>
+            <span class="metric-title" data-toggle="tooltip" data-placement="left" title="Non-zero-result lookup cost: the average worst-case I/O cost performed by point lookups to a key that exists in the LSM-tree.">NZR-point lookup</span>
           </div>
           <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
             <span id="vlsm-V-cost" class="cost uncertain">XXX I/O</span>
@@ -997,7 +997,7 @@
         </div>
         <div class="row">
           <div class="metrics col-lg-7 col-md-7 col-sm-7">
-            <span class="metric-title">Short range lookup</span>
+            <span class="metric-title" data-toggle="tooltip" data-placement="left" title="Short range lookup cost: the average worst-case I/O cost performed by range lookups which key ranges are extremely small and could be accessed approximately one block within each run.">Short range lookup</span>
           </div>
           <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
             <span id="vlsm-sQ-cost" class="cost uncertain">XXX I/O</span>
@@ -1005,7 +1005,7 @@
         </div>
         <div class="row">
           <div class="metrics col-lg-7 col-md-7 col-sm-7">
-            <span class="metric-title">Long range lookup</span>
+            <span id="metric-lQ-title" class="metric-title" data-toggle="tooltip" data-placement="left" title="Long range lookup cost: the average worst-case I/O cost performed by range lookups which key ranges are relative large and mostly target the largest level.">Long range lookup(50%)</span>
           </div>
           <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
             <span id="vlsm-lQ-cost" class="cost uncertain">XXX I/O</span>
@@ -1013,7 +1013,7 @@
         </div>
         <div class="row">
           <div class="metrics col-lg-7 col-md-7 col-sm-7">
-            <span class="metric-title">Space amplification</span>
+            <span class="metric-title" data-toggle="tooltip" data-placement="left" title="Space-amplification: the worst-case factor by which the presence of obsolete entries amplify storage space">Space amplification</span>
           </div>
           <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
             <span id="vlsm-sAMP-cost" class="cost uncertain">XXX</span>
@@ -1049,32 +1049,32 @@
       <div class="rlsm-cost-col col-lg-3 col-md-3 col-sm-3">
         <div class="row">
           <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
-            <span id="rlsm-W-cost" data-toggle="tooltip" data-placement="right" title="$$O({ L \cdot T \over B})$$" class="cost">XXX I/O</span>
+            <span id="rlsm-W-cost" data-toggle="tooltip" data-placement="right" title="$$O\left({ L \cdot T \over B}\right)$$" class="cost">XXX I/O</span>
           </div>  
         </div>
         <div class="row">
           <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
-            <span id="rlsm-R-cost" data-toggle="tooltip" data-placement="right" title="$$O(e^{-{M/N}})$$" class="cost">XXX I/O</span>
+            <span id="rlsm-R-cost" data-toggle="tooltip" data-placement="right" title="$${O\left(e^{-{M/N}}\cdot {T^{T/(T-1)}\over T-1}\right)}$$" class="cost">XXX I/O</span>
           </div>  
         </div>
         <div class="row">
           <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
-            <span id="rlsm-V-cost" data-toggle="tooltip" data-placement="right" title="$$O(1)$$" class="cost">XXX I/O</span>
+            <span id="rlsm-V-cost" data-toggle="tooltip" data-placement="right" title="$${O\left(1+e^{-{M/N}}\cdot {T^{1/(T-1)}\over T-1}\right)}$$" class="cost">XXX I/O</span>
           </div>  
         </div>
         <div class="row">
           <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
-            <span id="rlsm-sQ-cost" data-toggle="tooltip" data-placement="right" title="$$O(L)$$" class="cost">XXX I/O</span>
+            <span id="rlsm-sQ-cost" data-toggle="tooltip" data-placement="right" title="$$O\left(L\right)$$" class="cost">XXX I/O</span>
           </div>  
         </div>
         <div class="row">
           <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
-            <span id="rlsm-lQ-cost" data-toggle="tooltip" data-placement="right" title="$$O({s \over B})$$" class="cost">XXX I/O</span>
+            <span id="rlsm-lQ-cost" data-toggle="tooltip" data-placement="right" title="$$O\left({s \over B}\right)$$" class="cost">XXX I/O</span>
           </div>  
         </div>
         <div class="row">
           <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
-            <span id="rlsm-sAMP-cost" data-toggle="tooltip" data-placement="right" title="$$O({1 \over T})$$" class="cost">XXX</span>
+            <span id="rlsm-sAMP-cost" data-toggle="tooltip" data-placement="right" title="$$O\left({1 \over T}\right)$$" class="cost">XXX</span>
           </div>  
         </div>
         <div class="row">
@@ -1097,31 +1097,31 @@
       <!-- Demo3 cost result starts here -->
       <div class="dlsm-cost-col col-lg-3 col-md-3 col-sm-3">
         <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
-            <span id="dlsm-W-cost" data-toggle="tooltip" data-placement="right" title="$$O({ L+T \over B})$$" class="cost">XXX I/O</span>
+            <span id="dlsm-W-cost" data-toggle="tooltip" data-placement="right" title="$$O\left({ L+T \over B}\right)$$" class="cost">XXX I/O</span>
         </div>
         <div class="row">
           <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
-            <span id="dlsm-R-cost" data-toggle="tooltip" data-placement="right" title="$$O(e^{-{M/N}})$$" class="cost">XXX I/O</span>
+            <span id="dlsm-R-cost" data-toggle="tooltip" data-placement="right" title="$${O\left(e^{-{M/N}}\cdot {T^{T/(T-1)}\over (T-1)^{(T-1)/T}}\right)}$$" class="cost">XXX I/O</span>
           </div>  
         </div>
         <div class="row">
           <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
-            <span id="dlsm-V-cost" data-toggle="tooltip" data-placement="right" title="$$O(1)$$"  class="cost">XXX I/O</span>
+            <span id="dlsm-V-cost" data-toggle="tooltip" data-placement="right" title="$${O\left(1+e^{-{M/N}}\cdot T^{1/(T-1)}\cdot (T-1)^{1/T}\right)}$$"  class="cost">XXX I/O</span>
           </div>  
         </div>
         <div class="row">
           <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
-            <span id="dlsm-sQ-cost" data-toggle="tooltip" data-placement="right" title="$$O(1+(L-1) \cdot T)$$" class="cost">XXX I/O</span>
+            <span id="dlsm-sQ-cost" data-toggle="tooltip" data-placement="right" title="$${O\left(1+(L-1) \cdot (T-1)\right)}$$" class="cost">XXX I/O</span>
           </div>  
         </div>
         <div class="row">
           <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
-            <span id="dlsm-lQ-cost" data-toggle="tooltip" data-placement="right" title="$$O({s \over B})$$" class="cost">XXX I/O</span>
+            <span id="dlsm-lQ-cost" data-toggle="tooltip" data-placement="right" title="$${O\left({s \over B} \cdot (1+{1 \over T}) \right)}$$" class="cost">XXX I/O</span>
           </div>  
         </div>
         <div class="row">
           <div class="cost-col col-lg-12 col-md-12 col-sm-12 text-center">
-            <span id="dlsm-sAMP-cost" data-toggle="tooltip" data-placement="right" title="$$O({1 \over T})$$" class="cost">XXX</span>
+            <span id="dlsm-sAMP-cost" data-toggle="tooltip" data-placement="right" title="$${O \left({1 \over T}\right)}$$" class="cost">XXX</span>
           </div>  
         </div>
         <div class="row">

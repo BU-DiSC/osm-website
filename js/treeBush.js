@@ -31,7 +31,7 @@ class LSM {
             Mf: 0,
             MP: 0,
             f: 1,
-            s: 0.5,
+            s: 50,
             mu: 1,
             phi: 1,
         };
@@ -80,12 +80,12 @@ class LSM {
     get mu() {return this._mu;}
     get phi() {return this._phi;}
     get K(){
-        if(this.MP || this.name === "DostoevskyLSM") return parseInt(this.T);
+        if(this.MP || this.name === "DostoevskyLSM") return this.T - 1;
         else return 1;
     }
     get Z() {
         if (!this.MP || this.name === "DostoevskyLSM") return 1;
-        else return this.T
+        else return this.T - 1;
     }
     get prefix() {return this._prefix;}
     get suffix() {return this._suffix;}
@@ -129,7 +129,7 @@ class LSM {
         return this._L;
     }
     set s(selectivity) {
-        this._s = parseFloat(selectivity/100);
+        this._s = this.N * parseFloat(selectivity/100);
         return this._s;
     }
     set mu(constant) {
@@ -339,11 +339,11 @@ class LSM {
     update(prefix, mergePolicy = this.MP) {
         this.prefix = prefix;
         this.MP = mergePolicy;
-        this.T = document.querySelector(`#${this.prefix}-input-T`).value;
-        this.E = convertToBytes(`#${this.prefix}-select-E`, document.querySelector(`#${this.prefix}-input-E`).value);
-        this.N = document.querySelector(`#${this.prefix}-input-N`).value;
-        this.M = convertToBytes(`#${this.prefix}-select-M`, document.querySelector(`#${this.prefix}-input-M`).value);
-        this.f = document.querySelector(`#${this.prefix}-input-f`).value;
+        this.T = document.querySelector(`#${prefix}-input-T`).value;
+        this.E = convertToBytes(`#${prefix}-select-E`, document.querySelector(`#${prefix}-input-E`).value);
+        this.N = document.querySelector(`#${prefix}-input-N`).value;
+        this.M = convertToBytes(`#${prefix}-select-M`, document.querySelector(`#${prefix}-input-M`).value);
+        this.f = document.querySelector(`#${prefix}-input-f`).value;
         this.P = convertToBytes(`#${prefix}-select-P`, document.querySelector(`#${prefix}-input-P`).value);
         this.Mbf = convertToBytes(`#${prefix}-select-Mbf`, document.querySelector(`#${prefix}-input-Mbf`).value);
         this.s = document.querySelector(`#${prefix}-input-s`).value;
@@ -351,10 +351,16 @@ class LSM {
         this.phi = document.querySelector(`#${prefix}-input-phi`).value;
         this.L = this._getL();
         // set the range of input F
-        if (this.MP) document.querySelector(`#${this.prefix}-input-f`).max = "1";
-        else document.querySelector(`#${this.prefix}-input-f`).max = "" + this.T;
+        if (this.MP) document.querySelector(`#${prefix}-input-f`).max = "1";
+        else document.querySelector(`#${prefix}-input-f`).max = "" + this.T;
 
         this._updateCostResult();
+        if (prefix === "cmp") {
+            document.querySelector("#metric-lQ-title").textContent = "Long range lookup(" + document.querySelector(`#${prefix}-input-s`).value + "%)";
+        } else {
+            document.querySelector("#metric-lQ-title").textContent = "Long range lookup";
+        }
+        
     }
     _updateCostResult() {
         document.querySelector(`#${this.suffix}-W-cost`).textContent = roundTo(this._getUpdateCost(), 4) + " I/O";
@@ -363,8 +369,8 @@ class LSM {
         document.querySelector(`#${this.suffix}-sQ-cost`).textContent = roundTo(this._getShortRangeLookUpCost(), 4) +" I/O";
         document.querySelector(`#${this.suffix}-lQ-cost`).textContent = roundTo(this._getLongRangeLookUpCost(), 4) +" I/O";
         document.querySelector(`#${this.suffix}-sAMP-cost`).textContent = roundTo(this._getSpaceAmpCost(), 4);
-    }
 
+    }
     _getUpdateCost() {
         // W
         var f1 = this.phi/(this.mu*this.B);
@@ -713,11 +719,11 @@ class RocksDBLSM extends LSM {
     update(prefix, mergePolicy = this.MP) {
         this.prefix = prefix;
         this.MP = mergePolicy;
-        this.T = document.querySelector(`#${this.prefix}-input-T`).value;
-        this.E = convertToBytes(`#${this.prefix}-select-E`, document.querySelector(`#${this.prefix}-input-E`).value);
-        this.N = document.querySelector(`#${this.prefix}-input-N`).value;
-        this.M = convertToBytes(`#${this.prefix}-select-M`, document.querySelector(`#${this.prefix}-input-M`).value);
-        this.f = document.querySelector(`#${this.prefix}-input-f`).value;
+        this.T = document.querySelector(`#${prefix}-input-T`).value;
+        this.E = convertToBytes(`#${prefix}-select-E`, document.querySelector(`#${prefix}-input-E`).value);
+        this.N = document.querySelector(`#${prefix}-input-N`).value;
+        this.M = convertToBytes(`#${prefix}-select-M`, document.querySelector(`#${prefix}-input-M`).value);
+        this.f = document.querySelector(`#${prefix}-input-f`).value;
         this.P = convertToBytes(`#${prefix}-select-P`, document.querySelector(`#${prefix}-input-P`).value);
         this.Mbf = convertToBytes(`#${prefix}-select-Mbf`, document.querySelector(`#${prefix}-input-Mbf`).value);
         this.s = document.querySelector(`#${prefix}-input-s`).value;
@@ -725,8 +731,8 @@ class RocksDBLSM extends LSM {
         this.phi = document.querySelector(`#${prefix}-input-phi`).value;
         this.L = this._getL();
         // set the range of input F
-        if (this.MP) document.querySelector(`#${this.prefix}-input-f`).max = "1";
-        else document.querySelector(`#${this.prefix}-input-f`).max = "" + this.T;
+        if (this.MP) document.querySelector(`#${prefix}-input-f`).max = "1";
+        else document.querySelector(`#${prefix}-input-f`).max = "" + this.T;
         this._updateCostEquation();
         super._updateCostResult();
     }
@@ -739,27 +745,27 @@ class RocksDBLSM extends LSM {
         var lQ = "";
         var sAMP = "";
         if (this.MP) {
-            W = "$$O({L \\over B})$$";
-            R = "$$O(e^{-{M/N}} \\cdot T)$$";
-            V = "$$O(1+e^{-{M/N}} \\cdot T)$$";
-            sQ = "$$O(L \\cdot T)$$";
-            lQ = "$$O({{T \\cdot s} \\over B})$$";
-            sAMP = "$$O(T)$$";
+            W = "$$O\\left({L \\over B} \\right)$$";
+            R = "$${O\\left(e^{-{M/N}}\\cdot T^{T/(T-1)}\\right)}$$";
+            V = "$${O\\left(1+e^{-{M/N}}\\cdot T^{1/(T-1)} \\cdot (T-1)\\right)}$$";
+            sQ = "$$O\\left(L \\cdot T \\right)$$";
+            lQ = "$$O\\left({{T \\cdot s} \\over B} \\right)$$";
+            sAMP = "$$O\\left(T \\right)$$";
 
         } else {
-            W = "$$O({ L \\cdot T \\over B})$$";
-            R = "$$O(e^{-{M/N}})$$";
-            V = "$$O(1)$$";
-            sQ = "$$O(L)$$";
-            lQ = "$$O({s \\over B})$$";
-            sAMP = "$$O({1 \\over T})$$";
+            W = "$$O\\left({ L \\cdot T \\over B} \\right)$$";
+            R = "$${O\\left(e^{-{M/N}}\\cdot {T^{T/(T-1)}\\over T-1}\\right)}$$";
+            V = "$${O\\left(1+e^{-{M/N}}\\cdot {T^{1/(T-1)}\\over T-1}\\right)}$$";   //$${O\left(1 + e^{-{M/N}} \right)}$$
+            sQ = "$$O\\left(L \\right)$$";
+            lQ = "$$O\\left({s \\over B} \\right)$$";
+            sAMP = "$$O\\left({1 \\over T} \\right)$$";
         }
-        document.querySelector("#rlsm-W-cost").setAttribute("title", W);
-        document.querySelector("#rlsm-R-cost").setAttribute("title", R);
-        document.querySelector("#rlsm-V-cost").setAttribute("title", V);
-        document.querySelector("#rlsm-sQ-cost").setAttribute("title", sQ);
-        document.querySelector("#rlsm-lQ-cost").setAttribute("title", lQ);
-        document.querySelector("#rlsm-sAMP-cost").setAttribute("title", sAMP);
+        // document.querySelector("#rlsm-W-cost").setAttribute("title", W);
+        // document.querySelector("#rlsm-R-cost").setAttribute("title", R);
+        // document.querySelector("#rlsm-V-cost").setAttribute("title", V);
+        // document.querySelector("#rlsm-sQ-cost").setAttribute("title", sQ);
+        // document.querySelector("#rlsm-lQ-cost").setAttribute("title", lQ);
+        // document.querySelector("#rlsm-sAMP-cost").setAttribute("title", sAMP);
         document.querySelector("#rlsm-W-cost").setAttribute("data-original-title", W);
         document.querySelector("#rlsm-R-cost").setAttribute("data-original-title", R);
         document.querySelector("#rlsm-V-cost").setAttribute("data-original-title", V);
@@ -844,11 +850,11 @@ class DostoevskyLSM extends LSM {
     update(prefix, mergePolicy = this.MP) {
         this.prefix = prefix;
         this.MP = mergePolicy;
-        this.T = document.querySelector(`#${this.prefix}-input-T`).value;
-        this.E = convertToBytes(`#${this.prefix}-select-E`, document.querySelector(`#${this.prefix}-input-E`).value);
-        this.N = document.querySelector(`#${this.prefix}-input-N`).value;
-        this.M = convertToBytes(`#${this.prefix}-select-M`, document.querySelector(`#${this.prefix}-input-M`).value);
-        this.f = document.querySelector(`#${this.prefix}-input-f`).value;
+        this.T = document.querySelector(`#${prefix}-input-T`).value;
+        this.E = convertToBytes(`#${prefix}-select-E`, document.querySelector(`#${prefix}-input-E`).value);
+        this.N = document.querySelector(`#${prefix}-input-N`).value;
+        this.M = convertToBytes(`#${prefix}-select-M`, document.querySelector(`#${prefix}-input-M`).value);
+        this.f = document.querySelector(`#${prefix}-input-f`).value;
         this.P = convertToBytes(`#${prefix}-select-P`, document.querySelector(`#${prefix}-input-P`).value);
         this.Mbf = convertToBytes(`#${prefix}-select-Mbf`, document.querySelector(`#${prefix}-input-Mbf`).value);
         this.s = document.querySelector(`#${prefix}-input-s`).value;
@@ -856,8 +862,8 @@ class DostoevskyLSM extends LSM {
         this.phi = document.querySelector(`#${prefix}-input-phi`).value;
         this.L = this._getL();
         // set the range of input F
-        if (this.MP) document.querySelector(`#${this.prefix}-input-f`).max = "1";
-        else document.querySelector(`#${this.prefix}-input-f`).max = "" + this.T;
+        if (this.MP) document.querySelector(`#${prefix}-input-f`).max = "1";
+        else document.querySelector(`#${prefix}-input-f`).max = "" + this.T;
 
         this._updateCostResult();
     }
