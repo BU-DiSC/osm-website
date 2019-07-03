@@ -130,13 +130,16 @@ input[type=number]::-webkit-inner-spin-button {	/* Styling number input spinner 
 .mp-btn-group {
 	width: 100%;
 }
+.cmp-indiv-mp .mp-btn-group {
+	width: 80%;
+}
 .mp-btn-group .btn {	/*Override*/
 	flex: 1 1 100%;
 	overflow: hidden;
 	background-color: #ecf0f1;
 	color:#2C3E50;
 	border-color: rgb(206, 212, 218);
-	padding: 0.1875rem 0.75rem;
+	padding: 0.10rem 0.75rem;
 }
 .mp-btn-group .btn:hover, .mp-btn-group .btn:active {
 	color: #fff;
@@ -162,11 +165,14 @@ input[type=number]::-webkit-inner-spin-button {	/* Styling number input spinner 
     border-color: #798d8f;
     outline: 0;
 }
-.div-title { /* LSM name title */
+.cmp-indiv-mp {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.lsm-title { /* LSM name title */
+	display: flex;
 	font-size: 1.25vw;
-	margin-bottom: 5px;
-	margin-left: auto;
-	margin-right: auto;
 }
 
 /* LSM tree bush diagram reuslt display */
