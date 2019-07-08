@@ -147,7 +147,7 @@
             <div class="input-group-prepend">
               <label class="input-group-text">Buffer size</label>
             </div>
-            <input id="cmp-input-M" value="2" min="0" type="number" class="cmp-input form-control" aria-label="Buffer capacity">
+            <input id="cmp-input-M" value="2" min="1" type="number" class="cmp-input form-control" aria-label="Buffer capacity">
             <select id="cmp-select-M" class="custom-select cmp-input">
               <option value="0"><span></span>B</option>
               <option value="1">KB</option>
@@ -159,7 +159,7 @@
             <div class="input-group-prepend">
               <label class="input-group-text">Bloom filters</label>
             </div>
-            <input id="cmp-input-Mbf" value="1024" min="0" type="number" class="cmp-input form-control" aria-label="Bloom filters size">
+            <input id="cmp-input-Mbf" value="1024" min="1" type="number" class="cmp-input form-control" aria-label="Bloom filters size">
             <select id="cmp-select-Mbf" class="custom-select cmp-input">
               <option value="0" selected><span></span>B</option>
               <option value="1">KB</option>
@@ -171,7 +171,7 @@
             <div class="input-group-prepend">
               <label class="input-group-text">Fence pointers</label>
             </div>
-            <input id="cmp-input-Mf" value="0" min="0" type="number" class="cmp-input form-control" aria-label="Fence pointer size">
+            <input id="cmp-input-Mf" value="0" min="1" type="number" class="cmp-input form-control" aria-label="Fence pointer size">
             <select id="cmp-select-Mf" class="custom-select cmp-input">
               <option value="0"><span></span>B</option>
               <option value="1">KB</option>
@@ -193,7 +193,7 @@
             <div class="input-group-prepend">
               <label class="input-group-text">Page size</label>
             </div>
-            <input id="cmp-input-P" value="128" min="0" type="number" class="cmp-input form-control" aria-label="Page Size">
+            <input id="cmp-input-P" value="128" min="1" type="number" class="cmp-input form-control" aria-label="Page Size">
             <select id="cmp-select-P" class="custom-select cmp-input">
               <option value="0" selected> B</option>
               <option value="1">KB</option>
@@ -224,7 +224,7 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Selectivity of a range lookup">Selectivity</label>
                 </div>
-                <input id="cmp-input-s" value="50" min="0" type="number" class="cmp-input form-control" aria-label="Selectivity of a range lookup">
+                <input id="cmp-input-s" value="50" min="1" type="number" class="cmp-input form-control" aria-label="Selectivity of a range lookup">
                 <div class="input-group-append">
                   <span class="input-group-text">%</span>
                 </div>
@@ -235,7 +235,7 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage sequential over random access speed">Storage s/r speed</label>
                 </div>
-                <input id="cmp-input-mu" value="1" min="0" type="number" class="cmp-input form-control" aria-label="Storage sequential over random access speed">
+                <input id="cmp-input-mu" value="1" min="1" type="number" class="cmp-input form-control" aria-label="Storage sequential over random access speed">
               </div>
             </div>
             <div class="cmp-conf-col col-lg-4 col-md-4 col-sm-4">
@@ -243,7 +243,7 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage write over read speed">Storage w/r speed</label>
                 </div>
-                <input id="cmp-input-phi" value="1" min="0" type="number" class="cmp-input form-control" aria-label="Storage write over read speed">
+                <input id="cmp-input-phi" value="1" min="1" type="number" class="cmp-input form-control" aria-label="Storage write over read speed">
               </div>
             </div>
           </div> 
@@ -298,7 +298,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Buffer size</label>
               </div>
-              <input id="vlsm-input-M" value="2" type="number" min="0" data-old="2" class="vlsm-input form-control" aria-label="Buffer Capacity">
+              <input id="vlsm-input-M" value="2" type="number" min="1" data-old="2" class="vlsm-input form-control" aria-label="Buffer Capacity">
               <select id="vlsm-select-M" class="custom-select vlsm-input">
                 <option value="0">B</option>
                 <option value="1">KB</option>
@@ -312,7 +312,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Bloom filters</label>
               </div>
-              <input id="vlsm-input-Mbf" value="1024" min="0" type="number" class="vlsm-input form-control" aria-label="Bloom filters size">
+              <input id="vlsm-input-Mbf" value="1024" min="1" type="number" class="vlsm-input form-control" aria-label="Bloom filters size">
               <select id="vlsm-select-Mbf" class="custom-select vlsm-input">
                 <option value="0" selected><span></span>B</option>
                 <option value="1">KB</option>
@@ -326,7 +326,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Fence pointers</label>
               </div>
-              <input id="vlsm-input-Mf" value="0" min="0" type="number" class="vlsm-input form-control" aria-label="Fence pointer size">
+              <input id="vlsm-input-Mf" value="0" min="1" type="number" class="vlsm-input form-control" aria-label="Fence pointer size">
               <select id="vlsm-select-Mf" class="custom-select vlsm-input">
                 <option value="0" selected><span></span>B</option>
                 <option value="1">KB</option>
@@ -348,7 +348,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Page Size</label>
               </div>
-              <input id="vlsm-input-P" value="128" min="0" type="number" class="vlsm-input form-control" aria-label="Page size">
+              <input id="vlsm-input-P" value="128" min="1" type="number" class="vlsm-input form-control" aria-label="Page size">
               <select id="vlsm-select-P" class="custom-select vlsm-input">
                 <option value="0" selected><span></span>B</option>
                 <option value="1">KB</option>
@@ -372,7 +372,7 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Selectivity of a range lookup">Selectivity</label>
                 </div>
-                <input id="vlsm-input-s" value="50" min="0" type="number" class="vlsm-input form-control" aria-label="Selectivity of a range lookup">
+                <input id="vlsm-input-s" value="50" min="1" type="number" class="vlsm-input form-control" aria-label="Selectivity of a range lookup">
                 <div class="input-group-append">
                   <span class="input-group-text">%</span>
                 </div>
@@ -381,13 +381,13 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage sequential over random access speed">Storage s/r speed</label>
                 </div>
-                <input id="vlsm-input-mu" value="1" min="0" type="number" class="vlsm-input form-control" aria-label="Storage sequential over random access speed">
+                <input id="vlsm-input-mu" value="1" min="1" type="number" class="vlsm-input form-control" aria-label="Storage sequential over random access speed">
               </div>
               <div class="input-group input-group-sm mb-2">
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage write over read speed">Storage w/r speed</label>
                 </div>
-                <input id="vlsm-input-phi" value="1" min="0" type="number" class="vlsm-input form-control" aria-label="Storage write over read speed">
+                <input id="vlsm-input-phi" value="1" min="1" type="number" class="vlsm-input form-control" aria-label="Storage write over read speed">
               </div>
             </div> 
           </div>
@@ -438,7 +438,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Buffer size</label>
               </div>
-              <input id="rlsm-input-M" value="2" min="0" type="number" class="rlsm-input form-control" aria-label="Buffer Capacity">
+              <input id="rlsm-input-M" value="2" min="1" type="number" class="rlsm-input form-control" aria-label="Buffer Capacity">
               <select id="rlsm-select-M" class="custom-select rlsm-input">
                 <option value="0">B</option>
                 <option value="1">KB</option>
@@ -452,7 +452,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Bloom filters</label>
               </div>
-              <input id="rlsm-input-Mbf" value="1024" min="0" type="number" class="rlsm-input form-control" aria-label="Bloom filters size">
+              <input id="rlsm-input-Mbf" value="1024" min="1" type="number" class="rlsm-input form-control" aria-label="Bloom filters size">
               <select id="rlsm-select-Mbf" class="custom-select rlsm-input">
                 <option value="0" selected><span></span>B</option>
                 <option value="1">KB</option>
@@ -466,7 +466,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Fence pointers</label>
               </div>
-              <input id="rlsm-input-Mf" value="0" min="0" type="number" class="rlsm-input form-control" aria-label="Fence pointer size">
+              <input id="rlsm-input-Mf" value="0" min="1" type="number" class="rlsm-input form-control" aria-label="Fence pointer size">
               <select id="rlsm-select-Mf" class="custom-select rlsm-input">
                 <option value="0" selected><span></span>B</option>
                 <option value="1">KB</option>
@@ -488,7 +488,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Page Size</label>
               </div>
-              <input id="rlsm-input-P" value="128" min="0" type="number" class="rlsm-input form-control" aria-label="Page size">
+              <input id="rlsm-input-P" value="128" min="1" type="number" class="rlsm-input form-control" aria-label="Page size">
               <select id="rlsm-select-P" class="custom-select rlsm-input">
                 <option value="0" selected><span></span>B</option>
                 <option value="1">KB</option>
@@ -513,7 +513,7 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Selectivity of a range lookup">Selectivity</label>
                 </div>
-                <input id="rlsm-input-s" value="50" min="0" type="number" class="rlsm-input form-control" aria-label="Selectivity of a range lookup">
+                <input id="rlsm-input-s" value="50" min="1" type="number" class="rlsm-input form-control" aria-label="Selectivity of a range lookup">
                 <div class="input-group-append">
                   <span class="input-group-text">%</span>
                 </div>
@@ -522,13 +522,13 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage sequential over random access speed">Storage s/r speed</label>
                 </div>
-                <input id="rlsm-input-mu" value="1" min="0" type="number" class="rlsm-input form-control" aria-label="Storage sequential over random access speed">
+                <input id="rlsm-input-mu" value="1" min="1" type="number" class="rlsm-input form-control" aria-label="Storage sequential over random access speed">
               </div>
               <div class="input-group input-group-sm mb-2">
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage write over read speed">Storage w/r speed</label>
                 </div>
-                <input id="rlsm-input-phi" value="1" min="0" type="number" class="rlsm-input form-control" aria-label="Storage write over read speed">
+                <input id="rlsm-input-phi" value="1" min="1" type="number" class="rlsm-input form-control" aria-label="Storage write over read speed">
               </div>
             </div> 
           </div>
@@ -577,7 +577,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Buffer size</label>
               </div>
-              <input id="dlsm-input-M" value="2" min="0" type="number" class="dlsm-input form-control" aria-label="Buffer Capacity">
+              <input id="dlsm-input-M" value="2" min="1" type="number" class="dlsm-input form-control" aria-label="Buffer Capacity">
               <select id="dlsm-select-M" class="custom-select dlsm-input">
                 <option value="0">B</option>
                 <option value="1">KB</option>
@@ -591,7 +591,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Bloom filters</label>
               </div>
-              <input id="dlsm-input-Mbf" value="1024" min="0" type="number" class="dlsm-input form-control" aria-label="Bloom filters size">
+              <input id="dlsm-input-Mbf" value="1024" min="1" type="number" class="dlsm-input form-control" aria-label="Bloom filters size">
               <select id="dlsm-select-Mbf" class="custom-select dlsm-input">
                 <option value="0" selected><span></span>B</option>
                 <option value="1">KB</option>
@@ -605,7 +605,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Fence pointers</label>
               </div>
-              <input id="dlsm-input-Mf" value="0" min="0" type="number" class="dlsm-input form-control" aria-label="Fence pointer size">
+              <input id="dlsm-input-Mf" value="0" min="1" type="number" class="dlsm-input form-control" aria-label="Fence pointer size">
               <select id="dlsm-select-Mf" class="custom-select dlsm-input">
                 <option value="0" selected><span></span>B</option>
                 <option value="1">KB</option>
@@ -627,7 +627,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Page Size</label>
               </div>
-              <input id="dlsm-input-P" value="128" min="0" type="number" class="dlsm-input form-control" aria-label="Page size">
+              <input id="dlsm-input-P" value="128" min="1" type="number" class="dlsm-input form-control" aria-label="Page size">
               <select id="dlsm-select-P" class="custom-select dlsm-input">
                 <option value="0" selected><span></span>B</option>
                 <option value="1">KB</option>
@@ -652,7 +652,7 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Selectivity of a range lookup">Selectivity</label>
                 </div>
-                <input id="dlsm-input-s" value="50" min="0" type="number" class="dlsm-input form-control" aria-label="Selectivity of a range lookup">
+                <input id="dlsm-input-s" value="50" min="1" type="number" class="dlsm-input form-control" aria-label="Selectivity of a range lookup">
                 <div class="input-group-append">
                   <span class="input-group-text">%</span>
                 </div>
@@ -661,13 +661,13 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage sequential over random access speed">Storage s/r speed</label>
                 </div>
-                <input id="dlsm-input-mu" value="1" min="0" type="number" class="dlsm-input form-control" aria-label="Storage sequential over random access speed">
+                <input id="dlsm-input-mu" value="1" min="1" type="number" class="dlsm-input form-control" aria-label="Storage sequential over random access speed">
               </div>
               <div class="input-group input-group-sm mb-2">
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage write over read speed">Storage w/r speed</label>
                 </div>
-                <input id="dlsm-input-phi" value="1" min="0" type="number" class="dlsm-input form-control" aria-label="Storage write over read speed">
+                <input id="dlsm-input-phi" value="1" min="1" type="number" class="dlsm-input form-control" aria-label="Storage write over read speed">
               </div>
             </div> 
           </div>
@@ -717,7 +717,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Buffer size</label>
               </div>
-              <input id="osm-input-M" value="2" min="0" type="number" class="osm-input form-control" aria-label="Buffer Capacity">
+              <input id="osm-input-M" value="2" min="1" type="number" class="osm-input form-control" aria-label="Buffer Capacity">
               <select id="osm-select-M" class="custom-select osm-input">
                 <option value="0">B</option>
                 <option value="1">KB</option>
@@ -731,7 +731,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Bloom filters</label>
               </div>
-              <input id="osm-input-Mbf" value="1024" min="0" type="number" class="osm-input form-control" aria-label="Bloom filters size">
+              <input id="osm-input-Mbf" value="1024" min="1" type="number" class="osm-input form-control" aria-label="Bloom filters size">
               <select id="osm-select-Mbf" class="custom-select osm-input">
                 <option value="0" selected><span></span>B</option>
                 <option value="1">KB</option>
@@ -745,7 +745,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Fence pointers</label>
               </div>
-              <input id="osm-input-Mf" value="0" min="0" type="number" class="osm-input form-control" aria-label="Fence pointer size">
+              <input id="osm-input-Mf" value="0" min="1" type="number" class="osm-input form-control" aria-label="Fence pointer size">
               <select id="osm-select-Mf" class="custom-select osm-input">
                 <option value="0" selected><span></span>B</option>
                 <option value="1">KB</option>
@@ -767,7 +767,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Page Size</label>
               </div>
-              <input id="osm-input-P" value="128" min="0" type="number" class="osm-input form-control" aria-label="Page size">
+              <input id="osm-input-P" value="128" min="1" type="number" class="osm-input form-control" aria-label="Page size">
               <select id="osm-select-P" class="custom-select osm-input">
                 <option value="0" selected><span></span>B</option>
                 <option value="1">KB</option>
@@ -792,7 +792,7 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Selectivity of a range lookup">Selectivity</label>
                 </div>
-                <input id="osm-input-s" value="50" min="0" type="number" class="osm-input form-control" aria-label="Selectivity of a range lookup">
+                <input id="osm-input-s" value="50" min="1" type="number" class="osm-input form-control" aria-label="Selectivity of a range lookup">
                 <div class="input-group-append">
                   <span class="input-group-text">%</span>
                 </div>
@@ -801,13 +801,13 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage sequential over random access speed">Storage s/r speed</label>
                 </div>
-                <input id="osm-input-mu" value="1" min="0" type="number" class="osm-input form-control" aria-label="Storage sequential over random access speed">
+                <input id="osm-input-mu" value="1" min="1" type="number" class="osm-input form-control" aria-label="Storage sequential over random access speed">
               </div>
               <div class="input-group input-group-sm mb-2">
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage write over read speed">Storage w/r speed</label>
                 </div>
-                <input id="osm-input-phi" value="1" min="0" type="number" class="osm-input form-control" aria-label="Storage write over read speed">
+                <input id="osm-input-phi" value="1" min="1" type="number" class="osm-input form-control" aria-label="Storage write over read speed">
               </div>
             </div> 
           </div>

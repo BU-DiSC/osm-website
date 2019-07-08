@@ -1083,14 +1083,36 @@ function runIndiv() {
 
 /* Validate and correct the input */
 function validate(self, target, input) {
-    // T >= 2, N, E > 1, M > 0
+    // T >= 2, N, E > 1, M > 1
     if (!self.classList.contains(`${target}-input`)) {
         alert(`Invalid: Unknown ${target} configuration input`);
         return;
     }
+    console.log(input.E);
+    console.log(input.M);
+    var entry_unit = document.getElementById(`${target}-select-E`).selectedIndex;
+    if (input.E > input.M) {
+        document.querySelector(`#${target}-input-M`).value = document.querySelector(`#${target}-input-E`).value;
+        document.querySelector(`#${target}-input-P`).value = document.querySelector(`#${target}-input-E`).value;
+        document.getElementById(`${target}-select-M`).selectedIndex = entry_unit;
+        document.getElementById(`${target}-select-P`).selectedIndex = entry_unit;
+        console.log("Invalid: entry size must less or equal than buffer size");
+        alert("Invalid: entry size must less or equal than buffer size");
+    }
+    if (input.E > input.P) {
+        document.querySelector(`#${target}-input-P`).value = document.querySelector(`#${target}-input-E`).value;
+        document.getElementById(`${target}-select-P`).selectedIndex = entry_unit;
+        alert("Invalid: entry size must less or equal than page size");
+    }
+    // if (input.P > input.M) {
+    //     var page_unit = document.getElementById(`${target}-select-P`).selectedIndex;
+    //     document.querySelector(`#${target}-input-M`).value = document.querySelector(`#${target}-input-P`);
+    //     document.getElementById(`${target}-select-M`).selectedIndex = page_unit;
+    //     alert("Invalid: page size must less or equal than buffer size");
+    // }
     switch (self.id) {
         case `${target}-input-T`:
-            if (input.T <= 1) {
+            if (input.T < 2) {
                 document.querySelector(`#${target}-input-T`).value = 2;
                 // alert("Invalid: The minimal ratio of LSM-Tree is 2");
             }
@@ -1100,6 +1122,7 @@ function validate(self, target, input) {
                 document.querySelector(`#${target}-input-N`).value = 1;
                 // alert("Invalid: The minimal number of entries of LSM-Tree is 1");
             }
+            convertToBytes
             break;
         case `${target}-input-E`:
             if (input.E < 1) {
@@ -1108,7 +1131,7 @@ function validate(self, target, input) {
             }
             break;
         case `${target}-input-M`:
-            if (input.M <= 0) {
+            if (input.M < 1) {
                 document.querySelector(`#${target}-input-M`).value = 1;
                 // alert("Invalid: The buffer size of LSM-Tree must > 0");
             }
@@ -1178,8 +1201,8 @@ function convertToBytes(target, input) {
         console.log(value);
         alert(`Invalid: Unknown value of unit in ${target}`);
     }
-
 }
+
 
 function getBaseLog(x, y) {
     if (isNaN(x) || isNaN(y)) throw new TypeError("x: " + x +", y: " + y + " must be numbers");
