@@ -425,8 +425,6 @@ class VanillaLSM extends LSM{
         var l1 = nEntry_M * (this.T - 1);
         var log = entryNum * (this.T - 1) / l1 + 1;
         L = Math.ceil(getBaseLog(this.T, log));
-        
-        
         return (L < 1) ? 1 : L;
     }
     _getEntryNum(n, run_capacity, jth) {
@@ -1103,25 +1101,6 @@ function validate(self, target, input) {
         alert(`Invalid: Unknown ${target} configuration input`);
         return;
     }
-    var entry_unit = document.getElementById(`${target}-select-E`).selectedIndex;
-    if (input.E > input.M) {
-        document.querySelector(`#${target}-input-M`).value = document.querySelector(`#${target}-input-E`).value;
-        document.querySelector(`#${target}-input-P`).value = document.querySelector(`#${target}-input-E`).value;
-        document.getElementById(`${target}-select-M`).selectedIndex = entry_unit;
-        document.getElementById(`${target}-select-P`).selectedIndex = entry_unit;
-        console.log("Invalid: entry size must less or equal than buffer size");
-    }
-    if (input.E > input.P) {
-        document.querySelector(`#${target}-input-P`).value = document.querySelector(`#${target}-input-E`).value;
-        document.getElementById(`${target}-select-P`).selectedIndex = entry_unit;
-        console.log("Invalid: entry size must less or equal than page size");
-    }
-    // if (input.P > input.M) {
-    //     var page_unit = document.getElementById(`${target}-select-P`).selectedIndex;
-    //     document.querySelector(`#${target}-input-M`).value = document.querySelector(`#${target}-input-P`);
-    //     document.getElementById(`${target}-select-M`).selectedIndex = page_unit;
-    //     alert("Invalid: page size must less or equal than buffer size");
-    // }
     switch (self.id) {
         case `${target}-input-T`:
             if (input.T < 2) {
@@ -1134,21 +1113,39 @@ function validate(self, target, input) {
                 document.querySelector(`#${target}-input-N`).value = 1;
                 // alert("Invalid: The minimal number of entries of LSM-Tree is 1");
             }
-            convertToBytes
             break;
         case `${target}-input-E`:
-            if (input.E < 1) {
-                document.querySelector(`#${target}-input-E`).value = 1;
-                // alert("Invalid: The minimal entry size of LSM-Tree is 1 bytes");
-            }
-            if (input.E > input.M) {
-
+        case `${target}-select-E`:
+            if (input.E < 1 || input.E > input.M || input.E > input.P) {
+                // restore to legally previous state
+                // if (input.E < 1)  alert("Entry size must >= 1 byte");
+                // if (input.E > input.M) alert("Entry size must <= buffer size");
+                alert("Entry size must >= 1 && <= buffer size && <= page size");
+                restoreState(`#${target}-input-E`, `#${target}-select-E`);
+            } else {    // save new state
+                setState(`#${target}-input-E`, `#${target}-select-E`);
             }
             break;
         case `${target}-input-M`:
-            if (input.M < 1) {
-                document.querySelector(`#${target}-input-M`).value = 1;
-                // alert("Invalid: The buffer size of LSM-Tree must > 0");
+        case `${target}-select-M`:
+            var input_elem = document.querySelector(`#${target}-input-M`);
+            var unit_elem = document.querySelector(`#${target}-select-M`);
+            if (input.M < 1 || input.M < input.E || input.M < input.P || input.M < input.Mbf) {
+                alert("Buffr size must >= 1 && >= entry size && >= page size && >= BloomFilters size");
+                restoreState(`#${target}-input-M`, `#${target}-select-M`);
+            } else {
+                setState(`#${target}-input-M`, `#${target}-select-M`);
+            }
+            break;
+        case `${target}-input-P`:  //1 < P <= E & M
+        case `${target}-select-P`:
+            var input_elem = document.querySelector(`#${target}-input-P`);
+            var unit_elem = document.querySelector(`#${target}-select-P`);
+            if (input.P < 1 || input.P < input.E || input.P > input.M) {
+                alert("Page size must >= 1 && >= entry size && <= buffer size");
+                restoreState(`#${target}-input-P`, `#${target}-select-P`);
+            } else {    
+                setState(`#${target}-input-P`, `#${target}-select-P`);
             }
             break;
         case `${target}-input-f`:
@@ -1159,16 +1156,12 @@ function validate(self, target, input) {
         case `${target}-input-s`:  //0 < s <= 100
             if (input.s <= 0 || input.s > 100) document.querySelector(`#${target}-input-s`).value = 50;
             break;
-        case `${target}-input-P`:  //0 < P <= E & M
         case `${target}-input-Mbf`:  //0 < Mbf <= M
         case `${target}-input-mu`:  //TODO
         case `${target}-input-phi`:  //TODO
         case `${target}-select-T`:
         case `${target}-select-N`:
-        case `${target}-select-E`:
-        case `${target}-select-M`:
         case `${target}-select-Mf`:
-        case `${target}-select-P`:
         case `${target}-select-Mbf`:
         case `${target}-tiering`:
         case `${target}-leveling`:
@@ -1187,6 +1180,18 @@ function validate(self, target, input) {
     return;
 }
 
+function restoreState(inputTarget, unitTarget) {
+    var inputElem = document.querySelector(inputTarget);
+    var unitElem = document.querySelector(unitTarget);
+    inputElem.value = inputElem.dataset.preval;
+    unitElem.selectedIndex = unitElem.dataset.preunit;
+}
+function setState(inputTarget, unitTarget) {
+    var inputElem = document.querySelector(inputTarget);
+    var unitElem = document.querySelector(unitTarget);
+    inputElem.dataset.preval = inputElem.value;
+    unitElem.dataset.preunit = unitElem.selectedIndex;
+}
 
 
 //Common Methods
