@@ -413,8 +413,22 @@ class LSM {
 class VanillaLSM extends LSM{
     constructor(tarConf, tarRes) {
         super(tarConf, tarRes);
+        console.log(this.L);
     }
-
+    _getL(entryNum = this.N) {
+        // entryNum must > 0
+        if (entryNum == 0) return 1;
+        var L;
+        var nEntry_M = Math.floor(this.M / this.E);     // number of entries fit into buffer
+        console.log(nEntry_M);
+        console.log(entryNum);
+        var l1 = nEntry_M * (this.T - 1);
+        var log = entryNum * (this.T - 1) / l1 + 1;
+        L = Math.ceil(getBaseLog(this.T, log));
+        
+        
+        return (L < 1) ? 1 : L;
+    }
     _getEntryNum(n, run_capacity, jth) {
         var offset = n;
         if(this.MP) {
@@ -450,7 +464,7 @@ class VanillaLSM extends LSM{
 
     _renderLeveler(elem, n) {
         n = (n < 0) ? 0 : n;
-        var l = super._getL(n);
+        var l = this._getL(n);
         var l_capacity = super._getLevelCapacity(l);
         var context = "";
         var rate = 0;
@@ -486,7 +500,7 @@ class VanillaLSM extends LSM{
 
     _renderTier(elem, n, max_runs) {
         n = (n < 0) ? 0 : n;
-        var l = super._getL(n);
+        var l = this._getL(n);
         var l_capacity = super._getLevelCapacity(l);
         var r_capacity = super._getRunCapacity(l);
         var context = "";
@@ -623,6 +637,7 @@ class VanillaLSM extends LSM{
         this._renderTier(btn_groups, this.N, max_runs);
         return btn_groups;
     }
+
 }
 
 class RocksDBLSM extends LSM {
@@ -955,16 +970,16 @@ function display() {
 
 function runCmp() {
     var target = "cmp";
-    var input_T = document.querySelector("#cmp-input-T").value;
-    var input_E = convertToBytes("#cmp-select-E", document.querySelector("#cmp-input-E").value);
-    var input_N = document.querySelector("#cmp-input-N").value;
-    var input_M = convertToBytes("#cmp-select-M", document.querySelector("#cmp-input-M").value);
-    var input_f = document.querySelector("#cmp-input-f").value;
-    var input_P = convertToBytes("#cmp-select-P", document.querySelector("#cmp-input-P").value);
-    var input_Mbf = convertToBytes("#cmp-select-Mbf", document.querySelector("#cmp-select-Mbf").value);
-    var input_s = document.querySelector("#cmp-input-s").value;
-    var input_mu = document.querySelector("#cmp-input-mu").value;
-    var input_phi = document.querySelector("#cmp-input-phi").value;
+    var input_T = getInputValbyId("#cmp-input-T");
+    var input_E = convertToBytes("#cmp-select-E", getInputValbyId("#cmp-input-E"));
+    var input_N = getInputValbyId("#cmp-input-N");
+    var input_M = convertToBytes("#cmp-select-M", getInputValbyId("#cmp-input-M"));
+    var input_f = getInputValbyId("#cmp-input-f");
+    var input_P = convertToBytes("#cmp-select-P", getInputValbyId("#cmp-input-P"));
+    var input_Mbf = convertToBytes("#cmp-select-Mbf", getInputValbyId("#cmp-select-Mbf"));
+    var input_s = getInputValbyId("#cmp-input-s");
+    var input_mu = getInputValbyId("#cmp-input-mu");
+    var input_phi = getInputValbyId("#cmp-input-phi");
 
 
     var input = {T: input_T, E: input_E, N: input_N, M: input_M, f: input_f, P: input_P, Mbf: input_Mbf, s: input_s, mu: input_mu, phi: input_phi};
@@ -1055,16 +1070,16 @@ function runIndiv() {
             alert("Invalid: Unknown event target");
     }
     var obj = window.obj[target]; 
-    var input_T = document.querySelector(`#${target}-input-T`).value;
-    var input_E = convertToBytes(`#${target}-select-E`, document.querySelector(`#${target}-input-E`).value);
-    var input_N = document.querySelector(`#${target}-input-N`).value;
-    var input_M = convertToBytes(`#${target}-select-M`, document.querySelector(`#${target}-input-M`).value);
-    var input_f = document.querySelector(`#${target}-input-f`).value;
-    var input_P = convertToBytes(`#${target}-select-P`, document.querySelector(`#${target}-input-P`).value);
-    var input_Mbf = convertToBytes(`#${target}-select-Mbf`, document.querySelector(`#${target}-input-Mbf`).value);
-    var input_s = document.querySelector(`#${target}-input-s`).value;
-    var input_mu = document.querySelector(`#${target}-input-mu`).value;
-    var input_phi = document.querySelector(`#${target}-input-phi`).value;
+    var input_T = getInputValbyId(`#${target}-input-T`);
+    var input_E = convertToBytes(`#${target}-select-E`, getInputValbyId(`#${target}-input-E`));
+    var input_N = getInputValbyId(`#${target}-input-N`);
+    var input_M = convertToBytes(`#${target}-select-M`, getInputValbyId(`#${target}-input-M`));
+    var input_f = getInputValbyId(`#${target}-input-f`);
+    var input_P = convertToBytes(`#${target}-select-P`, getInputValbyId(`#${target}-input-P`));
+    var input_Mbf = convertToBytes(`#${target}-select-Mbf`, getInputValbyId(`#${target}-input-Mbf`));
+    var input_s = getInputValbyId(`#${target}-input-s`);
+    var input_mu = getInputValbyId(`#${target}-input-mu`);
+    var input_phi = getInputValbyId(`#${target}-input-phi`);
     var input = {T: input_T, E: input_E, N: input_N, M: input_M, f: input_f, P: input_P, Mbf: input_Mbf, s: input_s, mu: input_mu, phi: input_phi};
     validate(this, target, input);
 
@@ -1088,8 +1103,6 @@ function validate(self, target, input) {
         alert(`Invalid: Unknown ${target} configuration input`);
         return;
     }
-    console.log(input.E);
-    console.log(input.M);
     var entry_unit = document.getElementById(`${target}-select-E`).selectedIndex;
     if (input.E > input.M) {
         document.querySelector(`#${target}-input-M`).value = document.querySelector(`#${target}-input-E`).value;
@@ -1097,12 +1110,11 @@ function validate(self, target, input) {
         document.getElementById(`${target}-select-M`).selectedIndex = entry_unit;
         document.getElementById(`${target}-select-P`).selectedIndex = entry_unit;
         console.log("Invalid: entry size must less or equal than buffer size");
-        alert("Invalid: entry size must less or equal than buffer size");
     }
     if (input.E > input.P) {
         document.querySelector(`#${target}-input-P`).value = document.querySelector(`#${target}-input-E`).value;
         document.getElementById(`${target}-select-P`).selectedIndex = entry_unit;
-        alert("Invalid: entry size must less or equal than page size");
+        console.log("Invalid: entry size must less or equal than page size");
     }
     // if (input.P > input.M) {
     //     var page_unit = document.getElementById(`${target}-select-P`).selectedIndex;
@@ -1129,6 +1141,9 @@ function validate(self, target, input) {
                 document.querySelector(`#${target}-input-E`).value = 1;
                 // alert("Invalid: The minimal entry size of LSM-Tree is 1 bytes");
             }
+            if (input.E > input.M) {
+
+            }
             break;
         case `${target}-input-M`:
             if (input.M < 1) {
@@ -1141,9 +1156,11 @@ function validate(self, target, input) {
             var max = parseInt(document.querySelector(`#${target}-input-f`).max);
             if (input.F <= min || input.F > max) document.querySelector(`#${target}-input-f`).value = 1;
             break;
-        case `${target}-input-P`:  //TODO
-        case `${target}-input-Mbf`:  //TODO
-        case `${target}-input-s`:  //TODO
+        case `${target}-input-s`:  //0 < s <= 100
+            if (input.s <= 0 || input.s > 100) document.querySelector(`#${target}-input-s`).value = 50;
+            break;
+        case `${target}-input-P`:  //0 < P <= E & M
+        case `${target}-input-Mbf`:  //0 < Mbf <= M
         case `${target}-input-mu`:  //TODO
         case `${target}-input-phi`:  //TODO
         case `${target}-select-T`:
@@ -1203,6 +1220,12 @@ function convertToBytes(target, input) {
     }
 }
 
+function getInputValbyId(id) {
+    return parseFloat(document.querySelector(id).value);
+}
+function setInputValbyId(id, val) {
+    return document.querySelector(id).value = val;
+}
 
 function getBaseLog(x, y) {
     if (isNaN(x) || isNaN(y)) throw new TypeError("x: " + x +", y: " + y + " must be numbers");
