@@ -125,7 +125,7 @@
             <div class="input-group-prepend">
               <label class="input-group-text">#Entries</label>
             </div>
-            <input id="cmp-input-N" value="1048576" min="1" type="number" class="cmp-input form-control" aria-label="#Entries">
+            <input id="cmp-input-N" value="1048576" min="1" type="number" data-preval="1048576" class="cmp-input form-control" aria-label="#Entries">
           </div>
           <div class="input-group input-group-sm mb-2">
             <div class="input-group-prepend">
@@ -159,8 +159,8 @@
             <div class="input-group-prepend">
               <label class="input-group-text">Bloom filters</label>
             </div>
-            <input id="cmp-input-Mbf" value="1024" min="1" type="number" class="cmp-input form-control" aria-label="Bloom filters size">
-            <select id="cmp-select-Mbf" class="custom-select cmp-input">
+            <input id="cmp-input-Mbf" value="1024" min="0" type="number" data-preval="1024" class="cmp-input form-control" aria-label="Bloom filters size">
+            <select id="cmp-select-Mbf" class="custom-select cmp-input" data-preunit="0">
               <option value="0" selected><span></span>B</option>
               <option value="1">KB</option>
               <option value="2">MB</option>
@@ -187,7 +187,7 @@
             <div class="input-group-prepend">
               <label class="input-group-text">File size (in terms of buffer)</label>
             </div>
-            <input id="cmp-input-f" value="1" min="0" max="1" type="number"step="0.1" class="cmp-input form-control" aria-label="Size factor in terms of buffer size">
+            <input id="cmp-input-f" value="1" min="0" max="1" type="number" step="0.1" data-preval="1" class="cmp-input form-control" aria-label="Size factor in terms of buffer size">
           </div>
           <div class="input-group input-group-sm mb-2">
             <div class="input-group-prepend">
@@ -209,7 +209,7 @@
             <div class="input-group-prepend">
               <label class="input-group-text">Ratio</label>
             </div>
-            <input id="cmp-input-T" value="2" min="2" type="number" class="cmp-input form-control" aria-label="Ratio">
+            <input id="cmp-input-T" value="2" min="2" type="number" data-preval="2" class="cmp-input form-control" aria-label="Ratio">
           </div>
           <div class="mp-btn-group btn-group mb-2" role="group" aria-label="LSM Merge Policy">
             <button id="cmp-leveling" type="button" class="cmp-input btn-active leveler btn btn-custom">Leveling</button>
@@ -224,7 +224,7 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Selectivity of a range lookup">Selectivity</label>
                 </div>
-                <input id="cmp-input-s" value="50" min="1" max="100" type="number" class="cmp-input form-control" aria-label="Selectivity of a range lookup">
+                <input id="cmp-input-s" value="50" min="0" max="100" type="number" data-preval="50" class="cmp-input form-control" aria-label="Selectivity of a range lookup">
                 <div class="input-group-append">
                   <span class="input-group-text">%</span>
                 </div>
@@ -274,7 +274,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text"># Entries</label>
               </div>
-              <input id="vlsm-input-N" value="1048576" type="number" min="1" data-old="1048576" class="vlsm-input form-control" aria-label="#Entries">
+              <input id="vlsm-input-N" value="1048576" type="number" min="1" data-preval="1048576" class="vlsm-input form-control" aria-label="#Entries">
             </div>
           </div>
 
@@ -312,8 +312,8 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Bloom filters</label>
               </div>
-              <input id="vlsm-input-Mbf" value="1024" min="1" type="number" class="vlsm-input form-control" aria-label="Bloom filters size">
-              <select id="vlsm-select-Mbf" class="custom-select vlsm-input">
+              <input id="vlsm-input-Mbf" value="1024" min="0" type="number" data-preval="1024" class="vlsm-input form-control" aria-label="Bloom filters size">
+              <select id="vlsm-select-Mbf" class="custom-select vlsm-input" data-preunit="0">
                 <option value="0" selected><span></span>B</option>
                 <option value="1">KB</option>
                 <option value="2">MB</option>
@@ -340,7 +340,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">File size(in terms of buffer)</label>
               </div>
-              <input id="vlsm-input-f" value="1" min="0" type="number" class="vlsm-input form-control" aria-label="Size factor in terms of buffer size">
+              <input id="vlsm-input-f" value="1" min="0" max="1" type="number" step="0.1" data-preval="1" class="vlsm-input form-control" aria-label="Size factor in terms of buffer size">
             </div>
           </div>
           <div class="row vlsm-conf-row">
@@ -362,7 +362,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Ratio</label>
               </div>
-              <input id="vlsm-input-T" value="2" min="2" type="number" class="vlsm-input form-control" aria-label="Ratio">
+              <input id="vlsm-input-T" value="2" min="2" type="number" data-preval="2" class="vlsm-input form-control" aria-label="Ratio">
             </div>
           </div>
           <div id="vlsm-adConf-row">
@@ -372,7 +372,7 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Selectivity of a range lookup">Selectivity</label>
                 </div>
-                <input id="vlsm-input-s" value="50" min="1" max="100" type="number" class="vlsm-input form-control" aria-label="Selectivity of a range lookup">
+                <input id="vlsm-input-s" value="50" min="0" max="100" type="number" data-preval="50" class="vlsm-input form-control" aria-label="Selectivity of a range lookup">
                 <div class="input-group-append">
                   <span class="input-group-text">%</span>
                 </div>
@@ -414,7 +414,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text"># Entries</label>
               </div>
-              <input id="rlsm-input-N" value="1048576" min="1" type="number" class="rlsm-input form-control" aria-label="#Entries">
+              <input id="rlsm-input-N" value="1048576" min="1" type="number" data-preval="1048576" class="rlsm-input form-control" aria-label="#Entries">
             </div>
           </div>
 
@@ -452,8 +452,8 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Bloom filters</label>
               </div>
-              <input id="rlsm-input-Mbf" value="1024" min="1" type="number" class="rlsm-input form-control" aria-label="Bloom filters size">
-              <select id="rlsm-select-Mbf" class="custom-select rlsm-input">
+              <input id="rlsm-input-Mbf" value="1024" min="0" type="number" data-preval="1024" class="rlsm-input form-control" aria-label="Bloom filters size">
+              <select id="rlsm-select-Mbf" class="custom-select rlsm-input" data-preval="0">
                 <option value="0" selected><span></span>B</option>
                 <option value="1">KB</option>
                 <option value="2">MB</option>
@@ -480,7 +480,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">File size(in terms of buffer)</label>
               </div>
-              <input id="rlsm-input-f" value="1" min="0" type="number" class="rlsm-input form-control" aria-label="Size factor in terms of buffer size">
+              <input id="rlsm-input-f" value="1" min="0" max="1" type="number" step="0.1" data-preval="1" class="rlsm-input form-control" aria-label="Size factor in terms of buffer size">
             </div>
           </div>
           <div class="row rlsm-conf-row">
@@ -503,7 +503,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Ratio</label>
               </div>
-              <input id="rlsm-input-T" value="2" min="2" type="number" class="rlsm-input form-control" aria-label="Ratio">
+              <input id="rlsm-input-T" value="2" min="2" type="number" data-preval="2" class="rlsm-input form-control" aria-label="Ratio">
             </div>
           </div>
           <div id="rlsm-adConf-row">
@@ -513,7 +513,7 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Selectivity of a range lookup">Selectivity</label>
                 </div>
-                <input id="rlsm-input-s" value="50" min="1" max="100" type="number" class="rlsm-input form-control" aria-label="Selectivity of a range lookup">
+                <input id="rlsm-input-s" value="50" min="0" max="100" type="number" data-preval="50" class="rlsm-input form-control" aria-label="Selectivity of a range lookup">
                 <div class="input-group-append">
                   <span class="input-group-text">%</span>
                 </div>
@@ -553,7 +553,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text"># Entries</label>
               </div>
-              <input id="dlsm-input-N" value="1048576" min="1" type="number" class="dlsm-input form-control" aria-label="#Entries">
+              <input id="dlsm-input-N" value="1048576" min="1" type="number" data-preval="1048576" class="dlsm-input form-control" aria-label="#Entries">
             </div>
           </div>
 
@@ -591,8 +591,8 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Bloom filters</label>
               </div>
-              <input id="dlsm-input-Mbf" value="1024" min="1" type="number" class="dlsm-input form-control" aria-label="Bloom filters size">
-              <select id="dlsm-select-Mbf" class="custom-select dlsm-input">
+              <input id="dlsm-input-Mbf" value="1024" min="0" type="number" data-preval="1024" class="dlsm-input form-control" aria-label="Bloom filters size">
+              <select id="dlsm-select-Mbf" class="custom-select dlsm-input" data-preunit="0">
                 <option value="0" selected><span></span>B</option>
                 <option value="1">KB</option>
                 <option value="2">MB</option>
@@ -619,7 +619,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">File size(in terms of buffer)</label>
               </div>
-              <input id="dlsm-input-f" value="1" min="0" type="number" class="dlsm-input form-control" aria-label="Size factor in terms of buffer size">
+              <input id="dlsm-input-f" value="1" min="0" max="1" type="number" step="0.1" data-preval="1" class="dlsm-input form-control" aria-label="Size factor in terms of buffer size">
             </div>
           </div>
           <div class="row dlsm-conf-row">
@@ -642,7 +642,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Ratio</label>
               </div>
-              <input id="dlsm-input-T" value="2" min="2" type="number" class="dlsm-input form-control" aria-label="Ratio">
+              <input id="dlsm-input-T" value="2" min="2" type="number" data-preval="2" class="dlsm-input form-control" aria-label="Ratio">
             </div>
           </div>
           <div id="dlsm-adConf-row">
@@ -652,7 +652,7 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Selectivity of a range lookup">Selectivity</label>
                 </div>
-                <input id="dlsm-input-s" value="50" min="1" max="100" type="number" class="dlsm-input form-control" aria-label="Selectivity of a range lookup">
+                <input id="dlsm-input-s" value="50" min="0" max="100" type="number" data-preval="50" class="dlsm-input form-control" aria-label="Selectivity of a range lookup">
                 <div class="input-group-append">
                   <span class="input-group-text">%</span>
                 </div>
@@ -692,7 +692,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text"># Entries</label>
               </div>
-              <input id="osm-input-N" value="1048576" min="1" type="number" class="osm-input form-control" aria-label="#Entries">
+              <input id="osm-input-N" value="1048576" min="1" type="number" data-preval="1048576" class="osm-input form-control" aria-label="#Entries">
             </div>
           </div>
 
@@ -730,8 +730,8 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Bloom filters</label>
               </div>
-              <input id="osm-input-Mbf" value="1024" min="1" type="number" class="osm-input form-control" aria-label="Bloom filters size">
-              <select id="osm-select-Mbf" class="custom-select osm-input">
+              <input id="osm-input-Mbf" value="1024" min="0" type="number" data-preval="1024" class="osm-input form-control" aria-label="Bloom filters size">
+              <select id="osm-select-Mbf" class="custom-select osm-input" data-preunit="0">
                 <option value="0" selected><span></span>B</option>
                 <option value="1">KB</option>
                 <option value="2">MB</option>
@@ -758,7 +758,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">File size(in terms of buffer)</label>
               </div>
-              <input id="osm-input-f" value="1" min="0" type="number" class="osm-input form-control" aria-label="Size factor in terms of buffer size">
+              <input id="osm-input-f" value="1" min="0" max="1" type="number" step="0.1" data-preval="1" class="osm-input form-control" aria-label="Size factor in terms of buffer size">
             </div>
           </div>
           <div class="row osm-conf-row">
@@ -781,7 +781,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Ratio</label>
               </div>
-              <input id="osm-input-T" value="2" min="2" type="number" class="osm-input form-control" aria-label="Ratio">
+              <input id="osm-input-T" value="2" min="2" type="number" data-preval="2" class="osm-input form-control" aria-label="Ratio">
             </div>
           </div>
           <div id="osm-adConf-row">
@@ -791,7 +791,7 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Selectivity of a range lookup">Selectivity</label>
                 </div>
-                <input id="osm-input-s" value="50" min="1" max="100" type="number" class="osm-input form-control" aria-label="Selectivity of a range lookup">
+                <input id="osm-input-s" value="50" min="0" max="100" type="number" data-preval="50" class="osm-input form-control" aria-label="Selectivity of a range lookup">
                 <div class="input-group-append">
                   <span class="input-group-text">%</span>
                 </div>
@@ -1020,7 +1020,7 @@
         </div>
         <div class="row">
           <div class="metrics col-lg-7 col-md-7 col-sm-7">
-            <span id="metric-lQ-title" class="metric-title" data-toggle="tooltip" data-placement="left" data-original-title="Long range lookup cost: the average worst-case I/O cost performed by range lookups which key ranges are relative large and mostly target the largest level.">Long range lookup(50%)</span>
+            <span id="metric-lQ-title" class="metric-title" data-toggle="tooltip" data-placement="left" data-original-title="Long range lookup cost: the average worst-case I/O cost performed by range lookups which key ranges are relative large and mostly target the largest level.">Long range lookup (50%)</span>
           </div>
           <div class="cost-col col-lg-5 col-md-5 col-sm-5 text-center">
             <span id="vlsm-lQ-cost" class="cost uncertain">XXX I/O</span>

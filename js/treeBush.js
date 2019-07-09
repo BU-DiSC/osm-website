@@ -321,20 +321,6 @@ class LSM {
         return btn_groups;
     }
 
-    showBush() {
-        var btn_list = [];
-        var parent = document.querySelector(`#${this.suffix}-bush`);
-        if (this.MP) btn_list = this._getBtnGroups(parent, this.L, this.T);
-        else btn_list = this._getBtns(parent, this.L, this.T);
-        clear(parent);
-
-        for (var i = 1; i <= this.L; i++) {
-            var div_wrap = document.createElement("div");
-            div_wrap.setAttribute("class", `row ${this.suffix}-result`);
-            div_wrap.appendChild(btn_list[i]);
-            parent.appendChild(div_wrap);
-        }
-    }
     /* update current state */
     update(prefix, mergePolicy = this.MP) {
         this.prefix = prefix;
@@ -350,14 +336,10 @@ class LSM {
         this.mu = document.querySelector(`#${prefix}-input-mu`).value;
         this.phi = document.querySelector(`#${prefix}-input-phi`).value;
         this.L = this._getL();
-        // set the range of input F
-        if (this.MP) document.querySelector(`#${prefix}-input-f`).max = "1";
-        else document.querySelector(`#${prefix}-input-f`).max = "" + this.T;
 
-        this._updateCostResult();
         if (prefix === "cmp") {
             var percentage = document.querySelector(`#${prefix}-input-s`).value + "%";
-            document.querySelector("#metric-lQ-title").textContent = "Long range lookup("+ percentage + ")";
+            document.querySelector("#metric-lQ-title").textContent = "Long range lookup ("+ percentage + ")";
             var str = `Long range lookup cost: the average worst-case I/O cost performed by range lookups with ${percentage} unique keys of the entire key space and mostly target the largest level.`;
             document.querySelector("#metric-lQ-title").setAttribute("data-original-title", str);
         } else {
@@ -365,15 +347,35 @@ class LSM {
         }
         
     }
-    _updateCostResult() {
+    showBush() {
+        var btn_list = [];
+        var parent = document.querySelector(`#${this.suffix}-bush`);
+        if (this.MP) btn_list = this._getBtnGroups(parent, this.L, this.T);
+        else btn_list = this._getBtns(parent, this.L, this.T);
+        clear(parent);
+
+        for (var i = 1; i <= this.L; i++) {
+            var div_wrap = document.createElement("div");
+            div_wrap.setAttribute("class", `row ${this.suffix}-result`);
+            div_wrap.appendChild(btn_list[i]);
+            parent.appendChild(div_wrap);
+        }
+    }
+
+    showCost() {
         document.querySelector(`#${this.suffix}-W-cost`).textContent = roundTo(this._getUpdateCost(), 4) + " I/O";
         document.querySelector(`#${this.suffix}-R-cost`).textContent = roundTo(this._getZeroPointLookUpCost(), 4) +" I/O";
         document.querySelector(`#${this.suffix}-V-cost`).textContent = roundTo(this._getExistPointLookUpCost(), 4) +" I/O";
         document.querySelector(`#${this.suffix}-sQ-cost`).textContent = roundTo(this._getShortRangeLookUpCost(), 4) +" I/O";
         document.querySelector(`#${this.suffix}-lQ-cost`).textContent = roundTo(this._getLongRangeLookUpCost(), 4) +" I/O";
         document.querySelector(`#${this.suffix}-sAMP-cost`).textContent = roundTo(this._getSpaceAmpCost(), 4);
-
     }
+
+    show() {
+        this.showBush();
+        this.showCost();
+    }
+
     _getUpdateCost() {
         // W
         var f1 = this.phi/(this.mu*this.B);
@@ -413,15 +415,12 @@ class LSM {
 class VanillaLSM extends LSM{
     constructor(tarConf, tarRes) {
         super(tarConf, tarRes);
-        console.log(this.L);
     }
     _getL(entryNum = this.N) {
         // entryNum must > 0
         if (entryNum == 0) return 1;
         var L;
         var nEntry_M = Math.floor(this.M / this.E);     // number of entries fit into buffer
-        console.log(nEntry_M);
-        console.log(entryNum);
         var l1 = nEntry_M * (this.T - 1);
         var log = entryNum * (this.T - 1) / l1 + 1;
         L = Math.ceil(getBaseLog(this.T, log));
@@ -746,11 +745,7 @@ class RocksDBLSM extends LSM {
         this.mu = document.querySelector(`#${prefix}-input-mu`).value;
         this.phi = document.querySelector(`#${prefix}-input-phi`).value;
         this.L = this._getL();
-        // set the range of input F
-        if (this.MP) document.querySelector(`#${prefix}-input-f`).max = "1";
-        else document.querySelector(`#${prefix}-input-f`).max = "" + this.T;
         this._updateCostEquation();
-        super._updateCostResult();
     }
 
     _updateCostEquation() {
@@ -877,11 +872,6 @@ class DostoevskyLSM extends LSM {
         this.mu = document.querySelector(`#${prefix}-input-mu`).value;
         this.phi = document.querySelector(`#${prefix}-input-phi`).value;
         this.L = this._getL();
-        // set the range of input F
-        if (this.MP) document.querySelector(`#${prefix}-input-f`).max = "1";
-        else document.querySelector(`#${prefix}-input-f`).max = "" + this.T;
-
-        this._updateCostResult();
     }
 }
 
@@ -906,14 +896,10 @@ function initCmp() {
     window.dlsm = dlsm;
     window.osm = osm;
     window.obj = {rlsm:window.rlsm, vlsm:window.vlsm, dlsm:window.dlsm, osm:window.osm};
-    window.vlsm.update("cmp");
-    window.rlsm.update("cmp");
-    window.dlsm.update("cmp");
-    window.osm.update("cmp");
-    window.vlsm.showBush();
-    window.rlsm.showBush();
-    window.dlsm.showBush();
-    window.osm.showBush();
+    window.vlsm.show();
+    window.rlsm.show();
+    window.dlsm.show();
+    window.osm.show();
 }
 
 /* Display one of analysis mode according to
@@ -951,7 +937,7 @@ function display() {
                 obj.MP = obj.preMP;
                 obj.preMP = tmpMP;
                 obj.update("cmp");
-                obj.showBush();
+                obj.show();
             }
         } else {    // ... update(indiv)
             for (var key in window.obj) {
@@ -960,7 +946,7 @@ function display() {
                 obj.MP = obj.preMP;
                 obj.preMP = tmpMP;
                 obj.update(key);
-                obj.showBush();
+                obj.show();
             }
         }
     }
@@ -973,33 +959,34 @@ function runCmp() {
     var input_N = getInputValbyId("#cmp-input-N");
     var input_M = convertToBytes("#cmp-select-M", getInputValbyId("#cmp-input-M"));
     var input_f = getInputValbyId("#cmp-input-f");
+    var input_F = input_M * input_f;
     var input_P = convertToBytes("#cmp-select-P", getInputValbyId("#cmp-input-P"));
-    var input_Mbf = convertToBytes("#cmp-select-Mbf", getInputValbyId("#cmp-select-Mbf"));
+    var input_Mbf = convertToBytes("#cmp-select-Mbf", getInputValbyId("#cmp-input-Mbf"));
     var input_s = getInputValbyId("#cmp-input-s");
     var input_mu = getInputValbyId("#cmp-input-mu");
     var input_phi = getInputValbyId("#cmp-input-phi");
 
 
-    var input = {T: input_T, E: input_E, N: input_N, M: input_M, f: input_f, P: input_P, Mbf: input_Mbf, s: input_s, mu: input_mu, phi: input_phi};
+    var input = {T: input_T, E: input_E, N: input_N, M: input_M, f: input_f, F: input_F, P: input_P, Mbf: input_Mbf, s: input_s, mu: input_mu, phi: input_phi};
     validate(this, target, input);
 
 
     switch (this.id) {
         case "cmp-vlsm-leveling": 
             vlsm.update(target, 0);
-            vlsm.showBush();
+            vlsm.show();
             break;
         case "cmp-vlsm-tiering":
             vlsm.update(target, 1);
-            vlsm.showBush();
+            vlsm.show();
             break;
         case "cmp-rlsm-leveling": 
             rlsm.update(target, 0);
-            rlsm.showBush();
+            rlsm.show();
             break;
         case "cmp-rlsm-tiering": 
             rlsm.update(target, 1);
-            rlsm.showBush();
+            rlsm.show();
             break;
         // case "cmp-dlsm-lazyLevel":   // currently untriggered by event, unchanged merge policy
         //     dlsm.update(target, 1);
@@ -1007,7 +994,7 @@ function runCmp() {
         //     break;
         case "cmp-osm-leveling": 
             osm.update(target, 0);
-            osm.showBush();
+            osm.show();
             break;
         case "cmp-leveling":
             console.log("update all to leveling");
@@ -1015,10 +1002,10 @@ function runCmp() {
             rlsm.update(target, 0);
             // dlsm.update(target, 1);     // currently untriggered by event, unchanged merge policy
             osm.update(target, 0);
-            vlsm.showBush();
-            rlsm.showBush();
-            dlsm.showBush();
-            osm.showBush();
+            vlsm.show();
+            rlsm.show();
+            dlsm.show();
+            osm.show();
             break;
         case "cmp-tiering":
             console.log("update all to tiering");
@@ -1026,9 +1013,9 @@ function runCmp() {
             rlsm.update(target, 1);
             // dlsm.update(target, 1);     // currently untriggered by event, unchanged merge policy
             // osm.update(target, 1);
-            vlsm.showBush();
-            rlsm.showBush();
-            dlsm.showBush();
+            vlsm.show();
+            rlsm.show();
+            dlsm.show();
             // osm.showBush();
             break;
         default:
@@ -1037,10 +1024,10 @@ function runCmp() {
             rlsm.update(target);
             dlsm.update(target);
             osm.update(target);
-            vlsm.showBush();
-            rlsm.showBush();
-            dlsm.showBush();
-            osm.showBush();
+            vlsm.show();
+            rlsm.show();
+            dlsm.show();
+            osm.show();
     }
 }
 
@@ -1072,13 +1059,14 @@ function runIndiv() {
     var input_E = convertToBytes(`#${target}-select-E`, getInputValbyId(`#${target}-input-E`));
     var input_N = getInputValbyId(`#${target}-input-N`);
     var input_M = convertToBytes(`#${target}-select-M`, getInputValbyId(`#${target}-input-M`));
-    var input_f = getInputValbyId(`#${target}-input-f`);
+    var input_f = getInputValbyId(`#${target}-input-f`); 
+    var input_F = input_M * input_f;
     var input_P = convertToBytes(`#${target}-select-P`, getInputValbyId(`#${target}-input-P`));
     var input_Mbf = convertToBytes(`#${target}-select-Mbf`, getInputValbyId(`#${target}-input-Mbf`));
     var input_s = getInputValbyId(`#${target}-input-s`);
     var input_mu = getInputValbyId(`#${target}-input-mu`);
     var input_phi = getInputValbyId(`#${target}-input-phi`);
-    var input = {T: input_T, E: input_E, N: input_N, M: input_M, f: input_f, P: input_P, Mbf: input_Mbf, s: input_s, mu: input_mu, phi: input_phi};
+    var input = {T: input_T, E: input_E, N: input_N, M: input_M, f: input_f, F: input_F, P: input_P, Mbf: input_Mbf, s: input_s, mu: input_mu, phi: input_phi};
     validate(this, target, input);
 
     if (this.id.includes("leveling")) {
@@ -1091,7 +1079,7 @@ function runIndiv() {
         console.log("simply update");
         obj.update(target);
     }
-    obj.showBush();
+    obj.show();
 }
 
 /* Validate and correct the input */
@@ -1104,65 +1092,167 @@ function validate(self, target, input) {
     switch (self.id) {
         case `${target}-input-T`:
             if (input.T < 2) {
-                document.querySelector(`#${target}-input-T`).value = 2;
-                // alert("Invalid: The minimal ratio of LSM-Tree is 2");
+                alert("Invalid input: the minimal ratio of LSM-Tree is 2");
+                restoreState(`#${target}-input-T`);
+            } else {
+                setState(`#${target}-input-T`);
             }
             break;
         case `${target}-input-N`:
             if (input.N < 1) {
-                document.querySelector(`#${target}-input-N`).value = 1;
-                // alert("Invalid: The minimal number of entries of LSM-Tree is 1");
+                alert("Invalid input: the minimal #entries is 1");
+                restoreState(`#${target}-input-N`);
+            } else {
+                setState(`#${target}-input-N`);
             }
             break;
         case `${target}-input-E`:
         case `${target}-select-E`:
-            if (input.E < 1 || input.E > input.M || input.E > input.P) {
-                // restore to legally previous state
-                // if (input.E < 1)  alert("Entry size must >= 1 byte");
-                // if (input.E > input.M) alert("Entry size must <= buffer size");
-                alert("Entry size must >= 1 && <= buffer size && <= page size");
-                restoreState(`#${target}-input-E`, `#${target}-select-E`);
+            if (input.E < 1 || input.E > input.M || input.E > input.P || input.E > input.F) {
+                //restore to legally previous state
+                if (input.E < 1) {
+                    alert("Invalid input: the minimal size of an entry is 1 byte");
+                    restoreState(`#${target}-input-E`, `#${target}-select-E`);
+                    break;
+                }
+                if (input.E > input.P) {
+                    alert("Invalid input: the maximal size of an entry should be <= page size");
+                    restoreState(`#${target}-input-E`, `#${target}-select-E`);
+                    break;
+                }
+                if (input.E > input.F) {
+                    alert("Invalid input: the maximal size of an entry should be <= file size");
+                    restoreState(`#${target}-input-E`, `#${target}-select-E`);
+                    break;
+                }
+                if (input.E > input.M) {
+                    alert("Invalid input: the maximal size of an entry should be <= buffer size");
+                    restoreState(`#${target}-input-E`, `#${target}-select-E`);
+                    break;
+                }
             } else {    // save new state
                 setState(`#${target}-input-E`, `#${target}-select-E`);
             }
             break;
         case `${target}-input-M`:
         case `${target}-select-M`:
-            var input_elem = document.querySelector(`#${target}-input-M`);
-            var unit_elem = document.querySelector(`#${target}-select-M`);
-            if (input.M < 1 || input.M < input.E || input.M < input.P || input.M < input.Mbf) {
-                alert("Buffr size must >= 1 && >= entry size && >= page size && >= BloomFilters size");
-                restoreState(`#${target}-input-M`, `#${target}-select-M`);
+            if (input.M < 1 || input.M < input.E || input.M < input.P || input.F < 1 || input.F < input.P) {
+                
+                if (input.F < input.P) {
+                    alert("Invalid input: in terms of buffer, the corresponding file size shoud not be < page size");
+                    restoreState(`#${target}-input-M`, `#${target}-select-M`);
+                    break;
+                }
+                if (input.F < 1) {
+                    alert("Invalid input: in terms of buffer, the corresponding file size shoud not be < 1 byte");
+                    restoreState(`#${target}-input-M`, `#${target}-select-M`);
+                    break;
+                }
+                if (input.M < input.P) {
+                    alert("Invalid input: the minimal size of buffer should be >= page size");
+                    restoreState(`#${target}-input-M`, `#${target}-select-M`);
+                    break;
+                }
+                if (input.M < input.E) {
+                    alert("Invalid input: the minimal size of buffer should be >= entry size");
+                    restoreState(`#${target}-input-M`, `#${target}-select-M`);
+                    break;
+                }
+                if (input.M < 1) {
+                    alert("Invalid input: the minimal size of buffer is 1 byte");
+                    restoreState(`#${target}-input-M`, `#${target}-select-M`);
+                    break;
+                }
             } else {
                 setState(`#${target}-input-M`, `#${target}-select-M`);
             }
             break;
-        case `${target}-input-P`:  //1 < P <= E & M
+        case `${target}-input-P`:  //1byte <= P <= E & M & F
         case `${target}-select-P`:
-            var input_elem = document.querySelector(`#${target}-input-P`);
-            var unit_elem = document.querySelector(`#${target}-select-P`);
-            if (input.P < 1 || input.P < input.E || input.P > input.M) {
-                alert("Page size must >= 1 && >= entry size && <= buffer size");
-                restoreState(`#${target}-input-P`, `#${target}-select-P`);
+            if (input.P < 1 || input.P < input.E || input.P > input.M || input.P > input.F) {
+                if (input.P < input.E) {
+                    alert("Invalid input: the minimal size of a page should be >= entry size");
+                    restoreState(`#${target}-input-P`, `#${target}-select-P`);
+                    break;
+                }
+                if (input.P < 1) {
+                    alert("Invalid input: the minimal size of a page should be >= 1 byte");
+                    restoreState(`#${target}-input-P`, `#${target}-select-P`);
+                    break;
+                }
+                if (input.P > input.F) {
+                    alert("Invalid input: the maximal size of a page should be <= file size");
+                    restoreState(`#${target}-input-P`, `#${target}-select-P`);
+                    break;
+                }
+                if (input.P > input.M) {
+                    alert("Invalid input: the maximal size of a page should be <= buffer size");
+                    restoreState(`#${target}-input-P`, `#${target}-select-P`);
+                    break;
+                }
             } else {    
                 setState(`#${target}-input-P`, `#${target}-select-P`);
             }
             break;
-        case `${target}-input-f`:
-            var min = 0;
-            var max = parseInt(document.querySelector(`#${target}-input-f`).max);
-            if (input.F <= min || input.F > max) document.querySelector(`#${target}-input-f`).value = 1;
+        case `${target}-input-Mbf`:  //0byte <= Mbf <= M
+        case `${target}-select-Mbf`:
+            if (input.Mbf < 0) {
+                alert("Invalid input: the minimal memory allocated for bloom filters should be >= 0 byte");
+                restoreState(`#${target}-input-Mbf`, `#${target}-select-Mbf`);
+            } else {
+                setState(`#${target}-input-Mbf`, `#${target}-select-Mbf`);
+            }
             break;
-        case `${target}-input-s`:  //0 < s <= 100
-            if (input.s <= 0 || input.s > 100) document.querySelector(`#${target}-input-s`).value = 50;
+        case "cmp-input-f":  //global setting: 1byte <= F <= M
+            if (input.F < 1 || input.F < input.P || input.F < input.E || input.F > input.M) {
+                if (input.F < input.P) {
+                    alert("Invalid input: the minimal size of a file should be >= page size");
+                    restoreState("#cmp-input-f");
+                    break;
+                }
+                if (input.F < input.E) {
+                    alert("Invalid input: the minimal size of a file should be >= entry size");
+                    restoreState("#cmp-input-f");
+                    break;
+                }
+                if (input.F < 1) {
+                    alert("Invalid input: the minimal size of a file should be >= 1 byte");
+                    restoreState("#cmp-input-f");
+                    break;
+                }
+                if (input.F > input.M) {
+                    alert("Invalid input: in global setting, the maximal size of a file should be <= buffer size");
+                    restoreState("#cmp-input-f");
+                    break;
+                }
+            } else {
+                setState("#cmp-input-f");
+            }
             break;
-        case `${target}-input-Mbf`:  //0 < Mbf <= M
+
+        // case `${target}-input-f`:  //TODO: individual setting in terms of leveling and tiering
+        //     if (input.F <= min || input.F > max) document.querySelector(`#${target}-input-f`).value = 1;
+        //     break;
+        case `${target}-input-s`:  //0 <= s <= 100
+            if (input.s < 0 || input.s > 100) {
+                if (input.s < 0) {
+                    alert("Invalid input: the selectivity of a range query should be >= 0");
+                    restoreState(`#${target}-input-s`);
+                    break;
+                }
+                if (input.s > 100) {
+                    alert("Invalid input: the selectivity of a range query should be <= 100");
+                    restoreState(`#${target}-input-s`);
+                    break;
+                }
+            } else {
+                setState(`#${target}-input-s`);
+            }
+            break;
         case `${target}-input-mu`:  //TODO
         case `${target}-input-phi`:  //TODO
-        case `${target}-select-T`:
-        case `${target}-select-N`:
-        case `${target}-select-Mf`:
-        case `${target}-select-Mbf`:
+        case `${target}-select-Mf`:  //TODO
+        case `${target}-input-Mf`:  //TODO
         case `${target}-tiering`:
         case `${target}-leveling`:
         case `${target}-vlsm-tiering`:
@@ -1182,15 +1272,19 @@ function validate(self, target, input) {
 
 function restoreState(inputTarget, unitTarget) {
     var inputElem = document.querySelector(inputTarget);
-    var unitElem = document.querySelector(unitTarget);
     inputElem.value = inputElem.dataset.preval;
-    unitElem.selectedIndex = unitElem.dataset.preunit;
+    if (unitTarget !== undefined) {
+        var unitElem = document.querySelector(unitTarget);
+        unitElem.selectedIndex = unitElem.dataset.preunit;
+    }  
 }
 function setState(inputTarget, unitTarget) {
     var inputElem = document.querySelector(inputTarget);
-    var unitElem = document.querySelector(unitTarget);
     inputElem.dataset.preval = inputElem.value;
-    unitElem.dataset.preunit = unitElem.selectedIndex;
+    if (unitTarget !== undefined) {
+        var unitElem = document.querySelector(unitTarget);
+        unitElem.dataset.preunit = unitElem.selectedIndex;
+    }  
 }
 
 
