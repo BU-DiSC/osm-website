@@ -475,9 +475,11 @@ class VanillaLSM extends LSM{
     }
     _getOffsetFactor(n, lth) {  //lth > 1
         var offset = n - super._sumLevelsCapacityALT(lth - 1);
-        var prev_capacity = super._getLevelCapacityALT(lth - 1);
-        console.log("offset: ", offset);
+        var prev_capacity = super._getLevelCapacityALT(lth - 1);;
+        console.log("n: ", n);
+        console.log("lth: ", lth);
         console.log("prev_capacity: ", prev_capacity);
+        console.log("offset: ", offset);
         for (var i = 1; i <= this.T - 1; i++) {
             if (offset <= i * prev_capacity) {
                 break;
@@ -496,7 +498,7 @@ class VanillaLSM extends LSM{
         var entry_num = 0;
         if (l == 1) {
             // set n on l1
-            entry_num = this._getEntryNum(n, run_capacity);
+            entry_num = this._getEntryNum(n, l_capacity);
             rate = n / run_capacity;
             var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
             context = super._getTipText(l, run_capacity, entry_num, file_num);
@@ -506,13 +508,14 @@ class VanillaLSM extends LSM{
         }
 
         if (this._isFull(n, l)) {
+            console.log("isFull");
             entry_num = l_capacity;
             rate = entry_num / run_capacity;
             var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
             context = super._getTipText(l, run_capacity, entry_num, file_num);
             n = n - entry_num;
         } else {
-            entry_num = this._getOffsetFactor(n, l) * super._getLevelCapacityALT(l - 1);
+            entry_num = this._getOffsetFactor(n, l) * super._getLevelCapacity(l - 1);
             rate = entry_num / run_capacity;
             var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
             context = super._getTipText(l, run_capacity, entry_num, file_num);
@@ -526,7 +529,7 @@ class VanillaLSM extends LSM{
     _renderTier(elem, n, max_runs) {
         n = (n < 0) ? 0 : n;
         var l = this._getL(n);
-        var l_capacity = super._getLevelCapacityALT(l);
+        var l_capacity = super._getLevelCapacity(l);
         var r_capacity = super._getRunCapacity(l);
         var context = "";
         var rate = 0;
@@ -562,7 +565,7 @@ class VanillaLSM extends LSM{
             n = n - l_capacity;
         } else {
             var factor = this._getOffsetFactor(n, l);
-            var offset = factor * super._getLevelCapacity(l - 1);
+            var offset = factor * super._getLevelCapacityALT(l - 1);
             for (var j = 0; j < max_runs; j++) {
                 if ((max_runs >= 5) && (j == max_runs - 2)) {
                 } else {
