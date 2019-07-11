@@ -125,17 +125,17 @@
             <div class="input-group-prepend">
               <label class="input-group-text">#Entries</label>
             </div>
-            <input id="cmp-input-N" value="1048576" min="1" type="number" data-preval="1048576" class="cmp-input form-control" aria-label="#Entries">
+            <input id="cmp-input-N" value="1" min="1" type="number" data-preval="1" class="cmp-input form-control" aria-label="#Entries">
           </div>
           <div class="input-group input-group-sm mb-2">
             <div class="input-group-prepend">
               <label class="input-group-text">Entry size</label>
             </div>
-            <input id="cmp-input-E" value="16" min="1" type="number" data-preval="16" class="cmp-input form-control" aria-label="Entry Size">
-            <select id="cmp-select-E" class="custom-select cmp-input" data-preunit="0">
-              <option value="0" selected> B</option>
+            <input id="cmp-input-E" value="1" min="1" type="number" data-preval="1" class="cmp-input form-control" aria-label="Entry Size">
+            <select id="cmp-select-E" class="custom-select cmp-input" data-preunit="2">
+              <option value="0"> B</option>
               <option value="1">KB</option>
-              <option value="2">MB</option>
+              <option value="2" selected="">MB</option>
               <option value="3">GB</option>
             </select>
           </div>
@@ -147,7 +147,7 @@
             <div class="input-group-prepend">
               <label class="input-group-text">Buffer size</label>
             </div>
-            <input id="cmp-input-M" value="2" min="1" data-preval="2" type="number" class="cmp-input form-control" aria-label="Buffer capacity">
+            <input id="cmp-input-M" value="1" min="1" data-preval="1" type="number" class="cmp-input form-control" aria-label="Buffer capacity">
             <select id="cmp-select-M" class="custom-select cmp-input" data-preunit="2">
               <option value="0"><span></span>B</option>
               <option value="1">KB</option>
@@ -193,11 +193,11 @@
             <div class="input-group-prepend">
               <label class="input-group-text">Page size</label>
             </div>
-            <input id="cmp-input-P" value="128" min="1" type="number" data-preval="128" class="cmp-input form-control" aria-label="Page Size">
-            <select id="cmp-select-P" class="custom-select cmp-input" data-preunit="0">
-              <option value="0" selected> B</option>
+            <input id="cmp-input-P" value="1" min="1" type="number" data-preval="1" class="cmp-input form-control" aria-label="Page Size">
+            <select id="cmp-select-P" class="custom-select cmp-input" data-preunit="2">
+              <option value="0"> B</option>
               <option value="1">KB</option>
-              <option value="2">MB</option>
+              <option value="2" selected="">MB</option>
               <option value="3">GB</option>
             </select>
           </div>
@@ -274,7 +274,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text"># Entries</label>
               </div>
-              <input id="vlsm-input-N" value="1048576" type="number" min="1" data-preval="1048576" class="vlsm-input form-control" aria-label="#Entries">
+              <input id="vlsm-input-N" value="1" type="number" min="1" data-preval="1" class="vlsm-input form-control" aria-label="#Entries">
             </div>
           </div>
 
@@ -283,11 +283,11 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Entry size</label>
               </div>
-              <input id="vlsm-input-E" value="16" type="number" min="1" data-preval="16" class="vlsm-input form-control" aria-label="Entry Size">
-              <select id="vlsm-select-E" class="custom-select vlsm-input" data-preunit="0">
-                <option value="0" selected="">B</option>
+              <input id="vlsm-input-E" value="1" type="number" min="1" data-preval="1" class="vlsm-input form-control" aria-label="Entry Size">
+              <select id="vlsm-select-E" class="custom-select vlsm-input" data-preunit="2">
+                <option value="0">B</option>
                 <option value="1">KB</option>
-                <option value="2">MB</option>
+                <option value="2" selected="">MB</option>
                 <option value="3">GB</option>
               </select>
             </div>
@@ -414,7 +414,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text"># Entries</label>
               </div>
-              <input id="rlsm-input-N" value="1048576" min="1" type="number" data-preval="1048576" class="rlsm-input form-control" aria-label="#Entries">
+              <input id="rlsm-input-N" value="1" min="1" type="number" data-preval="1" class="rlsm-input form-control" aria-label="#Entries">
             </div>
           </div>
 
@@ -423,11 +423,11 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Entry size</label>
               </div>
-              <input id="rlsm-input-E" value="16" min="1" type="number" data-preval="16" class="rlsm-input form-control" aria-label="Entry Size">
-              <select id="rlsm-select-E" class="custom-select rlsm-input" data-preunit="0">
-                <option value="0" selected="">B</option>
+              <input id="rlsm-input-E" value="1" min="1" type="number" data-preval="1" class="rlsm-input form-control" aria-label="Entry Size">
+              <select id="rlsm-select-E" class="custom-select rlsm-input" data-preunit="2">
+                <option value="0">B</option>
                 <option value="1">KB</option>
-                <option value="2">MB</option>
+                <option value="2" selected="">MB</option>
                 <option value="3">GB</option>
               </select>
             </div>
@@ -553,7 +553,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text"># Entries</label>
               </div>
-              <input id="dlsm-input-N" value="1048576" min="1" type="number" data-preval="1048576" class="dlsm-input form-control" aria-label="#Entries">
+              <input id="dlsm-input-N" value="1" min="1" type="number" data-preval="1" class="dlsm-input form-control" aria-label="#Entries">
             </div>
           </div>
 
@@ -562,11 +562,11 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Entry size</label>
               </div>
-              <input id="dlsm-input-E" value="16" min="1" type="number" data-preval="16" class="dlsm-input form-control" aria-label="Entry Size">
-              <select id="dlsm-select-E" class="custom-select dlsm-input" data-preunit="0">
-                <option value="0" selected="">B</option>
+              <input id="dlsm-input-E" value="1" min="1" type="number" data-preval="1" class="dlsm-input form-control" aria-label="Entry Size">
+              <select id="dlsm-select-E" class="custom-select dlsm-input" data-preunit="2">
+                <option value="0">B</option>
                 <option value="1">KB</option>
-                <option value="2">MB</option>
+                <option value="2" selected="">MB</option>
                 <option value="3">GB</option>
               </select>
             </div>
@@ -577,8 +577,8 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Buffer size</label>
               </div>
-              <input id="dlsm-input-M" value="2" min="1" type="number" class="dlsm-input form-control" aria-label="Buffer Capacity">
-              <select id="dlsm-select-M" class="custom-select dlsm-input">
+              <input id="dlsm-input-M" value="1" min="1" type="number" data-preval="1" class="dlsm-input form-control" aria-label="Buffer Capacity">
+              <select id="dlsm-select-M" class="custom-select dlsm-input" data-preunit="2">
                 <option value="0">B</option>
                 <option value="1">KB</option>
                 <option value="2" selected="">MB</option>
@@ -692,7 +692,7 @@
               <div class="input-group-prepend">
                 <label class="input-group-text"># Entries</label>
               </div>
-              <input id="osm-input-N" value="1048576" min="1" type="number" data-preval="1048576" class="osm-input form-control" aria-label="#Entries">
+              <input id="osm-input-N" value="1" min="1" type="number" data-preval="1" class="osm-input form-control" aria-label="#Entries">
             </div>
           </div>
 
@@ -701,11 +701,11 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Entry size</label>
               </div>
-              <input id="osm-input-E" value="16" min="1" type="number" data-preval="16" class="osm-input form-control" aria-label="Entry Size">
-              <select id="osm-select-E" class="custom-select osm-input" data-preunit="0">
-                <option value="0" selected="">B</option>
+              <input id="osm-input-E" value="1" min="1" type="number" data-preval="1" class="osm-input form-control" aria-label="Entry Size">
+              <select id="osm-select-E" class="custom-select osm-input" data-preunit="2">
+                <option value="0">B</option>
                 <option value="1">KB</option>
-                <option value="2">MB</option>
+                <option value="2" selected="">MB</option>
                 <option value="3">GB</option>
               </select>
             </div>

@@ -23,10 +23,10 @@ class LSM {
     constructor(prefix = "", suffix = "") {
         this._DEFAULT = {
             T: 2,
-            E: 16,
-            N: 1048576,
-            P: 128,
-            M: 2097152, //2MB
+            E: 1048576,
+            N: 1,
+            P: 1048576,
+            M: 1048576, //1MB
             Mbf: 1024,
             Mf: 0,
             MP: 0,
