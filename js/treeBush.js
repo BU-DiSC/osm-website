@@ -161,6 +161,9 @@ class LSM {
         var M_cap = Math.floor(this.M / this.E);     // number of entries fit into buffer
         return this.N <= M_cap;
     }
+    _getExtraEntries() {    //number of entries flushed to level 1 when buffer is not full
+        return this.N % Math.floor(this.M / this.E);
+    }
 
     // _getL(entryNum = this.N) {
     //     // entryNum must > 0
@@ -171,7 +174,7 @@ class LSM {
     //     L = Math.ceil(getBaseLog(this.T, log));
     //     return (L < 1) ? 1 : L;
     // }
-    _getL(entryNum = this.N) {
+    _getL(entryNum = this.N - this._getExtraEntries()) {
         // entryNum must > 0
         if (entryNum == 0) return 1;
         var L;
@@ -217,9 +220,27 @@ class LSM {
      * compute the number of entries per run for jth run in ith level; 
      */
     _getEntryNum(ith, jth, run_cap) {
-        var cur_cap = this._sumLevelCapacity(ith);
+        var cur_cap = this._sumLevelCapacity(ith) + this._getExtraEntries();
         var li_cap = this._getLevelCapacity(ith);
-        var isLastLevel = this.N <= cur_cap;
+        var isLastLevel = ith === this.L;
+        if (ith === 1) {
+            if (this.MP) {
+                if (isLastLevel) {
+                    for (var j = 0; j < this.T - 1; j++) {
+                        if ((j + 1) * run_cap >= this.N) break;
+                    }
+                    if (jth > j) return 0;
+                    else if (jth < j) return run_cap;      
+                    else return this.N - jth * run_cap;
+                } else {
+                    if (jth === this.T - 1) return this._getExtraEntries();
+                    else return run_cap;
+                }    
+            } else {
+                if (isLastLevel) return this.N;
+                return li_cap + this._getExtraEntries();
+            }
+        }
         if (isLastLevel) {
             var offset = this.N - cur_cap + li_cap;
             if(this.MP) {
@@ -236,7 +257,9 @@ class LSM {
             if (this.MP) {
                 if (jth === this.T - 1) return 0;
                 else return run_cap;
-            } else return li_cap;
+            } else {
+                return li_cap;
+            }
         }     
     }
 
@@ -452,23 +475,12 @@ class VanillaLSM extends LSM{
      * Return False, fill with x times previous level capacity
      */
     _isFull(n, lth) {
-        // if (this.T === 2) {
-        //     if (n >= super._getLevelCapacity(lth)) return true;
-        //     else return false;
-        // } else {
-        //     if  (n > super._getLevelCapacity(lth)) return true;
-        //     else return false;
-        // }
         return n >= super._getLevelCapacity(lth);
         // return n - super._sumLevelCapacity(lth - 1) > (this.T - 1) * super._getLevelCapacity(lth - 1);
     }
     _getOffsetFactor(n, lth) {  //lth > 1
         var offset = n - super._sumLevelCapacity(lth - 1);
-        var prev_capacity = super._sumLevelCapacity(lth - 1) + 1;
-        console.log("n: ", n);
-        console.log("lth: ", lth);
-        console.log("prev_capacity: ", prev_capacity);
-        console.log("offset: ", offset);
+        var prev_capacity = super._sumLevelCapacity(lth - 1) + Math.floor(this.M / this.E);
         for (var i = 1; i <= this.T - 1; i++) {
             if (offset <= i * prev_capacity) {
                 break;
@@ -487,8 +499,8 @@ class VanillaLSM extends LSM{
         var entry_num = 0;
         if (l == 1) {
             // set n on l1
-            entry_num = this._getEntryNum(n, level_cap);
-            rate = n / level_space;
+            entry_num = this._getEntryNum(n + super._getExtraEntries(), level_cap);
+            rate = entry_num / level_space;
             var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
             context = super._getTipText(l, level_space, entry_num, file_num);
             setToolTip(elem[l], "left", context);
@@ -497,14 +509,13 @@ class VanillaLSM extends LSM{
         }
 
         if (this._isFull(n, l)) {
-            console.log("isFull");
             entry_num = level_cap;
             rate = entry_num / level_space;
             var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
             context = super._getTipText(l, level_space, entry_num, file_num);
             n = n - entry_num;
         } else {
-            entry_num = this._getOffsetFactor(n, l) * (super._sumLevelCapacity(l - 1) + 1);
+            entry_num = this._getOffsetFactor(n, l) * (super._sumLevelCapacity(l - 1) + Math.floor(this.M / this.E));
             rate = entry_num / level_space;
             var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
             context = super._getTipText(l, level_space, entry_num, file_num);
@@ -528,7 +539,7 @@ class VanillaLSM extends LSM{
             for (var j = 0; j < max_runs; j++) {
                 if ((max_runs >= 5) && (j == max_runs - 2)) {
                 } else {
-                    entry_num = this._getEntryNum(n, run_cap, j);
+                    entry_num = this._getEntryNum(n + super._getExtraEntries(), run_cap, j);
                     rate = entry_num / run_cap;
                     var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
                     context = super._getTipText(l, run_cap, entry_num, file_num);
@@ -553,7 +564,7 @@ class VanillaLSM extends LSM{
             }  
             n = n - level_cap;
         } else {
-            var offset = this._getOffsetFactor(n, l) * (super._sumLevelCapacity(l - 1) + 1);
+            var offset = this._getOffsetFactor(n, l) * (super._sumLevelCapacity(l - 1) + Math.floor(this.M / this.E));
             for (var j = 0; j < max_runs; j++) {
                 if ((max_runs >= 5) && (j == max_runs - 2)) {
                 } else {
@@ -598,7 +609,7 @@ class VanillaLSM extends LSM{
             setRunGradient(button, 0);
             runs[i] = button;
         }
-        this._renderLeveler(runs, this.N);
+        this._renderLeveler(runs, this.N - super._getExtraEntries());
         return runs;
     }
     _getBtnGroups(elem, level, ratio) {
@@ -649,7 +660,7 @@ class VanillaLSM extends LSM{
             }
             btn_groups[i] = group_wrap;
         }
-        this._renderTier(btn_groups, this.N, max_runs);
+        this._renderTier(btn_groups, this.N - super._getExtraEntries(), max_runs);
         return btn_groups;
     }
 

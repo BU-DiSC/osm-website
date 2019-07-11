@@ -135,7 +135,7 @@
             <select id="cmp-select-E" class="custom-select cmp-input" data-preunit="2">
               <option value="0"> B</option>
               <option value="1">KB</option>
-              <option value="2" selected="">MB</option>
+              <option value="2" selected>MB</option>
               <option value="3">GB</option>
             </select>
           </div>
@@ -149,7 +149,7 @@
             </div>
             <input id="cmp-input-M" value="1" min="1" data-preval="1" type="number" class="cmp-input form-control" aria-label="Buffer capacity">
             <select id="cmp-select-M" class="custom-select cmp-input" data-preunit="2">
-              <option value="0"><span></span>B</option>
+              <option value="0">B</option>
               <option value="1">KB</option>
               <option value="2" selected>MB</option>
               <option value="3">GB</option>
@@ -161,7 +161,7 @@
             </div>
             <input id="cmp-input-Mbf" value="1024" min="0" type="number" data-preval="1024" class="cmp-input form-control" aria-label="Bloom filters size">
             <select id="cmp-select-Mbf" class="custom-select cmp-input" data-preunit="0">
-              <option value="0" selected><span></span>B</option>
+              <option value="0" selected>B</option>
               <option value="1">KB</option>
               <option value="2">MB</option>
               <option value="3">GB</option>
@@ -173,7 +173,7 @@
             </div>
             <input id="cmp-input-Mf" value="0" min="1" type="number" class="cmp-input form-control" aria-label="Fence pointer size">
             <select id="cmp-select-Mf" class="custom-select cmp-input">
-              <option value="0"><span></span>B</option>
+              <option value="0">B</option>
               <option value="1">KB</option>
               <option value="2" selected>MB</option>
               <option value="3">GB</option>
@@ -195,9 +195,9 @@
             </div>
             <input id="cmp-input-P" value="1" min="1" type="number" data-preval="1" class="cmp-input form-control" aria-label="Page Size">
             <select id="cmp-select-P" class="custom-select cmp-input" data-preunit="2">
-              <option value="0"> B</option>
+              <option value="0">B</option>
               <option value="1">KB</option>
-              <option value="2" selected="">MB</option>
+              <option value="2" selected>MB</option>
               <option value="3">GB</option>
             </select>
           </div>
@@ -287,7 +287,7 @@
               <select id="vlsm-select-E" class="custom-select vlsm-input" data-preunit="2">
                 <option value="0">B</option>
                 <option value="1">KB</option>
-                <option value="2" selected="">MB</option>
+                <option value="2" selected>MB</option>
                 <option value="3">GB</option>
               </select>
             </div>
@@ -298,11 +298,11 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Buffer size</label>
               </div>
-              <input id="vlsm-input-M" value="2" type="number" min="1" data-preval="2" class="vlsm-input form-control" aria-label="Buffer Capacity">
+              <input id="vlsm-input-M" value="1" type="number" min="1" data-preval="1" class="vlsm-input form-control" aria-label="Buffer Capacity">
               <select id="vlsm-select-M" class="custom-select vlsm-input" data-preunit="2">
                 <option value="0">B</option>
                 <option value="1">KB</option>
-                <option value="2" selected="">MB</option>
+                <option value="2" selected>MB</option>
                 <option value="3">GB</option>
               </select>
             </div>
@@ -314,7 +314,7 @@
               </div>
               <input id="vlsm-input-Mbf" value="1024" min="0" type="number" data-preval="1024" class="vlsm-input form-control" aria-label="Bloom filters size">
               <select id="vlsm-select-Mbf" class="custom-select vlsm-input" data-preunit="0">
-                <option value="0" selected><span></span>B</option>
+                <option value="0" selected>B</option>
                 <option value="1">KB</option>
                 <option value="2">MB</option>
                 <option value="3">GB</option>
@@ -328,7 +328,7 @@
               </div>
               <input id="vlsm-input-Mf" value="0" min="1" type="number" class="vlsm-input form-control" aria-label="Fence pointer size">
               <select id="vlsm-select-Mf" class="custom-select vlsm-input">
-                <option value="0" selected><span></span>B</option>
+                <option value="0" selected>B</option>
                 <option value="1">KB</option>
                 <option value="2">MB</option>
                 <option value="3">GB</option>
@@ -348,11 +348,11 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Page Size</label>
               </div>
-              <input id="vlsm-input-P" value="128" min="1" type="number" data-preval="128" class="vlsm-input form-control" aria-label="Page size">
-              <select id="vlsm-select-P" class="custom-select vlsm-input" data-preunit="0">
-                <option value="0" selected><span></span>B</option>
+              <input id="vlsm-input-P" value="1" min="1" type="number" data-preval="1" class="vlsm-input form-control" aria-label="Page size">
+              <select id="vlsm-select-P" class="custom-select vlsm-input" data-preunit="2">
+                <option value="0">B</option>
                 <option value="1">KB</option>
-                <option value="2">MB</option>
+                <option value="2" selected>MB</option>
                 <option value="3">GB</option>
               </select>
             </div>
@@ -427,7 +427,7 @@
               <select id="rlsm-select-E" class="custom-select rlsm-input" data-preunit="2">
                 <option value="0">B</option>
                 <option value="1">KB</option>
-                <option value="2" selected="">MB</option>
+                <option value="2" selected>MB</option>
                 <option value="3">GB</option>
               </select>
             </div>
@@ -438,11 +438,11 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Buffer size</label>
               </div>
-              <input id="rlsm-input-M" value="2" min="1" type="number" data-preval="2" class="rlsm-input form-control" aria-label="Buffer Capacity">
+              <input id="rlsm-input-M" value="1" min="1" type="number" data-preval="1" class="rlsm-input form-control" aria-label="Buffer Capacity">
               <select id="rlsm-select-M" class="custom-select rlsm-input" data-preunit="2">
                 <option value="0">B</option>
                 <option value="1">KB</option>
-                <option value="2" selected="">MB</option>
+                <option value="2" selected>MB</option>
                 <option value="3">GB</option>
               </select>
             </div>
@@ -453,8 +453,8 @@
                 <label class="input-group-text">Bloom filters</label>
               </div>
               <input id="rlsm-input-Mbf" value="1024" min="0" type="number" data-preval="1024" class="rlsm-input form-control" aria-label="Bloom filters size">
-              <select id="rlsm-select-Mbf" class="custom-select rlsm-input" data-preval="0">
-                <option value="0" selected><span></span>B</option>
+              <select id="rlsm-select-Mbf" class="custom-select rlsm-input" data-preunit="0">
+                <option value="0" selected>B</option>
                 <option value="1">KB</option>
                 <option value="2">MB</option>
                 <option value="3">GB</option>
@@ -468,7 +468,7 @@
               </div>
               <input id="rlsm-input-Mf" value="0" min="1" type="number" class="rlsm-input form-control" aria-label="Fence pointer size">
               <select id="rlsm-select-Mf" class="custom-select rlsm-input">
-                <option value="0" selected><span></span>B</option>
+                <option value="0" selected>B</option>
                 <option value="1">KB</option>
                 <option value="2">MB</option>
                 <option value="3">GB</option>
@@ -488,11 +488,11 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Page Size</label>
               </div>
-              <input id="rlsm-input-P" value="128" min="1" type="number" data-preval="128" class="rlsm-input form-control" aria-label="Page size">
-              <select id="rlsm-select-P" class="custom-select rlsm-input" data-preunit="0">
-                <option value="0" selected><span></span>B</option>
+              <input id="rlsm-input-P" value="1" min="1" type="number" data-preval="1" class="rlsm-input form-control" aria-label="Page size">
+              <select id="rlsm-select-P" class="custom-select rlsm-input" data-preunit="2">
+                <option value="0">B</option>
                 <option value="1">KB</option>
-                <option value="2">MB</option>
+                <option value="2" selected>MB</option>
                 <option value="3">GB</option>
               </select>
             </div>
@@ -566,7 +566,7 @@
               <select id="dlsm-select-E" class="custom-select dlsm-input" data-preunit="2">
                 <option value="0">B</option>
                 <option value="1">KB</option>
-                <option value="2" selected="">MB</option>
+                <option value="2" selected>MB</option>
                 <option value="3">GB</option>
               </select>
             </div>
@@ -581,7 +581,7 @@
               <select id="dlsm-select-M" class="custom-select dlsm-input" data-preunit="2">
                 <option value="0">B</option>
                 <option value="1">KB</option>
-                <option value="2" selected="">MB</option>
+                <option value="2" selected>MB</option>
                 <option value="3">GB</option>
               </select>
             </div>
@@ -593,7 +593,7 @@
               </div>
               <input id="dlsm-input-Mbf" value="1024" min="0" type="number" data-preval="1024" class="dlsm-input form-control" aria-label="Bloom filters size">
               <select id="dlsm-select-Mbf" class="custom-select dlsm-input" data-preunit="0">
-                <option value="0" selected><span></span>B</option>
+                <option value="0" selected>B</option>
                 <option value="1">KB</option>
                 <option value="2">MB</option>
                 <option value="3">GB</option>
@@ -607,7 +607,7 @@
               </div>
               <input id="dlsm-input-Mf" value="0" min="1" type="number" class="dlsm-input form-control" aria-label="Fence pointer size">
               <select id="dlsm-select-Mf" class="custom-select dlsm-input">
-                <option value="0" selected><span></span>B</option>
+                <option value="0" selected>B</option>
                 <option value="1">KB</option>
                 <option value="2">MB</option>
                 <option value="3">GB</option>
@@ -627,11 +627,11 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Page Size</label>
               </div>
-              <input id="dlsm-input-P" value="128" min="1" type="number" data-preval="128" class="dlsm-input form-control" aria-label="Page size">
-              <select id="dlsm-select-P" class="custom-select dlsm-input" data-preunit="0">
-                <option value="0" selected><span></span>B</option>
+              <input id="dlsm-input-P" value="1" min="1" type="number" data-preval="1" class="dlsm-input form-control" aria-label="Page size">
+              <select id="dlsm-select-P" class="custom-select dlsm-input" data-preunit="2">
+                <option value="0">B</option>
                 <option value="1">KB</option>
-                <option value="2">MB</option>
+                <option value="2" selected>MB</option>
                 <option value="3">GB</option>
               </select>
             </div>
@@ -705,7 +705,7 @@
               <select id="osm-select-E" class="custom-select osm-input" data-preunit="2">
                 <option value="0">B</option>
                 <option value="1">KB</option>
-                <option value="2" selected="">MB</option>
+                <option value="2" selected>MB</option>
                 <option value="3">GB</option>
               </select>
             </div>
@@ -716,11 +716,11 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Buffer size</label>
               </div>
-              <input id="osm-input-M" value="2" min="1" type="number" class="osm-input form-control" aria-label="Buffer Capacity">
-              <select id="osm-select-M" class="custom-select osm-input">
+              <input id="osm-input-M" value="1" min="1" type="number" data-preval="1" class="osm-input form-control" aria-label="Buffer Capacity">
+              <select id="osm-select-M" class="custom-select osm-input" data-preunit="2">
                 <option value="0">B</option>
                 <option value="1">KB</option>
-                <option value="2" selected="">MB</option>
+                <option value="2" selected>MB</option>
                 <option value="3">GB</option>
               </select>
             </div>
@@ -732,7 +732,7 @@
               </div>
               <input id="osm-input-Mbf" value="1024" min="0" type="number" data-preval="1024" class="osm-input form-control" aria-label="Bloom filters size">
               <select id="osm-select-Mbf" class="custom-select osm-input" data-preunit="0">
-                <option value="0" selected><span></span>B</option>
+                <option value="0" selected>B</option>
                 <option value="1">KB</option>
                 <option value="2">MB</option>
                 <option value="3">GB</option>
@@ -746,7 +746,7 @@
               </div>
               <input id="osm-input-Mf" value="0" min="1" type="number" class="osm-input form-control" aria-label="Fence pointer size">
               <select id="osm-select-Mf" class="custom-select osm-input">
-                <option value="0" selected><span></span>B</option>
+                <option value="0" selected>B</option>
                 <option value="1">KB</option>
                 <option value="2">MB</option>
                 <option value="3">GB</option>
@@ -766,11 +766,11 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Page Size</label>
               </div>
-              <input id="osm-input-P" value="128" min="1" type="number" data-preval="128" class="osm-input form-control" aria-label="Page size">
-              <select id="osm-select-P" class="custom-select osm-input" data-preunit="0">
-                <option value="0" selected><span></span>B</option>
+              <input id="osm-input-P" value="1" min="1" type="number" data-preval="1" class="osm-input form-control" aria-label="Page size">
+              <select id="osm-select-P" class="custom-select osm-input" data-preunit="2">
+                <option value="0">B</option>
                 <option value="1">KB</option>
-                <option value="2">MB</option>
+                <option value="2" selected>MB</option>
                 <option value="3">GB</option>
               </select>
             </div>
