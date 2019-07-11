@@ -452,22 +452,23 @@ class VanillaLSM extends LSM{
      * Return False, fill with x times previous level capacity
      */
     _isFull(n, lth) {
-        if (this.T === 2) {
-            if (n >= super._getLevelCapacity(lth)) return true;
-            else return false;
-        } else {
-            if  (n > super._getLevelCapacity(lth)) return true;
-            else return false;
-        }
+        // if (this.T === 2) {
+        //     if (n >= super._getLevelCapacity(lth)) return true;
+        //     else return false;
+        // } else {
+        //     if  (n > super._getLevelCapacity(lth)) return true;
+        //     else return false;
+        // }
+        return n >= super._getLevelCapacity(lth);
         // return n - super._sumLevelCapacity(lth - 1) > (this.T - 1) * super._getLevelCapacity(lth - 1);
     }
     _getOffsetFactor(n, lth) {  //lth > 1
         var offset = n - super._sumLevelCapacity(lth - 1);
-        var prev_capacity = super._getLevelCapacity(lth - 1);;
-        // console.log("n: ", n);
-        // console.log("lth: ", lth);
-        // console.log("prev_capacity: ", prev_capacity);
-        // console.log("offset: ", offset);
+        var prev_capacity = super._sumLevelCapacity(lth - 1) + 1;
+        console.log("n: ", n);
+        console.log("lth: ", lth);
+        console.log("prev_capacity: ", prev_capacity);
+        console.log("offset: ", offset);
         for (var i = 1; i <= this.T - 1; i++) {
             if (offset <= i * prev_capacity) {
                 break;
@@ -503,7 +504,7 @@ class VanillaLSM extends LSM{
             context = super._getTipText(l, level_space, entry_num, file_num);
             n = n - entry_num;
         } else {
-            entry_num = this._getOffsetFactor(n, l) * super._getLevelCapacity(l - 1);
+            entry_num = this._getOffsetFactor(n, l) * (super._sumLevelCapacity(l - 1) + 1);
             rate = entry_num / level_space;
             var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
             context = super._getTipText(l, level_space, entry_num, file_num);
@@ -544,7 +545,7 @@ class VanillaLSM extends LSM{
             var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
             context = super._getTipText(l, run_cap, entry_num, file_num);
             for (var j = 0; j < max_runs; j++) {
-                if ((max_runs >= 5) && (j == max_runs - 2)) {
+                if (((max_runs >= 5) && (j === max_runs - 2)) || j === this.T - 1)  {
                 } else {
                     setToolTip(elem[l].childNodes[j], "left", context);
                     setRunGradient(elem[l].childNodes[j], rate);
@@ -552,8 +553,7 @@ class VanillaLSM extends LSM{
             }  
             n = n - level_cap;
         } else {
-            var factor = this._getOffsetFactor(n, l);
-            var offset = factor * super._getLevelCapacity(l - 1);
+            var offset = this._getOffsetFactor(n, l) * (super._sumLevelCapacity(l - 1) + 1);
             for (var j = 0; j < max_runs; j++) {
                 if ((max_runs >= 5) && (j == max_runs - 2)) {
                 } else {
