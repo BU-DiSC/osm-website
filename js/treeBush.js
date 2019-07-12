@@ -1,24 +1,30 @@
 // Event handling
 document.addEventListener("DOMContentLoaded",
 function (event) {
-// N : number of entries
-// L : number of Levels
-// E : size of an entry(bytes)
-// T : size ratio
-// M : buffer capacity(MB);
+// N: number of entries
+// L: number of Levels
+// E: size of an entry(bytes)
+// T: size ratio
+// _M: actual buffer capacity(MB);
+// M: buffer capacity in terms of #entries
 // Mbf: memory allocated to bloomFilters
-// Mf : memory allocated to FencePointers
-// MP : Merge policy;
-// F : file size in terms of buffer
-// P : page size;
-// B : page size in #entries
-// s : selectivity of a range lookup
+// Mf: memory allocated to FencePointers
+// MP: Merge policy;
+// f: file size in terms of buffer
+// F: file size in #entries
+// P: actual page size in bytes;
+// B: page size in #entries
+// ceilling(M/B): #pages flushed by buffer;
+// ceillign(N/B): #pages containing all entries
+// ceilling(M/F): #files flushed by buffer;
+// ceilling(N/F): #files containing all entreis
+// s: selectivity of a range lookup
 // mu(μ): storage sequential over random access speed
-// phi(Φ) : storage write over read speed
+// phi(Φ): storage write over read speed
 // prefix: configurate target{cmp: comparative analysis, indiv: inidividual analysis}\
 // K, Z: tunning parameters
 // suffix: result targets subclasses {vlsm, rlsm, dlsm, osm}
-// preMP : previous state of merge policy before switching analysis mode
+// preMP: previous state of merge policy before switching analysis mode
 class LSM {
     constructor(prefix = "", suffix = "") {
         this._DEFAULT = {
@@ -52,11 +58,11 @@ class LSM {
             this.mu = document.querySelector(`#${prefix}-input-mu`).value;
             this.phi = document.querySelector(`#${prefix}-input-phi`).value;
         } else {
-            this.T = this._DEFAULT.T;
-            this.E = this._DEFAULT.E;
-            this.N = this._DEFAULT.N;
-            this.M = this._DEFAULT.M;
-            this.f = this._DEFAULT.f;
+            this.T = this.DEFAULT.T;
+            this.E = this.DEFAULT.E;
+            this.N = this.DEFAULT.N;
+            this.M = this.DEFAULT.M;
+            this.f = this.DEFAULT.f;
             this.P = this.DEFAULT.P;
             this.Mbf = this.DEFAULT.Mbf;
             this.s = this.DEFAULT.s;
@@ -66,19 +72,48 @@ class LSM {
         this.L = this._getL();     
     }
 
-    get T() {return this._T;}
-    get E() {return this._E;}
-    get N() {return this._N;}
-    get M() {return this._M;}
-    get Mbf() {return this._Mbf;}
-    get P() {return this._P;}
-    get B() {return Math.floor(correctDecimal(this.P/this.E));} //B = 8
-    get MP() {return this._MP;}
-    get L() {return this._L;}
-    get f() {return this._f;}
-    get s() {return this._s;}
-    get mu() {return this._mu;}
-    get phi() {return this._phi;}
+    get T() {
+        return this._T;
+    }
+    get E() {
+        return this._E;
+    }
+    get N() {
+        return this._N;
+    }
+    get M() {
+        return Math.floor(this._M / this._E);
+    }
+    get Mbf() {
+        return this._Mbf;
+    }
+    get P() {
+        return this._P;
+    }
+    get B() {
+        return Math.floor(this._P/this._E);
+    } 
+    get MP() {
+        return this._MP;
+    }
+    get L() {
+        return this._L;
+    }
+    get f() {
+        return this._f;
+    }
+    get F() {
+        return Math.floor(correctDecimal(this._M*this._f / this._E));
+    }
+    get s() {
+        return this._s;
+    }
+    get mu() {
+        return this._mu;
+    }
+    get phi() {
+        return this._phi;
+    }
     get K(){
         if(this.MP || this.name === "DostoevskyLSM") return this.T - 1;
         else return 1;
@@ -87,11 +122,21 @@ class LSM {
         if (!this.MP || this.name === "DostoevskyLSM") return 1;
         else return this.T - 1;
     }
-    get prefix() {return this._prefix;}
-    get suffix() {return this._suffix;}
-    get preMP() {return this._preMP;}
-    get DEFAULT() {return this._DEFAULT;}
-    get name() { return this.__proto__.constructor.name;}
+    get prefix() {
+        return this._prefix;
+    }
+    get suffix() {
+        return this._suffix;
+    }
+    get preMP() {
+        return this._preMP;
+    }
+    get DEFAULT() {
+        return this._DEFAULT;
+    }
+    get name() { 
+        return this.__proto__.constructor.name;
+    }
     set T(ratio) {
         this._T = parseInt(ratio);
         return this._T;
@@ -156,20 +201,18 @@ class LSM {
         this._DEFAULT = defaultObj;
         return this._DEFAULT;
     }
-
     _isAllInBuffer() {
-        var M_cap = Math.floor(this.M / this.E);     // number of entries fit into buffer
-        return this.N <= M_cap;
+        return this.N <= this.M;
     }
     _getExtraEntries() {    //number of entries flushed to level 1 when buffer is not full
-        return this.N % Math.floor(this.M / this.E);
+        return this.N % this.M;
     }
 
     // _getL(entryNum = this.N) {
     //     // entryNum must > 0
     //     if (entryNum == 0) return 1;
     //     var L;
-    //     var M_cap = Math.floor(this.M / this.E);     // number of entries fit into buffer
+    //     var M_cap = this.M;     // number of entries fit into buffer
     //     var log = entryNum * (this.T - 1) / (M_cap * this.T) + 1;
     //     L = Math.ceil(getBaseLog(this.T, log));
     //     return (L < 1) ? 1 : L;
@@ -178,16 +221,10 @@ class LSM {
         // entryNum must > 0
         if (entryNum == 0) return 1;
         var L;
-        var l1_cap = Math.floor(this.M / this.E) * (this.T - 1);
+        var l1_cap = this.M * (this.T - 1);
         var log = entryNum * (this.T - 1) / l1_cap + 1;
         L = Math.ceil(getBaseLog(this.T, log));
         return (L < 1) ? 1 : L;
-    }
-
-    _getFileCapacity() {
-        // in terms of #entries
-        var M_cap = Math.floor(this.M / this.E);     // number of entries fit into buffer
-        return Math.floor(correctDecimal(M_cap * this.f));
     }
  
     /* Having known the ith level,
@@ -201,11 +238,11 @@ class LSM {
 
     /* Only used when computing the rate for leveling */
     _getLevelSpace(ith) {    //assumed maximal space of PB*T
-        return Math.floor(this.M / this.E) * Math.pow(this.T, ith);
+        return this.M * Math.pow(this.T, ith);
     }
 
     _getLevelCapacity(ith) {     //actual maximal capacity that can be reached PB*(T-1)
-        var l1_cap = Math.floor(this.M / this.E) * (this.T - 1);
+        var l1_cap = this.M * (this.T - 1);
         return l1_cap * Math.pow(this.T, ith - 1);
     }
     _sumLevelCapacity(levels) {
@@ -269,9 +306,9 @@ class LSM {
     _getTipText(ith, run_cap, entry_num, file_num) {
         var text = "";
         if (this.MP) {
-            text =  "Level " + ith + ": This run contains " + entry_num + "/" + run_cap + " entries in " + file_num + " files";
+            text =  "Level " + ith + ": This run contains " + entry_num + " entries in " + file_num + " files, [capacity: " + run_cap + " entries (" + Math.ceil(run_cap/this.F) + " files)";
         } else {
-             text = "Level " + ith + ": contains " + entry_num + "/" + run_cap + " entries in " + file_num + " files";
+             text = "Level " + ith + ": " + entry_num + " entries in " + file_num + " files, [capacity: " + run_cap + " entries (" + Math.ceil(run_cap/this.F) + " files)";
         }
         return text;
     }
@@ -480,7 +517,7 @@ class VanillaLSM extends LSM{
     }
     _getOffsetFactor(n, lth) {  //lth > 1
         var offset = n - super._sumLevelCapacity(lth - 1);
-        var prev_capacity = super._sumLevelCapacity(lth - 1) + Math.floor(this.M / this.E);
+        var prev_capacity = super._sumLevelCapacity(lth - 1) + this.M;
         for (var i = 1; i <= this.T - 1; i++) {
             if (offset <= i * prev_capacity) {
                 break;
@@ -501,7 +538,7 @@ class VanillaLSM extends LSM{
             // set n on l1
             entry_num = this._getEntryNum(n + super._getExtraEntries(), level_cap);
             rate = entry_num / level_space;
-            var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
+            var file_num = Math.ceil(correctDecimal(entry_num / this.F));
             context = super._getTipText(l, level_space, entry_num, file_num);
             setToolTip(elem[l], "left", context);
             setRunGradient(elem[l], rate);
@@ -511,13 +548,13 @@ class VanillaLSM extends LSM{
         if (this._isFull(n, l)) {
             entry_num = level_cap;
             rate = entry_num / level_space;
-            var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
+            var file_num = Math.ceil(correctDecimal(entry_num / this.F));
             context = super._getTipText(l, level_space, entry_num, file_num);
             n = n - entry_num;
         } else {
-            entry_num = this._getOffsetFactor(n, l) * (super._sumLevelCapacity(l - 1) + Math.floor(this.M / this.E));
+            entry_num = this._getOffsetFactor(n, l) * (super._sumLevelCapacity(l - 1) + this.M);
             rate = entry_num / level_space;
-            var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
+            var file_num = Math.ceil(correctDecimal(entry_num / this.F));
             context = super._getTipText(l, level_space, entry_num, file_num);
             n = n - entry_num;
         }
@@ -541,7 +578,7 @@ class VanillaLSM extends LSM{
                 } else {
                     entry_num = this._getEntryNum(n + super._getExtraEntries(), run_cap, j);
                     rate = entry_num / run_cap;
-                    var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
+                    var file_num = Math.ceil(correctDecimal(entry_num / this.F));
                     context = super._getTipText(l, run_cap, entry_num, file_num);
                     setToolTip(elem[l].childNodes[j], "left", context);
                     setRunGradient(elem[l].childNodes[j], rate);
@@ -553,7 +590,7 @@ class VanillaLSM extends LSM{
         if (this._isFull(n, l)) {
             entry_num = run_cap;
             rate = entry_num / run_cap;
-            var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
+            var file_num = Math.ceil(correctDecimal(entry_num / this.F));
             context = super._getTipText(l, run_cap, entry_num, file_num);
             for (var j = 0; j < max_runs; j++) {
                 if (((max_runs >= 5) && (j === max_runs - 2)) || j === this.T - 1)  {
@@ -564,13 +601,13 @@ class VanillaLSM extends LSM{
             }  
             n = n - level_cap;
         } else {
-            var offset = this._getOffsetFactor(n, l) * (super._sumLevelCapacity(l - 1) + Math.floor(this.M / this.E));
+            var offset = this._getOffsetFactor(n, l) * (super._sumLevelCapacity(l - 1) + this.M);
             for (var j = 0; j < max_runs; j++) {
                 if ((max_runs >= 5) && (j == max_runs - 2)) {
                 } else {
                     entry_num = this._getEntryNum(offset, run_cap, j);
                     rate = entry_num / run_cap;
-                    var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
+                    var file_num = Math.ceil(correctDecimal(entry_num / this.F));
                     context = super._getTipText(l, run_cap, entry_num, file_num);
                     setToolTip(elem[l].childNodes[j], "left", context);
                     setRunGradient(elem[l].childNodes[j], rate);
@@ -670,6 +707,18 @@ class RocksDBLSM extends LSM {
     constructor(tarConf, tarRes) {
         super(tarConf, tarRes);
     }
+    // get F() {return Math.floor(correctDecimal((this.f*this.M) / this.E));}
+
+    _getL(entryNum = this.N - this._getExtraEntries()) {
+        // entryNum must > 0
+        if (entryNum == 0) return 1;
+        var L;
+        var l1_cap = this.M * (this.T - 1);
+        var log = entryNum * (this.T - 1) / l1_cap + 1;
+        L = Math.ceil(getBaseLog(this.T, log));
+        return (L < 1) ? 1 : L;
+    }
+
     _getBtns(elem, level, ratio) {
         var runs = [];
         var run_width = 0;
@@ -698,7 +747,7 @@ class RocksDBLSM extends LSM {
             level_space = super._getLevelSpace(i)
             entry_num = super._getEntryNum(i, 0, level_cap);
             rate = entry_num / level_space;
-            var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
+            var file_num = Math.ceil(correctDecimal(entry_num / this.F));
             context = super._getTipText(i, level_space, entry_num, file_num);
             setToolTip(button, "left", context);
             setRunGradient(button, rate);
@@ -748,7 +797,7 @@ class RocksDBLSM extends LSM {
                     child = createBtn(run_width);
                     entry_num = super._getEntryNum(i, j, run_cap);
                     rate = entry_num / run_cap;
-                    var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
+                    var file_num = Math.ceil(correctDecimal(entry_num / this.F));
                     context = super._getTipText(i, run_cap, entry_num, file_num);
                     setRunGradient(child, rate);
                 }
@@ -825,8 +874,7 @@ class DostoevskyLSM extends LSM {
     }
 
     _getRunCapacity(ith, level) {
-        var M_cap = Math.floor(this.M / this.E);
-        var nEntry_L = M_cap * Math.pow(this.T, ith);
+        var nEntry_L = this.M * Math.pow(this.T, ith);
         if (ith === 0 || ith === level ) return nEntry_L;
         else return nEntry_L / this.T;
     }
@@ -873,7 +921,7 @@ class DostoevskyLSM extends LSM {
                     child = createBtn(run_width);
                     entry_num = super._getEntryNum(i, j, run_cap);
                     rate = correctDecimal(entry_num / run_cap);
-                    var file_num = Math.ceil(correctDecimal(entry_num / super._getFileCapacity()));
+                    var file_num = Math.ceil(correctDecimal(entry_num / this.F));
                     context = super._getTipText(i, run_cap, entry_num, file_num);
                     setRunGradient(child, rate);
                 }
