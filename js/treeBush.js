@@ -207,6 +207,9 @@ class LSM {
     _getExtraEntries() {    //number of entries flushed to level 1 when buffer is not full
         return this.N % this.M;
     }
+    _getExtraFiles() {
+        return this.N % this.F;
+    }
 
     // _getL(entryNum = this.N) {
     //     // entryNum must > 0
@@ -306,9 +309,9 @@ class LSM {
     _getTipText(ith, run_cap, entry_num, file_num) {
         var text = "";
         if (this.MP) {
-            text =  "Level " + ith + ": This run contains " + entry_num + " entries in " + file_num + " files, [capacity: " + run_cap + " entries (" + Math.ceil(run_cap/this.F) + " files)";
+            text =  "Level " + ith + ": This run contains " + entry_num + " entries in " + file_num + " files, [capacity: " + run_cap + " entries (" + Math.ceil(run_cap/this.F) + " files)]";
         } else {
-             text = "Level " + ith + ": " + entry_num + " entries in " + file_num + " files, [capacity: " + run_cap + " entries (" + Math.ceil(run_cap/this.F) + " files)";
+             text = "Level " + ith + ": " + entry_num + " entries in " + file_num + " files, [capacity: " + run_cap + " entries (" + Math.ceil(run_cap/this.F) + " files)]";
         }
         return text;
     }
