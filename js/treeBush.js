@@ -216,15 +216,6 @@ class LSM {
         return this.N % this.PB;
     }
 
-    // _getL(entryNum = this.N) {
-    //     // entryNum must > 0
-    //     if (entryNum == 0) return 1;
-    //     var L;
-    //     var M_cap = this.M;     // number of entries fit into buffer
-    //     var log = entryNum * (this.T - 1) / (M_cap * this.T) + 1;
-    //     L = Math.ceil(getBaseLog(this.T, log));
-    //     return (L < 1) ? 1 : L;
-    // }
     _getL(entryNum = this.N - this._getExtraEntries()) {
         // entryNum must > 0
         if (entryNum == 0) return 1;
@@ -514,7 +505,6 @@ class VanillaLSM extends LSM{
             return offset;
         }
     }
-
     /* Detect whether current level should be filled up
      * lth > 1
      * Return True, fill with current level capacity
@@ -522,7 +512,6 @@ class VanillaLSM extends LSM{
      */
     _isFull(n, lth) {
         return n >= super._getLevelCapacity(lth);
-        // return n - super._sumLevelCapacity(lth - 1) > (this.T - 1) * super._getLevelCapacity(lth - 1);
     }
     _getOffsetFactor(n, lth) {  //lth > 1
         var offset = n - super._sumLevelCapacity(lth - 1);
@@ -719,9 +708,14 @@ class RocksDBLSM extends LSM {
         //     this.PB = Math.floor(this.PB/this.F) * this.F;
         //     this.L = this._getL(); 
         // }
+        this.threshold = 100;
     }
-    _getFileNum() {
-        return Math.ceil(this.N / this.F);
+    get threshold() {
+        return this._threshold;
+    }
+    set threshold(x) {
+        this._threshold = x;
+        return this._threshold;
     }
     _getL(fileNum = this._getFileNum()) {
         // fileNum must > 0
@@ -734,7 +728,9 @@ class RocksDBLSM extends LSM {
         }
         return (L < 1) ? 1 : L;
     }
-
+    _getFileNum() {
+        return Math.ceil(this.N / this.F);
+    }
     _getLevelCapacity(ith) {     
     //actual maximal capacity that can be reached PB*T - F
         if (this.N % this.F && ith === 1) {
@@ -763,50 +759,30 @@ class RocksDBLSM extends LSM {
         var cur_cap = this._sumLevelCapacity(ith);
         var li_cap = this._getLevelCapacity(ith);
         var isLastLevel = ith === this.L;
-        if (ith === 1) {
-            if (this.MP) {
-                if (isLastLevel) {
-                    for (var j = 0; j < this.T - 1; j++) {
-                        if ((j + 1) * run_cap >= this.N) break;
-                    }
-                    if (jth > j) return 0;
-                    else if (jth < j) return run_cap;      
-                    else return this.N - jth * run_cap;
-                } else {
-                    if (jth === this.T - 1) {
-                        if (this.N % this.F) {
-                            return run_cap - this.F + this._getExtraEntries();
-                        } else {
-                            return run_cap - this.F;
-                        }
-                    }
-                    else return run_cap;
-                }    
-            } else {
-                if (isLastLevel) return this.N;
-                return li_cap;
-            }
-        }
-        if (isLastLevel) {
-            var offset = this.N - cur_cap + li_cap;
-            if(this.MP) {
+        var offset = this.N - cur_cap + li_cap; //offset == this.N when ith == 1;
+        if (this.MP) {
+            if (isLastLevel) {
                 for (var j = 0; j < this.T - 1; j++) {
                     if ((j + 1) * run_cap >= offset) break;
                 }
                 if (jth > j) return 0;
                 else if (jth < j) return run_cap;
                 else return offset - jth * run_cap;
-            } else {     // not reaching the last level
-                return offset;
+            } else {
+                if (jth === this.T - 1) {
+                        if (ith === 1 && (this.N % this.F)) return run_cap - this.F + this._getExtraEntries();
+                        else return run_cap - this.F;
+                    } else {
+                        return run_cap
+                    }
             }
         } else {
-            if (this.MP) {
-                if (jth === this.T - 1) return 0;
-                else return run_cap;
+            if (isLastLevel){
+                return offset;
             } else {
                 return li_cap;
             }
-        }     
+        }   
     }
 
     _getBtns(elem, level, ratio) {
