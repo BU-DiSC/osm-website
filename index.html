@@ -849,8 +849,8 @@
               <div class="lsm-title">
                 <span>RocksDB-LSM</span>     
                 <div class="custom-control custom-switch">
-                  <input id="bg-merging" type="checkbox" class="custom-control-input">
-                  <label class="custom-control-label" for="bg-merging"></label>
+                  <input id="cmp-bg-merging" type="checkbox" class="custom-control-input cmp-input">
+                  <label class="custom-control-label" for="cmp-bg-merging"></label>
                 </div>  
               </div>
             <div class="mp-btn-group btn-group mb-2" role="group" aria-label="LSM Merge Policy" >
@@ -860,7 +860,7 @@
           </div>
           <div>
             <label for="threshold">Threshold</label>
-            <input type="range" id="start" name="threshold" min="0" max="100">
+            <input type="range" id="start" value="100" step="1" name="threshold" min="0" max="100">
           </div>
           <div id="rlsm-bush" class="bush-res">
             <div class="row rlsm-result">

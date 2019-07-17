@@ -888,6 +888,7 @@ class RocksDBLSM extends LSM {
     // Background merging
     _getLevelCapacityALT(ith) {
         var run_space = super._getLevelSpace(ith);
+        console.log(Math.floor(this.threshold * run_space));
         return Math.floor(this.threshold * run_space);
     }
     _sumLevelCapacityALT(levels) {
@@ -898,13 +899,19 @@ class RocksDBLSM extends LSM {
         return sum;
     }
     _getLALT(entryNum = this.N) {
-        if (entryNum == 0) return 1;
+        if (entryNum === 0) return 1;
         var L = 0;
-        var i = 0;
-        while (i < entry_num) {
+        var cur_cap = 0;
+        while (cur_cap < entryNum) {
             L += 1;
-            i += this._getLevelCapacityALT(ith);
+            if (this.threshold === 0) {
+                cur_cap = super._getLevelSpace(L);
+            } else {
+                cur_cap = this._sumLevelCapacityALT(L);
+            }
+            console.log("i", cur_cap, "entry_num", entryNum);
         }
+        console.log("level", L);
         return (L < 1) ? 1 : L;
     }
 
@@ -1065,7 +1072,7 @@ class RocksDBLSM extends LSM {
         this.mu = document.querySelector(`#${prefix}-input-mu`).value;
         this.phi = document.querySelector(`#${prefix}-input-phi`).value;
         this.PB = this.P * this.B;
-        this.bg_merge = false;  //TODO
+        this.bg_merge = (document.querySelector(`#${prefix}-bg-merging`).checked) ? true:false;
         if (this.bg_merge) this.L = this._getLALT();
         else this.L = this._getL();
         this._updateCostEquation();
@@ -1313,6 +1320,10 @@ function runCmp() {
             break;
         case "cmp-rlsm-tiering": 
             rlsm.update(target, 1);
+            rlsm.show();
+            break;
+        case "cmp-bg-merging": 
+            rlsm.update(target);
             rlsm.show();
             break;
         // case "cmp-dlsm-lazyLevel":   // currently untriggered by event, unchanged merge policy
@@ -1586,6 +1597,7 @@ function validate(self, target, input) {
         case `${target}-vlsm-leveling`:
         case `${target}-rlsm-tiering`:
         case `${target}-rlsm-leveling`:
+        case `${target}-bg-merging`:
         // case `${target}-dlsm-lazyLevel`: // currently untriggered by event, unchanged merge policy
         // case `${target}-osm-tiering`:
         case `${target}-osm-leveling`:
@@ -1791,6 +1803,7 @@ document.querySelector("#cmp-select-M").onchange = runCmp;
 document.querySelector("#cmp-select-E").onchange = runCmp;
 document.querySelector("#cmp-select-P").onchange = runCmp;
 document.querySelector("#cmp-select-Mbf").onchange = runCmp;
+document.querySelector("#cmp-bg-merging").onchange = runCmp;
 // document.querySelector("#cmp-osm-tiering").onclick = runCmp;
 // Individual LSM analysis event trigger
 document.querySelector("#vlsm-input-T").onchange = runIndiv;
