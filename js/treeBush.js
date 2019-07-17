@@ -961,9 +961,9 @@ class RocksDBLSM extends LSM {
         for (var i = 1; i <= level; i++) {
             run_width = getWidth(i);
             button = createBtn(run_width);
-            level_cap = this._getLevelCapacity(i);
+            level_cap = this._getLevelCapacityALT(i);
             level_space = this._getLevelSpace(i);
-            entry_num = this._getEntryNum(i, 0, level_cap);
+            entry_num = this._getEntryNumALT(i, 0, level_cap);
             rate = entry_num / level_space;
             var file_num = Math.ceil(correctDecimal(entry_num / this.F));
             context = super._getTipText(i, level_space, entry_num, file_num);
@@ -1013,7 +1013,7 @@ class RocksDBLSM extends LSM {
                     context = "This level contains " + ratio + " runs in total";
                 } else {
                     child = createBtn(run_width);
-                    entry_num = this._getEntryNum(i, j, run_cap);
+                    entry_num = this._getEntryNumALT(i, j, run_cap);
                     rate = entry_num / run_cap;
                     var file_num = Math.ceil(correctDecimal(entry_num / this.F));
                     context = super._getTipText(i, run_cap, entry_num, file_num);
