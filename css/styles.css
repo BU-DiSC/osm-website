@@ -174,6 +174,20 @@ input[type=number]::-webkit-inner-spin-button {	/* Styling number input spinner 
 	display: flex;
 	font-size: 1.25vw;
 }
+.custom-switch {
+
+}
+
+#cmp-rlsm-mp .custom-control-label::before {
+	top: 5px;
+	left: -21.6px;
+	
+}
+#cmp-rlsm-mp .custom-control-label::after {
+	top: calc(5px + 2px);
+	left: calc(-21.6px + 2px);
+	
+}
 
 /* LSM tree bush diagram reuslt display */
 .bush-res > div:first-child > button:first-child, 

@@ -70,7 +70,7 @@ class LSM {
             this.phi = this.DEFAULT.phi;
         }
         this.PB = this.P * this.B;
-        this.L = this._getL();     
+        // this.L = this._getL();     
     }
 
     get T() {
@@ -212,7 +212,8 @@ class LSM {
     _isAllInBuffer() {
         return this.N <= this.PB;
     }
-    _getExtraEntries() {    //number of entries flushed to level 1 when buffer is not full
+    /* Get the number of entries eventually flushed to level 1 when buffer is not full */
+    _getExtraEntries() {
         return this.N % this.PB;
     }
 
@@ -235,12 +236,16 @@ class LSM {
         else return this._getLevelCapacity(ith);
     }
 
-    /* Only used when computing the rate for leveling */
-    _getLevelSpace(ith) {    //assumed maximal space of PB*T
+    /* Assumed maximal space of PB*T
+     * Only used when computing the rate for leveling 
+     */
+    _getLevelSpace(ith) {    
         return this.PB * Math.pow(this.T, ith);
     }
-
-    _getLevelCapacity(ith) {     //actual maximal capacity that can be reached PB*(T-1)
+    /* Actual maximal capacity that can be reached 
+     * PB*(T-1), except the level 1
+     */
+    _getLevelCapacity(ith) {     
         var l1_cap = this.PB * (this.T - 1);
         return l1_cap * Math.pow(this.T, ith - 1);
     }
@@ -704,19 +709,24 @@ class VanillaLSM extends LSM{
 class RocksDBLSM extends LSM {
     constructor(tarConf, tarRes) {
         super(tarConf, tarRes);
-        // if (this.PB % this.F !== 0) {
-        //     this.PB = Math.floor(this.PB/this.F) * this.F;
-        //     this.L = this._getL(); 
-        // }
         this.threshold = 100;
+        this.bg_merge = false;
+    }
+    get bg_merge() {
+        return this._bg_merge;
     }
     get threshold() {
-        return this._threshold;
+        return this._threshold / 100;
     }
     set threshold(x) {
-        this._threshold = x;
+        this._threshold = parseFloat(x);
         return this._threshold;
     }
+    set bg_merge(bool) {
+        this._bg_merge = bool;
+        return this._bg_merge;
+    }
+    
     _getL(fileNum = this._getFileNum()) {
         // fileNum must > 0
         if (fileNum == 0) return 1;
@@ -728,15 +738,16 @@ class RocksDBLSM extends LSM {
         }
         return (L < 1) ? 1 : L;
     }
-    _getFileNum() {
-        return Math.ceil(this.N / this.F);
-    }
     _getLevelCapacity(ith) {     
-    //actual maximal capacity that can be reached PB*T - F
+        //actual maximal capacity that can be reached PB*T - F
+        var run_space = super._getLevelSpace(ith);
         if (this.N % this.F && ith === 1) {
-            return this.PB * this.T - this.F + this._getExtraEntries();
+            return run_space - this.F + this._getExtraEntries();
         }
-        return this.PB * Math.pow(this.T, ith) - this.F ;
+        return run_space - this.F ;
+    }
+    _getLevelCapacityByFile(ith) {   
+        return Math.ceil(this._getLevelCapacity(ith) / this.F);
     }
     _sumLevelCapacity(levels) {
         var sum = 0;
@@ -745,15 +756,15 @@ class RocksDBLSM extends LSM {
         }
         return sum;
     }
-    _getLevelCapacityByFile(ith) {     
-        return Math.ceil(this._getLevelCapacity(ith) / this.F);
-    }
     _getExtraEntries() {    //number of entries flushed to level 1 when buffer is not full
         var r = this.N  % this.PB;
         return r % this.F;
     }
     _getExtraFiles() {
         return (this.N % this.F) ? 1:0;
+    }
+    _getFileNum() {
+        return Math.ceil(this.N / this.F);
     }
     _getEntryNum(ith, jth, run_cap) {
         var cur_cap = this._sumLevelCapacity(ith);
@@ -784,7 +795,6 @@ class RocksDBLSM extends LSM {
             }
         }   
     }
-
     _getBtns(elem, level, ratio) {
         var runs = [];
         var run_width = 0;
@@ -810,7 +820,7 @@ class RocksDBLSM extends LSM {
             run_width = getWidth(i);
             button = createBtn(run_width);
             level_cap = this._getLevelCapacity(i);
-            level_space = super._getLevelSpace(i);
+            level_space = this._getLevelSpace(i);
             entry_num = this._getEntryNum(i, 0, level_cap);
             rate = entry_num / level_space;
             var file_num = Math.ceil(correctDecimal(entry_num / this.F));
@@ -864,8 +874,6 @@ class RocksDBLSM extends LSM {
                     entry_num = this._getEntryNum(i, j, run_cap);
                     rate = entry_num / run_cap;
                     var file_num = Math.ceil(correctDecimal(entry_num / this.F));
-                    console.log(entry_num);
-                    console.log(file_num);
                     context = super._getTipText(i, run_cap, entry_num, file_num);
                     setRunGradient(child, rate);
                 }
@@ -875,6 +883,171 @@ class RocksDBLSM extends LSM {
             btn_groups[i] = group_wrap;
         }
         return btn_groups;
+    }
+
+    // Background merging
+    _getLevelCapacityALT(ith) {
+        var run_space = super._getLevelSpace(ith);
+        return Math.floor(this.threshold * run_space);
+    }
+    _sumLevelCapacityALT(levels) {
+        var sum = 0;
+        for (let i = 1; i <= levels; i++) {
+            sum += this._getLevelCapacityALT(i);
+        }
+        return sum;
+    }
+    _getLALT(entryNum = this.N) {
+        if (entryNum == 0) return 1;
+        var L = 0;
+        var i = 0;
+        while (i < entry_num) {
+            L += 1;
+            i += this._getLevelCapacityALT(ith);
+        }
+        return (L < 1) ? 1 : L;
+    }
+
+    _getEntryNumALT(ith, jth, run_cap) {
+        var cur_cap = this._sumLevelCapacityALT(ith);
+        var li_cap = this._getLevelCapacityALT(ith);
+        var isLastLevel = ith === this.L;
+        var offset = this.N - cur_cap + li_cap; //offset == this.N when ith == 1;
+        if (this.MP) {
+            if (isLastLevel) {
+                for (var j = 0; j < this.T - 1; j++) {
+                    if ((j + 1) * run_cap >= offset) break;
+                }
+                if (jth > j) return 0;
+                else if (jth < j) return run_cap;
+                else return offset - jth * run_cap;
+            } else {
+                if (jth === this.T - 1) {
+                        if (ith === 1 && (this.N % this.F)) return run_cap - this.F + this._getExtraEntries();
+                        else return run_cap - this.F;
+                    } else {
+                        return run_cap
+                    }
+            }
+        } else {
+            if (isLastLevel){
+                return offset;
+            } else {
+                return li_cap;
+            }
+        }   
+    }
+    _getBtnsALT(elem, level, ratio) {
+        var runs = [];
+        var run_width = 0;
+        var button = null;
+        var level_cap = 0;
+        var level_space = 0;
+        var context = "";
+        var entry_num = 0;
+        var rate = 0;
+        var getWidth = function(i) {
+            var coef = 1;  
+            var base_width = 10;
+            var client_width = elem.clientWidth - 1;  // -1 to avoid stacking
+            var m = client_width / Math.pow(ratio, level);   // level0 actual width;
+            if (m < base_width) {
+                coef = Math.pow(client_width / base_width, 1 / level) / ratio;
+                m  = base_width;
+            }
+            return m * Math.pow(coef * ratio, i) + "px";
+        };
+
+        for (var i = 1; i <= level; i++) {
+            run_width = getWidth(i);
+            button = createBtn(run_width);
+            level_cap = this._getLevelCapacity(i);
+            level_space = this._getLevelSpace(i);
+            entry_num = this._getEntryNum(i, 0, level_cap);
+            rate = entry_num / level_space;
+            var file_num = Math.ceil(correctDecimal(entry_num / this.F));
+            context = super._getTipText(i, level_space, entry_num, file_num);
+            setToolTip(button, "left", context);
+            setRunGradient(button, rate);
+            runs[i] = button;
+        }
+        return runs;
+    }
+
+    _getBtnGroupsALT(elem, level, ratio) {
+        var btn_groups = [];
+        var max_runs = (ratio < 5) ? ratio : 5;
+        var run_width = 0;
+        var group_wrap = null;
+        var run_cap = 0;
+        var context = "";
+        var entry_num = 0;
+        var rate = 0;
+
+        var getWidth = function(i) {
+            var base_width = 10;
+            var margin = (max_runs - 2) * 4 + 4;
+            var l1_width = max_runs * base_width + margin;   // invariant: level1 width
+            var coef = 1;
+            var client_width = elem.clientWidth - 1;  // -1 to avoid stacking 
+            var m = client_width / Math.pow(max_runs, level - 1);    // level1 acutal width
+
+            if (m < l1_width) {
+                coef = Math.pow(client_width / l1_width, 1 / (level - 1)) / max_runs;
+                m  = l1_width;
+            }
+            if (i > 1) return (m * Math.pow(coef * max_runs, i - 1) - margin) / max_runs + "px";
+            else return (m - margin) / max_runs + "px";
+        }
+
+        for (var i = 1; i <= level; i++) {
+            run_width = getWidth(i);
+            group_wrap = document.createElement("div");
+            group_wrap.setAttribute("class", "lsm-btn-group");
+            run_cap = super._getRunCapacity(i);
+           
+            for (var j = 0; j < max_runs; j++) {
+                var child = null;
+                if ((max_runs >= 5) && (j == max_runs - 2)) {
+                    child = createDots(run_width);
+                    context = "This level contains " + ratio + " runs in total";
+                } else {
+                    child = createBtn(run_width);
+                    entry_num = this._getEntryNum(i, j, run_cap);
+                    rate = entry_num / run_cap;
+                    var file_num = Math.ceil(correctDecimal(entry_num / this.F));
+                    context = super._getTipText(i, run_cap, entry_num, file_num);
+                    setRunGradient(child, rate);
+                }
+                setToolTip(child, "left", context);
+                group_wrap.appendChild(child); 
+            }
+            btn_groups[i] = group_wrap;
+        }
+        return btn_groups;
+    }
+    
+    showBgMerge() {
+        var btn_list = [];
+        var parent = document.querySelector(`#${this.suffix}-bush`);
+        if (this.MP) btn_list = this._getBtnGroupsALT(parent, this.L, this.T);
+        else btn_list = this._getBtnsALT(parent, this.L, this.T);
+        clear(parent);
+
+        for (var i = 1; i <= this.L; i++) {
+            var div_wrap = document.createElement("div");
+            div_wrap.setAttribute("class", `row ${this.suffix}-result`);
+            div_wrap.appendChild(btn_list[i]);
+            parent.appendChild(div_wrap);
+        }
+    }
+    show() {
+        if (this.bg_merge) {
+            this.showBgMerge();
+        } else {
+            this.showBush();
+        }
+        this.showCost();
     }
 
     /* update current state */
@@ -892,7 +1065,9 @@ class RocksDBLSM extends LSM {
         this.mu = document.querySelector(`#${prefix}-input-mu`).value;
         this.phi = document.querySelector(`#${prefix}-input-phi`).value;
         this.PB = this.P * this.B;
-        this.L = this._getL();
+        this.bg_merge = false;  //TODO
+        if (this.bg_merge) this.L = this._getLALT();
+        else this.L = this._getL();
         this._updateCostEquation();
     }
 
@@ -932,6 +1107,8 @@ class RocksDBLSM extends LSM {
         document.querySelector("#rlsm-lQ-cost").setAttribute("data-original-title", lQ);
         document.querySelector("#rlsm-sAMP-cost").setAttribute("data-original-title", sAMP);
     }
+
+
 }
 
 class DostoevskyLSM extends LSM {
@@ -1042,6 +1219,10 @@ function initCmp() {
     window.dlsm = dlsm;
     window.osm = osm;
     window.obj = {rlsm:window.rlsm, vlsm:window.vlsm, dlsm:window.dlsm, osm:window.osm};
+    window.vlsm.update("cmp");
+    window.rlsm.update("cmp");
+    window.dlsm.update("cmp");
+    window.osm.update("cmp");
     window.vlsm.show();
     window.rlsm.show();
     window.dlsm.show();

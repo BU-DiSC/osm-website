@@ -846,13 +846,21 @@
         <!-- RocksDB LSM-Tree bush results starts here -->
         <div class="rlsm-bush-col col-lg-3 col-md-3 col-sm-3">
           <div id="cmp-rlsm-mp" class="row cmp-indiv-mp">
-            <div class="lsm-title">
-              <span>RocksDB-LSM</span>        
-            </div>
+              <div class="lsm-title">
+                <span>RocksDB-LSM</span>     
+                <div class="custom-control custom-switch">
+                  <input id="bg-merging" type="checkbox" class="custom-control-input">
+                  <label class="custom-control-label" for="bg-merging"></label>
+                </div>  
+              </div>
             <div class="mp-btn-group btn-group mb-2" role="group" aria-label="LSM Merge Policy" >
               <button id="cmp-rlsm-leveling" type="button" class="cmp-input btn-active leveler btn btn-custom" autofocus>Leveling</button>
-              <button id="cmp-rlsm-tiering"  type="button" class="cmp-input tier btn btn-custom">Tiering</button>
+              <button id="cmp-rlsm-tiering" type="button" class="cmp-input tier btn btn-custom">Tiering</button>
             </div>
+          </div>
+          <div>
+            <label for="threshold">Threshold</label>
+            <input type="range" id="start" name="threshold" min="0" max="100">
           </div>
           <div id="rlsm-bush" class="bush-res">
             <div class="row rlsm-result">
