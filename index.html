@@ -850,7 +850,7 @@
                 <span>RocksDB-LSM</span>     
                 <div class="custom-control custom-switch">
                   <input id="cmp-bg-merging" type="checkbox" class="custom-control-input cmp-input">
-                  <label class="custom-control-label" for="cmp-bg-merging"></label>
+                  <label data-toggle="collapse" data-target="#threshold" aria-expanded="false" aria-controls="threshold" class="custom-control-label" for="cmp-bg-merging"></label>
                 </div>  
               </div>
             <div class="mp-btn-group btn-group mb-2" role="group" aria-label="LSM Merge Policy" >
@@ -858,9 +858,23 @@
               <button id="cmp-rlsm-tiering" type="button" class="cmp-input tier btn btn-custom">Tiering</button>
             </div>
           </div>
-          <div>
-            <label for="threshold">Threshold</label>
-            <input type="range" id="start" value="100" step="1" name="threshold" min="0" max="100">
+          <div id="threshold" class="collapse rlsm-conf-row text-center row justify-content-center">
+            <label class="mr-1">0%</label>
+            <input id="cmp-rlsm-threshold" class="cmp-input" value="100" min="0" max="100" step="1" type="range" list="tickmarks">
+            <label class="ml-1">100%</label>
+            <datalist id="tickmarks">
+              <option value="0" label="0%">
+              <option value="10">
+              <option value="20">
+              <option value="30">
+              <option value="40">
+              <option value="50" label="50%">
+              <option value="60">
+              <option value="70">
+              <option value="80">
+              <option value="90">
+              <option value="100" label="100%">
+            </datalist>
           </div>
           <div id="rlsm-bush" class="bush-res">
             <div class="row rlsm-result">

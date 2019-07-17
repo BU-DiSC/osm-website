@@ -36,6 +36,9 @@ hr {
 	margin-top: 1.5rem;
 	margin-bottom: 1.5rem;
 }
+label {
+	font-size: 0.75rem;
+}
 
 
 
@@ -179,13 +182,13 @@ input[type=number]::-webkit-inner-spin-button {	/* Styling number input spinner 
 }
 
 #cmp-rlsm-mp .custom-control-label::before {
-	top: 5px;
-	left: -21.6px;
+	top: 5.25px;
+	left: -27.5px;
 	
 }
 #cmp-rlsm-mp .custom-control-label::after {
-	top: calc(5px + 2px);
-	left: calc(-21.6px + 2px);
+	top: calc(5.25px + 2px);
+	left: calc(-27.5px + 2px);
 	
 }
 
