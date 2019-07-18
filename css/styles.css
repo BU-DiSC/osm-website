@@ -36,6 +36,12 @@ hr {
 	margin-top: 1.5rem;
 	margin-bottom: 1.5rem;
 }
+label, span { /* Disable text selection */
+	-moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 
 
 
