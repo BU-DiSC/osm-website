@@ -78,6 +78,63 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
     $("#rlsm-tiering").addClass("btn-active");
   });
 
+$.fn.WBslider = function() {
+  return this.each(function() {
+    var $_this = $(this),
+      $_value = $('#cmp-rlsm-threshold', $_this),
+      $_title = $('.setvalue', $_this),
+      thumbwidth = 15; // set this to the pixel width of the thumb
+      // yrnow = new Date().getFullYear();
+
+    // // set range max to current year
+    // $_value.attr('max', yrnow);
+    // $('.endyear', $_this).text( yrnow );
+    // $_value.val(yrnow - 10); // -10 years, just because...
+
+    $_value.on('input change keyup', function() {
+      var $_this = $(this),
+        val = parseInt($_value.val(), 10);
+
+      if (val < 0) {
+        val = '< 0';
+      }
+      if (val === '') { // Stop IE8 displaying NaN
+        val = 0;
+      }
+
+      $_title.text( val );
+
+      var pos = (val - $_value.attr('min'))/($_value.attr('max') - $_value.attr('min'));
+
+      // position the title with the thumb
+      var thumbCorrect = thumbwidth * (pos - 0.5) * -1,
+        titlepos = Math.round( ( pos * $_value.width() ) + 42 - thumbwidth/4 + thumbCorrect );
+      if (val === 100) titlepos = 160;
+      // $_title.css({'top': '3.5rem'});
+      $_title.css({'left': titlepos});
+
+      // // show "progress" on the track
+      // pos = Math.round( pos * 99 ); // to hide stuff behide the thumb
+      // var grad = 'linear-gradient(90deg, #A7A7A7 ' + pos + '%,#FFE014 ' + (pos+1) + '%)';
+      // $_value.css({'background': grad});
+    }).on('focus', function() {
+      if ( isNaN( $(this).val() ) ) {
+        $(this).val(0);
+      }
+    }).trigger('change');
+    
+    $(window).on('resize', function() {
+      $_value.trigger('change');
+    });
+  });
+};
+
+$(function() {
+
+  $('.slider').WBslider();
+
+});
+
 
   // Same as document.querySelector("#navbarToggle").addEventListener("blur",...
   $("#navbarToggle").blur(function (event) {

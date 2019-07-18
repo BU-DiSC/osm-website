@@ -1,0 +1,25 @@
+/*custom style for bootstrap tooltip*/
+
+.tooltip.bottom .tooltip-inner{
+ 
+max-width:310px;
+ 
+padding:3px 8px;
+ 
+color:#fff;
+ 
+text-align:center;
+ 
+background-color:#245973;
+ 
+border-radius:5px
+}
+
+.tooltip.right .tooltip-inner{
+	max-width:310px;
+	padding:3px 8px;
+	color:#fff;
+	text-align:justify;
+	background-color:#245973; 
+	border-radius:5px
+}
