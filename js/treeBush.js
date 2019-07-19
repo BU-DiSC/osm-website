@@ -900,12 +900,14 @@ class RocksDBLSM extends LSM {
 
     // Background merging
     _getLevelCapacityALT(ith) {
-        var run_space = super._getLevelSpace(ith);
-        if (ith === this.L) return run_space;
-        else return Math.floor(this.threshold * run_space);
+        return this._getLevelCapacityByFileALT(ith) * this.F;
     }
     _getLevelCapacityByFileALT(ith) {   
-        return Math.ceil(this._getLevelCapacityALT(ith) / this.F);
+        if (ith === this.L) return this._getLevelSpaceByFileALT(ith);
+        else return Math.floor(this.threshold * this._getLevelSpaceByFileALT(ith));
+    }
+    _getLevelSpaceByFileALT(ith) {
+        return Math.ceil(super._getLevelSpace(ith) / this.F);
     }
     _sumLevelCapacityALT(levels) {
         var sum = 0;
@@ -928,10 +930,7 @@ class RocksDBLSM extends LSM {
         while (cur_cap < fileNum) {
             L += 1;
             cur_cap = this._sumLevelCapacityByFileALT(L);
-            
-            // console.log("i", cur_cap, "entry_num", entryNum);
         }
-        // console.log("level", L);
         return (L < 1) ? 1 : L;
     }
 
@@ -940,6 +939,7 @@ class RocksDBLSM extends LSM {
         var li_cap = this._getLevelCapacityALT(ith);
         var isLastLevel = ith === this.L;
         var offset = this.N - cur_cap + li_cap; //offset == this.N when ith == 1;
+        // No tiering for rocksDB
         if (this.MP) {
             if (isLastLevel) {
                 for (var j = 0; j < this.T - 1; j++) {
