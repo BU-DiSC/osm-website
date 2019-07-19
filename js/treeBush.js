@@ -709,8 +709,21 @@ class VanillaLSM extends LSM{
 class RocksDBLSM extends LSM {
     constructor(tarConf, tarRes) {
         super(tarConf, tarRes);
-        this.threshold = document.querySelector(`#${this.prefix}-rlsm-threshold`).value;
+        this.threshold = this._initThreshold();
         this.bg_merge = false;
+    }
+    _initThreshold() {
+        var L = this._getL();
+        var lth = (L === 1) ? 1 : L - 1;
+        var t = this._getLevelCapacity(lth) / super._getLevelSpace(lth);
+        console.log(t);
+        var elem = document.querySelector(`#${this.prefix}-rlsm-threshold`);
+        elem.value = t * 100;
+        var thumbCorrect = 15 * (t - 0.5) * -1;
+        var titlepos = Math.round( ( t * 129 ) + 42 - 15/4 + thumbCorrect);
+        document.querySelector(".setvalue").style.left = titlepos + "px";
+        document.querySelector(".setvalue").textContent = elem.value;
+        return t;
     }
     get bg_merge() {
         return this._bg_merge;
@@ -888,8 +901,11 @@ class RocksDBLSM extends LSM {
     // Background merging
     _getLevelCapacityALT(ith) {
         var run_space = super._getLevelSpace(ith);
-        // console.log(Math.floor(this.threshold * run_space));
-        return Math.floor(this.threshold * run_space);
+        if (ith === this.L) return run_space;
+        else return Math.floor(this.threshold * run_space);
+    }
+    _getLevelCapacityByFileALT(ith) {   
+        return Math.ceil(this._getLevelCapacityALT(ith) / this.F);
     }
     _sumLevelCapacityALT(levels) {
         var sum = 0;
@@ -898,17 +914,21 @@ class RocksDBLSM extends LSM {
         }
         return sum;
     }
-    _getLALT(entryNum = this.N) {
-        if (entryNum === 0) return 1;
+    _sumLevelCapacityByFileALT(levels) {
+        var sum = 0;
+        for (let i = 1; i <= levels; i++) {
+            sum += this._getLevelCapacityByFileALT(i);
+        }
+        return sum;
+    }
+    _getLALT(fileNum = this._getFileNum()) {
+        if (fileNum === 0) return 1;
         var L = 0;
         var cur_cap = 0;
-        while (cur_cap < entryNum) {
+        while (cur_cap < fileNum) {
             L += 1;
-            if (this.threshold === 0) {
-                cur_cap = super._getLevelSpace(L);
-            } else {
-                cur_cap = this._sumLevelCapacityALT(L);
-            }
+            cur_cap = this._sumLevelCapacityByFileALT(L);
+            
             // console.log("i", cur_cap, "entry_num", entryNum);
         }
         // console.log("level", L);
@@ -1077,7 +1097,10 @@ class RocksDBLSM extends LSM {
             this.threshold = document.querySelector(`#${prefix}-rlsm-threshold`).value;
             this.L = this._getLALT();
         }
-        else this.L = this._getL();
+        else {
+            this.threshold = this._initThreshold();
+            this.L = this._getL();
+        }
         this._updateCostEquation();
     }
 

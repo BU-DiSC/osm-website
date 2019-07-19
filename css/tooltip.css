@@ -1,25 +1,15 @@
-/*custom style for bootstrap tooltip*/
-
-.tooltip.bottom .tooltip-inner{
- 
-max-width:310px;
- 
-padding:3px 8px;
- 
-color:#fff;
- 
-text-align:center;
- 
-background-color:#245973;
- 
-border-radius:5px
+/* Custom tooltip style */
+.tooltip{
+	font-size: 10px;
 }
+.tooltip-inner {
+	max-width: 250px;
+	padding: 2px 8px;
+	color: #fff;
+	text-align: justify;
+	background-color: #000;
+	border-radius: 4px;
+}
+.tooltip-arrow {
 
-.tooltip.right .tooltip-inner{
-	max-width:310px;
-	padding:3px 8px;
-	color:#fff;
-	text-align:justify;
-	background-color:#245973; 
-	border-radius:5px
 }

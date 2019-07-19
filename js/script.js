@@ -80,56 +80,59 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
 
   $("#cmp-bg-merging").on("click", function() {
     if ($(this).hasClass("checked")) {
-      console.log("unchecked");
       $(this).removeClass("checked");
       $("#threshold").hide();
+      $(this).next().attr("data-original-title", "Background merging OFF");
+      $(this).next().mouseover();
     } else {
-      console.log("checked");
       $(this).addClass("checked");
       $("#threshold").show();
+      $(this).next().attr("data-original-title", "Background merging ON");
+      $(this).next().mouseover();
     }
   });
 
-$.fn.WBslider = function() {
-  return this.each(function() {
-    var $_this = $(this),
-      $_value = $('#cmp-rlsm-threshold', $_this),
-      $_title = $('.setvalue', $_this),
-      thumbwidth = 15; // set this to the pixel width of the thumb
-
-    $_value.on('input change keyup', function() {
+  $.fn.WBslider = function() {
+    return this.each(function() {
       var $_this = $(this),
-        val = parseInt($_value.val(), 10);
-      if (val < 0) {
-        val = '< 0';
-      }
-      if (val === '') { // Stop IE8 displaying NaN
-        val = 0;
-      }
+        $_value = $('#cmp-rlsm-threshold', $_this),
+        $_title = $('.setvalue', $_this),
+        thumbwidth = 15; // set this to the pixel width of the thumb
 
-      $_title.text( val );
-      var pos = (val - $_value.attr('min'))/($_value.attr('max') - $_value.attr('min'));
+      $_value.on('input change keyup', function() {
+        var $_this = $(this),
+          val = parseInt($_value.val(), 10);
+        if (val < 0) {
+          val = '< 0';
+        }
+        if (val === '') { // Stop IE8 displaying NaN
+          val = 0;
+        }
 
-      // position the title with the thumb
-      var thumbCorrect = thumbwidth * (pos - 0.5) * -1,
-        titlepos = Math.round( ( pos * $_value.width() ) + 42 - thumbwidth/4 + thumbCorrect );
-      if (val === 100) titlepos = 160;
-      // $_title.css({'top': '3.5rem'});
-      $_title.css({'left': titlepos});
-    }).on('focus', function() {
-      if ( isNaN( $(this).val() ) ) {
-        $(this).val(0);
-      }
-    }).trigger('change');
-    $(window).on('resize', function() {
-      $_value.trigger('change');
+        $_title.text( val );
+        var pos = (val - $_value.attr('min'))/($_value.attr('max') - $_value.attr('min'));
+
+        // position the title with the thumb
+        var thumbCorrect = thumbwidth * (pos - 0.5) * -1;
+        var width = ($("#threshold").css("display") == "none")? 129 : $_value.width();
+        var titlepos = Math.round( ( pos * width ) + 42 - thumbwidth/4 + thumbCorrect);
+        if (val === 100) titlepos = 160;
+        // $_title.css({'top': '3.5rem'});
+        $_title.css({'left': titlepos});
+      }).on('focus', function() {
+        if ( isNaN( $(this).val() ) ) {
+          $(this).val(0);
+        }
+      }).trigger('change');
+      $(window).on('resize', function() {
+        $_value.trigger('change');
+      });
     });
-  });
-};
+  };
 
-$(function() {
-  $('.slider').WBslider();
-});
+  $(function() {
+    $('.slider').WBslider();
+  });
 
 
   // Same as document.querySelector("#navbarToggle").addEventListener("blur",...
