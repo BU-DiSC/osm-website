@@ -711,12 +711,14 @@ class RocksDBLSM extends LSM {
         super(tarConf, tarRes);
         this.threshold = this._initThreshold();
         this.bg_merge = false;
+        this.MP = 0;
+        this.DEFAULT.MP = 0;
+        this.preMP = 0;
     }
     _initThreshold() {
         var L = this._getL();
         var lth = (L === 1) ? 1 : L - 1;
         var t = this._getLevelCapacity(lth) / super._getLevelSpace(lth);
-        console.log(t);
         var elem = document.querySelector(`#${this.prefix}-rlsm-threshold`);
         elem.value = t * 100;
         var thumbCorrect = 15 * (t - 0.5) * -1;
@@ -845,59 +847,6 @@ class RocksDBLSM extends LSM {
         return runs;
     }
 
-    _getBtnGroups(elem, level, ratio) {
-        var btn_groups = [];
-        var max_runs = (ratio < 5) ? ratio : 5;
-        var run_width = 0;
-        var group_wrap = null;
-        var run_cap = 0;
-        var context = "";
-        var entry_num = 0;
-        var rate = 0;
-
-        var getWidth = function(i) {
-            var base_width = 10;
-            var margin = (max_runs - 2) * 4 + 4;
-            var l1_width = max_runs * base_width + margin;   // invariant: level1 width
-            var coef = 1;
-            var client_width = elem.clientWidth - 1;  // -1 to avoid stacking 
-            var m = client_width / Math.pow(max_runs, level - 1);    // level1 acutal width
-
-            if (m < l1_width) {
-                coef = Math.pow(client_width / l1_width, 1 / (level - 1)) / max_runs;
-                m  = l1_width;
-            }
-            if (i > 1) return (m * Math.pow(coef * max_runs, i - 1) - margin) / max_runs + "px";
-            else return (m - margin) / max_runs + "px";
-        }
-
-        for (var i = 1; i <= level; i++) {
-            run_width = getWidth(i);
-            group_wrap = document.createElement("div");
-            group_wrap.setAttribute("class", "lsm-btn-group");
-            run_cap = super._getRunCapacity(i);
-           
-            for (var j = 0; j < max_runs; j++) {
-                var child = null;
-                if ((max_runs >= 5) && (j == max_runs - 2)) {
-                    child = createDots(run_width);
-                    context = "This level contains " + ratio + " runs in total";
-                } else {
-                    child = createBtn(run_width);
-                    entry_num = this._getEntryNum(i, j, run_cap);
-                    rate = entry_num / run_cap;
-                    var file_num = Math.ceil(correctDecimal(entry_num / this.F));
-                    context = super._getTipText(i, run_cap, entry_num, file_num);
-                    setRunGradient(child, rate);
-                }
-                setToolTip(child, "left", context);
-                group_wrap.appendChild(child); 
-            }
-            btn_groups[i] = group_wrap;
-        }
-        return btn_groups;
-    }
-
     // Background merging
     _getLevelCapacityALT(ith) {
         return this._getLevelCapacityByFileALT(ith) * this.F;
@@ -1000,59 +949,6 @@ class RocksDBLSM extends LSM {
         }
         return runs;
     }
-
-    _getBtnGroupsALT(elem, level, ratio) {
-        var btn_groups = [];
-        var max_runs = (ratio < 5) ? ratio : 5;
-        var run_width = 0;
-        var group_wrap = null;
-        var run_cap = 0;
-        var context = "";
-        var entry_num = 0;
-        var rate = 0;
-
-        var getWidth = function(i) {
-            var base_width = 10;
-            var margin = (max_runs - 2) * 4 + 4;
-            var l1_width = max_runs * base_width + margin;   // invariant: level1 width
-            var coef = 1;
-            var client_width = elem.clientWidth - 1;  // -1 to avoid stacking 
-            var m = client_width / Math.pow(max_runs, level - 1);    // level1 acutal width
-
-            if (m < l1_width) {
-                coef = Math.pow(client_width / l1_width, 1 / (level - 1)) / max_runs;
-                m  = l1_width;
-            }
-            if (i > 1) return (m * Math.pow(coef * max_runs, i - 1) - margin) / max_runs + "px";
-            else return (m - margin) / max_runs + "px";
-        }
-
-        for (var i = 1; i <= level; i++) {
-            run_width = getWidth(i);
-            group_wrap = document.createElement("div");
-            group_wrap.setAttribute("class", "lsm-btn-group");
-            run_cap = super._getRunCapacity(i);
-           
-            for (var j = 0; j < max_runs; j++) {
-                var child = null;
-                if ((max_runs >= 5) && (j == max_runs - 2)) {
-                    child = createDots(run_width);
-                    context = "This level contains " + ratio + " runs in total";
-                } else {
-                    child = createBtn(run_width);
-                    entry_num = this._getEntryNumALT(i, j, run_cap);
-                    rate = entry_num / run_cap;
-                    var file_num = Math.ceil(correctDecimal(entry_num / this.F));
-                    context = super._getTipText(i, run_cap, entry_num, file_num);
-                    setRunGradient(child, rate);
-                }
-                setToolTip(child, "left", context);
-                group_wrap.appendChild(child); 
-            }
-            btn_groups[i] = group_wrap;
-        }
-        return btn_groups;
-    }
     
     showBgMerge() {
         var btn_list = [];
@@ -1078,9 +974,8 @@ class RocksDBLSM extends LSM {
     }
 
     /* update current state */
-    update(prefix, mergePolicy = this.MP) {
+    update(prefix) {
         this.prefix = prefix;
-        this.MP = mergePolicy;
         this.T = document.querySelector(`#${prefix}-input-T`).value;
         this.E = convertToBytes(`#${prefix}-select-E`, document.querySelector(`#${prefix}-input-E`).value);
         this.N = document.querySelector(`#${prefix}-input-N`).value;
@@ -1213,9 +1108,8 @@ class DostoevskyLSM extends LSM {
         return btn_groups;
     }
 
-    update(prefix, mergePolicy = this.MP) {
+    update(prefix) {
         this.prefix = prefix;
-        this.MP = mergePolicy;
         this.T = document.querySelector(`#${prefix}-input-T`).value;
         this.E = convertToBytes(`#${prefix}-select-E`, document.querySelector(`#${prefix}-input-E`).value);
         this.N = document.querySelector(`#${prefix}-input-N`).value;
@@ -1340,14 +1234,15 @@ function runCmp() {
             vlsm.update(target, 1);
             vlsm.show();
             break;
-        case "cmp-rlsm-leveling": 
-            rlsm.update(target, 0);
-            rlsm.show();
-            break;
-        case "cmp-rlsm-tiering": 
-            rlsm.update(target, 1);
-            rlsm.show();
-            break;
+        // currently untriggered by event, unchanged merge policy
+        // case "cmp-rlsm-leveling":    
+        //     rlsm.update(target, 0);
+        //     rlsm.show();
+        //     break;
+        // case "cmp-rlsm-tiering": 
+        //     rlsm.update(target, 1);
+        //     rlsm.show();
+        //     break;
         case "cmp-bg-merging": 
             rlsm.update(target);
             rlsm.show();
@@ -1355,35 +1250,38 @@ function runCmp() {
         case "cmp-rlsm-threshold":
             rlsm.update(target);
             rlsm.show();
-        // case "cmp-dlsm-lazyLevel":   // currently untriggered by event, unchanged merge policy
+        // currently untriggered by event, unchanged merge policy
+        // case "cmp-dlsm-lazyLevel":  
         //     dlsm.update(target, 1);
         //     dlsm.showBush();
         //     break;
-        case "cmp-osm-leveling": 
-            osm.update(target, 0);
-            osm.show();
-            break;
+        // case "cmp-osm-leveling": 
+        //     osm.update(target, 0);
+        //     osm.show();
+        //     break;
         case "cmp-leveling":
-            console.log("update all to leveling");
+            console.log("update Vanilla-LSM to leveling");
             vlsm.update(target, 0);
-            rlsm.update(target, 0);
-            // dlsm.update(target, 1);     // currently untriggered by event, unchanged merge policy
-            osm.update(target, 0);
             vlsm.show();
-            rlsm.show();
-            dlsm.show();
-            osm.show();
+            // currently untriggered by event, unchanged merge policy
+            // dlsm.update(target, 1); 
+            // rlsm.update(target, 0);
+            // osm.update(target, 0);
+            // rlsm.show();
+            // dlsm.show();
+            // osm.show();
             break;
         case "cmp-tiering":
-            console.log("update all to tiering");
+            console.log("update Vanilla-LSM to tiering");
             vlsm.update(target, 1);
-            rlsm.update(target, 1);
-            // dlsm.update(target, 1);     // currently untriggered by event, unchanged merge policy
-            // osm.update(target, 1);
             vlsm.show();
-            rlsm.show();
-            dlsm.show();
-            // osm.showBush();
+            // currently untriggered by event, unchanged merge policy
+            // rlsm.update(target, 1);
+            // dlsm.update(target, 1);    
+            // osm.update(target, 1);
+            // rlsm.show();
+            // dlsm.show();
+            // osm.show();
             break;
         default:
             console.log("simply update all");
@@ -1624,13 +1522,14 @@ function validate(self, target, input) {
         case `${target}-leveling`:
         case `${target}-vlsm-tiering`:
         case `${target}-vlsm-leveling`:
-        case `${target}-rlsm-tiering`:
-        case `${target}-rlsm-leveling`:
         case `${target}-bg-merging`:
         case `${target}-rlsm-threshold`:
-        // case `${target}-dlsm-lazyLevel`: // currently untriggered by event, unchanged merge policy
+        // currently untriggered by event, unchanged merge policy
+        // case `${target}-rlsm-leveling`:
+        // case `${target}-rlsm-tiering`:
+        // case `${target}-dlsm-lazyLevel`: 
         // case `${target}-osm-tiering`:
-        case `${target}-osm-leveling`:
+        // case `${target}-osm-leveling`:
             break;
         default:
             console.log(self.id);
@@ -1826,9 +1725,9 @@ document.querySelector("#cmp-leveling").onclick = runCmp;
 document.querySelector("#cmp-tiering").onclick = runCmp;
 document.querySelector("#cmp-vlsm-leveling").onclick = runCmp;
 document.querySelector("#cmp-vlsm-tiering").onclick = runCmp;
-document.querySelector("#cmp-rlsm-leveling").onclick = runCmp;
-document.querySelector("#cmp-rlsm-tiering").onclick = runCmp;
-document.querySelector("#cmp-osm-leveling").onclick = runCmp;
+// document.querySelector("#cmp-rlsm-leveling").onclick = runCmp;
+// document.querySelector("#cmp-rlsm-tiering").onclick = runCmp;
+// document.querySelector("#cmp-osm-leveling").onclick = runCmp;
 document.querySelector("#cmp-select-M").onchange = runCmp;
 document.querySelector("#cmp-select-E").onchange = runCmp;
 document.querySelector("#cmp-select-P").onchange = runCmp;
@@ -1883,7 +1782,7 @@ document.querySelector("#rlsm-input-mu").onchange = runIndiv;
 document.querySelector("#rlsm-input-mu").onwheel = runIndiv;
 document.querySelector("#rlsm-input-phi").onchange = runIndiv;
 document.querySelector("#rlsm-input-phi").onwheel = runIndiv;
-document.querySelector("#rlsm-tiering").onclick = runIndiv;
+// document.querySelector("#rlsm-tiering").onclick = runIndiv;
 document.querySelector("#rlsm-leveling").onclick = runIndiv;
 document.querySelector("#rlsm-select-M").onchange = runIndiv;
 document.querySelector("#rlsm-select-E").onchange = runIndiv;
@@ -1934,7 +1833,7 @@ document.querySelector("#osm-input-mu").onwheel = runIndiv;
 document.querySelector("#osm-input-phi").onchange = runIndiv;
 document.querySelector("#osm-input-phi").onwheel = runIndiv;
 // document.querySelector("#osm-tiering").onclick = runIndiv;
-document.querySelector("#osm-leveling").onclick = runIndiv;
+// document.querySelector("#osm-leveling").onclick = runIndiv;
 document.querySelector("#osm-select-M").onchange = runIndiv;
 document.querySelector("#osm-select-E").onchange = runIndiv;
 document.querySelector("#osm-select-P").onchange = runIndiv;
