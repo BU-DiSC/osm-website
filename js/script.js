@@ -46,16 +46,17 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
   });
 
   $("#cmp-bg-merging").on("click", function() {
+    var label = $(this).next();
     if ($(this).hasClass("checked")) {
       $(this).removeClass("checked");
       $("#threshold").hide();
-      $(this).next().attr("data-original-title", "Background merging OFF");
-      $(this).next().mouseover();
+      label.attr("data-original-title", "Background merging OFF")
+        .tooltip("show");
     } else {
       $(this).addClass("checked");
       $("#threshold").show();
-      $(this).next().attr("data-original-title", "Background merging ON");
-      $(this).next().mouseover();
+      label.attr("data-original-title", "Background merging ON")
+        .tooltip("show");
     }
   });
 
