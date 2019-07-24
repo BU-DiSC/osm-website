@@ -85,9 +85,61 @@ ul > .nav-item{
 
 .input-group > input {
 	text-align: right;
+	border-right-style: hidden;
 }
-.input-group .cmp-input{
+.incrementer {
+	display: flex;
+	flex-direction: column;
+	border-color: #ced4da;
+	border-width: 1px;
+	border-style: solid;
+	border-left-style: hidden;
+	padding-right: 0.1rem;
 }
+.incrementer > button {
+	background-color: transparent;
+}
+.incrementer > button:focus {
+	outline: 0;
+}
+.incrementer .increase {
+	position: relative;
+	height: 50%;
+	border: 0;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 0.45rem auto;
+	background-image: url("data:image/svg+xml;charset=utf-8, \
+    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'> \
+      <polygon points='50,20 100,100 0,100' style='fill:grey;'/> \
+    </svg>");
+}
+.incrementer .decrease {
+	position: relative;
+	height: 50%;
+	border: 0;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 0.45rem auto;
+	background-image: url("data:image/svg+xml;charset=utf-8, \
+    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'> \
+      <polygon points='0,0 100,0 50,80' style='fill:grey;'/> \
+    </svg>");
+}
+.incrementer .increase:active{
+	background-image: url("data:image/svg+xml;charset=utf-8, \
+    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'> \
+      <polygon points='50,0 100,100 0,100' style='fill:black;'/> \
+    </svg>");
+}
+.incrementer .decrease:active{
+	background-image: url("data:image/svg+xml;charset=utf-8, \
+    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'> \
+      <polygon points='0,0 100,0 50,100' style='fill:black;'/> \
+    </svg>");
+}
+
+
 .input-group .custom-select {
 	flex: 0 0 40px;
 	background-position: right 5px center;
@@ -107,13 +159,28 @@ ul > .nav-item{
 .input-group-text {
 	color: #343a40;
 }
+.input-group>.form-control:focus{
+	box-shadow: 0 0 0 0.1rem rgba(44,62,80,0.25);
+}
+
 .input-group-sm>.input-group-prepend>.input-group-text {
 }
-input[type=number]::-webkit-inner-spin-button {	/* Styling number input spinner button, not support on Firefox, Edge, IE */  
+
+
+/* disable webkit's spinner for number input
+input[type=number]::-webkit-inner-spin-button {	 Styling number input spinner button, not support on Firefox, Edge, IE   
   width: 27px;
   height: 27px;
   margin-right: -19px;
   margin-left: 5px;
+}*/
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type=number] {
+    -moz-appearance:textfield;
 }
 
 /* Merge policy selecting bar */
