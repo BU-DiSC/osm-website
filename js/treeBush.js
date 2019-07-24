@@ -1586,7 +1586,6 @@ function setInput(inputTarget, unitTarget) {
 }
 function increaseInput() {
     var input_elem = this.parentElement.previousElementSibling;
-    console.log('step === ""', input_elem.step === "");
     if (input_elem.step === "") {
         input_elem.value = nextPowerOfTwo(getInputVal(input_elem));
     } else {
