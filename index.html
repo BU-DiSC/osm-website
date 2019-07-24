@@ -321,6 +321,10 @@
                 <label class="input-group-text"># Entries</label>
               </div>
               <input id="vlsm-input-N" value="1" type="number" min="1" data-preval="1" class="vlsm-input form-control" aria-label="#Entries">
+              <div class="input-group-append incrementer">
+                <button id="vlsm-increase-N" class="increase"></button>
+                <button id="vlsm-decrease-N"  class="decrease"></button>
+              </div>
             </div>
           </div>
 
@@ -330,7 +334,11 @@
                 <label class="input-group-text">Entry size</label>
               </div>
               <input id="vlsm-input-E" value="1" type="number" min="1" data-preval="1" class="vlsm-input form-control" aria-label="Entry Size">
-              <select id="vlsm-select-E" class="custom-select vlsm-input" data-preunit="2">
+              <div class="input-group-append incrementer">
+                <button id="vlsm-increase-E" class="increase"></button>
+                <button id="vlsm-decrease-E"  class="decrease"></button>
+              </div>
+              <select id="vlsm-select-E" class="input-group-append custom-select vlsm-input" data-preunit="2">
                 <option value="0">B</option>
                 <option value="1">KB</option>
                 <option value="2" selected>MB</option>
@@ -345,7 +353,11 @@
                 <label class="input-group-text">Buffer size</label>
               </div>
               <input id="vlsm-input-M" value="1" type="number" min="1" data-preval="1" class="vlsm-input form-control" aria-label="Buffer Capacity">
-              <select id="vlsm-select-M" class="custom-select vlsm-input" data-preunit="2">
+              <div class="input-group-append incrementer">
+                <button id="vlsm-increase-M" class="increase"></button>
+                <button id="vlsm-decrease-M"  class="decrease"></button>
+              </div>
+              <select id="vlsm-select-M" class="input-group-append custom-select vlsm-input" data-preunit="2">
                 <option value="0">B</option>
                 <option value="1">KB</option>
                 <option value="2" selected>MB</option>
@@ -359,7 +371,11 @@
                 <label class="input-group-text">Bloom filters</label>
               </div>
               <input id="vlsm-input-Mbf" value="1024" min="0" type="number" data-preval="1024" class="vlsm-input form-control" aria-label="Bloom filters size">
-              <select id="vlsm-select-Mbf" class="custom-select vlsm-input" data-preunit="0">
+              <div class="input-group-append incrementer">
+                <button id="vlsm-increase-Mbf" class="increase"></button>
+                <button id="vlsm-decrease-Mbf"  class="decrease"></button>
+              </div>
+              <select id="vlsm-select-Mbf" class="input-group-append custom-select vlsm-input" data-preunit="0">
                 <option value="0" selected>B</option>
                 <option value="1">KB</option>
                 <option value="2">MB</option>
@@ -373,7 +389,11 @@
                 <label class="input-group-text">Fence pointers</label>
               </div>
               <input id="vlsm-input-Mf" value="0" min="1" type="number" class="vlsm-input form-control" aria-label="Fence pointer size">
-              <select id="vlsm-select-Mf" class="custom-select vlsm-input">
+              <div class="input-group-append incrementer">
+                <button id="vlsm-increase-Mf" class="increase"></button>
+                <button id="vlsm-decrease-Mf"  class="decrease"></button>
+              </div>
+              <select id="vlsm-select-Mf" class="input-group-append custom-select vlsm-input">
                 <option value="0" selected>B</option>
                 <option value="1">KB</option>
                 <option value="2">MB</option>
@@ -386,7 +406,11 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">File size(in terms of buffer)</label>
               </div>
-              <input id="vlsm-input-f" value="1" min="0" max="1" type="number" step="0.1" data-preval="1" class="vlsm-input form-control" aria-label="Size factor in terms of buffer size">
+              <input id="vlsm-input-f" value="1" min="0" max="1" step="0.1" type="number" data-preval="1" class="vlsm-input form-control" aria-label="Size factor in terms of buffer size">
+              <div class="input-group-append incrementer">
+                <button id="vlsm-increase-f" class="increase"></button>
+                <button id="vlsm-decrease-f"  class="decrease"></button>
+              </div>
             </div>
           </div>
           <div class="row vlsm-conf-row">
@@ -395,7 +419,11 @@
                 <label class="input-group-text">Page Size</label>
               </div>
               <input id="vlsm-input-P" value="1" min="1" type="number" data-preval="1" class="vlsm-input form-control" aria-label="Page size">
-              <select id="vlsm-select-P" class="custom-select vlsm-input" data-preunit="2">
+              <div class="input-group-append incrementer">
+                <button id="vlsm-increase-P" class="increase"></button>
+                <button id="vlsm-decrease-P"  class="decrease"></button>
+              </div>
+              <select id="vlsm-select-P" class="input-group-append custom-select vlsm-input" data-preunit="2">
                 <option value="0">B</option>
                 <option value="1">KB</option>
                 <option value="2" selected>MB</option>
@@ -409,6 +437,10 @@
                 <label class="input-group-text">Ratio</label>
               </div>
               <input id="vlsm-input-T" value="2" min="2" type="number" step="1" data-preval="2" class="vlsm-input form-control" aria-label="Ratio">
+              <div class="input-group-append incrementer">
+                  <button id="vlsm-increase-T" class="increase"></button>
+                  <button id="vlsm-decrease-T"  class="decrease"></button>
+              </div>
             </div>
           </div>
           <div id="vlsm-adConf-row">
@@ -418,7 +450,11 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Selectivity of a range lookup">Selectivity</label>
                 </div>
-                <input id="vlsm-input-s" value="50" min="0" max="100" type="number" data-preval="50" class="vlsm-input form-control" aria-label="Selectivity of a range lookup">
+                <input id="vlsm-input-s" value="50" min="0" max="100" step="1" type="number" data-preval="50" class="vlsm-input form-control" aria-label="Selectivity of a range lookup">
+                <div class="input-group-append incrementer">
+                  <button id="vlsm-increase-s" class="increase"></button>
+                  <button id="vlsm-decrease-s"  class="decrease"></button>
+                </div>
                 <div class="input-group-append">
                   <span class="input-group-text">%</span>
                 </div>
@@ -427,13 +463,21 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage sequential over random access speed">Storage s/r speed</label>
                 </div>
-                <input id="vlsm-input-mu" value="1" min="1" type="number" class="vlsm-input form-control" aria-label="Storage sequential over random access speed">
+                <input id="vlsm-input-mu" value="1" min="1" step="1" type="number" class="vlsm-input form-control" aria-label="Storage sequential over random access speed">
+                <div class="input-group-append incrementer">
+                  <button id="vlsm-increase-mu" class="increase"></button>
+                  <button id="vlsm-decrease-mu"  class="decrease"></button>
+                </div>
               </div>
               <div class="input-group input-group-sm mb-2">
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage write over read speed">Storage w/r speed</label>
                 </div>
-                <input id="vlsm-input-phi" value="1" min="1" type="number" class="vlsm-input form-control" aria-label="Storage write over read speed">
+                <input id="vlsm-input-phi" value="1" min="1" step="1" type="number" class="vlsm-input form-control" aria-label="Storage write over read speed">
+                <div class="input-group-append incrementer">
+                  <button id="vlsm-increase-phi" class="increase"></button>
+                  <button id="vlsm-decrease-phi"  class="decrease"></button>
+                </div>
               </div>
             </div> 
           </div>
@@ -460,6 +504,10 @@
                 <label class="input-group-text"># Entries</label>
               </div>
               <input id="rlsm-input-N" value="1" min="1" type="number" data-preval="1" class="rlsm-input form-control" aria-label="#Entries">
+              <div class="input-group-append incrementer">
+                <button id="rlsm-increase-N" class="increase"></button>
+                <button id="rlsm-decrease-N"  class="decrease"></button>
+              </div>
             </div>
           </div>
 
@@ -469,7 +517,11 @@
                 <label class="input-group-text">Entry size</label>
               </div>
               <input id="rlsm-input-E" value="1" min="1" type="number" data-preval="1" class="rlsm-input form-control" aria-label="Entry Size">
-              <select id="rlsm-select-E" class="custom-select rlsm-input" data-preunit="2">
+              <div class="input-group-append incrementer">
+                <button id="rlsm-increase-E" class="increase"></button>
+                <button id="rlsm-decrease-E"  class="decrease"></button>
+              </div>
+              <select id="rlsm-select-E" class="input-group-append custom-select rlsm-input" data-preunit="2">
                 <option value="0">B</option>
                 <option value="1">KB</option>
                 <option value="2" selected>MB</option>
@@ -484,7 +536,11 @@
                 <label class="input-group-text">Buffer size</label>
               </div>
               <input id="rlsm-input-M" value="1" min="1" type="number" data-preval="1" class="rlsm-input form-control" aria-label="Buffer Capacity">
-              <select id="rlsm-select-M" class="custom-select rlsm-input" data-preunit="2">
+              <div class="input-group-append incrementer">
+                <button id="rlsm-increase-M" class="increase"></button>
+                <button id="rlsm-decrease-M"  class="decrease"></button>
+              </div>
+              <select id="rlsm-select-M" class="input-group-append custom-select rlsm-input" data-preunit="2">
                 <option value="0">B</option>
                 <option value="1">KB</option>
                 <option value="2" selected>MB</option>
@@ -498,7 +554,11 @@
                 <label class="input-group-text">Bloom filters</label>
               </div>
               <input id="rlsm-input-Mbf" value="1024" min="0" type="number" data-preval="1024" class="rlsm-input form-control" aria-label="Bloom filters size">
-              <select id="rlsm-select-Mbf" class="custom-select rlsm-input" data-preunit="0">
+              <div class="input-group-append incrementer">
+                <button id="rlsm-increase-Mbf" class="increase"></button>
+                <button id="rlsm-decrease-Mbf"  class="decrease"></button>
+              </div>
+              <select id="rlsm-select-Mbf" class="input-group-append custom-select rlsm-input" data-preunit="0">
                 <option value="0" selected>B</option>
                 <option value="1">KB</option>
                 <option value="2">MB</option>
@@ -512,7 +572,11 @@
                 <label class="input-group-text">Fence pointers</label>
               </div>
               <input id="rlsm-input-Mf" value="0" min="1" type="number" class="rlsm-input form-control" aria-label="Fence pointer size">
-              <select id="rlsm-select-Mf" class="custom-select rlsm-input">
+              <div class="input-group-append incrementer">
+                <button id="rlsm-increase-Mf" class="increase"></button>
+                <button id="rlsm-decrease-Mf"  class="decrease"></button>
+              </div>
+              <select id="rlsm-select-Mf" class="input-group-append custom-select rlsm-input">
                 <option value="0" selected>B</option>
                 <option value="1">KB</option>
                 <option value="2">MB</option>
@@ -525,7 +589,11 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">File size(in terms of buffer)</label>
               </div>
-              <input id="rlsm-input-f" value="1" min="0" max="1" type="number" step="0.1" data-preval="1" class="rlsm-input form-control" aria-label="Size factor in terms of buffer size">
+              <input id="rlsm-input-f" value="1" min="0" max="1" step="0.1" type="number" data-preval="1" class="rlsm-input form-control" aria-label="Size factor in terms of buffer size">
+              <div class="input-group-append incrementer">
+                <button id="rlsm-increase-f" class="increase"></button>
+                <button id="rlsm-decrease-f"  class="decrease"></button>
+              </div>
             </div>
           </div>
           <div class="row rlsm-conf-row">
@@ -534,7 +602,11 @@
                 <label class="input-group-text">Page Size</label>
               </div>
               <input id="rlsm-input-P" value="1" min="1" type="number" data-preval="1" class="rlsm-input form-control" aria-label="Page size">
-              <select id="rlsm-select-P" class="custom-select rlsm-input" data-preunit="2">
+              <div class="input-group-append incrementer">
+                <button id="rlsm-increase-P" class="increase"></button>
+                <button id="rlsm-decrease-P"  class="decrease"></button>
+              </div>
+              <select id="rlsm-select-P" class="input-group-append custom-select rlsm-input" data-preunit="2">
                 <option value="0">B</option>
                 <option value="1">KB</option>
                 <option value="2" selected>MB</option>
@@ -549,6 +621,10 @@
                 <label class="input-group-text">Ratio</label>
               </div>
               <input id="rlsm-input-T" value="2" min="2" type="number" step="1" data-preval="2" class="rlsm-input form-control" aria-label="Ratio">
+              <div class="input-group-append incrementer">
+                <button id="rlsm-increase-T" class="increase"></button>
+                <button id="rlsm-decrease-T"  class="decrease"></button>
+              </div>
             </div>
           </div>
           <div id="rlsm-adConf-row">
@@ -558,7 +634,11 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Selectivity of a range lookup">Selectivity</label>
                 </div>
-                <input id="rlsm-input-s" value="50" min="0" max="100" type="number" data-preval="50" class="rlsm-input form-control" aria-label="Selectivity of a range lookup">
+                <input id="rlsm-input-s" value="50" min="0" max="100" step="1" type="number" data-preval="50" class="rlsm-input form-control" aria-label="Selectivity of a range lookup">
+                <div class="input-group-append incrementer">
+                  <button id="rlsm-increase-s" class="increase"></button>
+                  <button id="rlsm-decrease-s"  class="decrease"></button>
+                </div>
                 <div class="input-group-append">
                   <span class="input-group-text">%</span>
                 </div>
@@ -567,13 +647,21 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage sequential over random access speed">Storage s/r speed</label>
                 </div>
-                <input id="rlsm-input-mu" value="1" min="1" type="number" class="rlsm-input form-control" aria-label="Storage sequential over random access speed">
+                <input id="rlsm-input-mu" value="1" min="1" step="1" type="number" class="rlsm-input form-control" aria-label="Storage sequential over random access speed">
+                <div class="input-group-append incrementer">
+                  <button id="rlsm-increase-mu" class="increase"></button>
+                  <button id="rlsm-decrease-mu"  class="decrease"></button>
+                </div>
               </div>
               <div class="input-group input-group-sm mb-2">
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage write over read speed">Storage w/r speed</label>
                 </div>
-                <input id="rlsm-input-phi" value="1" min="1" type="number" class="rlsm-input form-control" aria-label="Storage write over read speed">
+                <input id="rlsm-input-phi" value="1" min="1" step="1" type="number" class="rlsm-input form-control" aria-label="Storage write over read speed">
+                <div class="input-group-append incrementer">
+                  <button id="rlsm-increase-mu" class="increase"></button>
+                  <button id="rlsm-decrease-mu"  class="decrease"></button>
+                </div>
               </div>
             </div> 
           </div>
@@ -599,6 +687,10 @@
                 <label class="input-group-text"># Entries</label>
               </div>
               <input id="dlsm-input-N" value="1" min="1" type="number" data-preval="1" class="dlsm-input form-control" aria-label="#Entries">
+              <div class="input-group-append incrementer">
+                <button id="dlsm-increase-N" class="increase"></button>
+                <button id="dlsm-decrease-N"  class="decrease"></button>
+              </div>
             </div>
           </div>
 
@@ -608,7 +700,11 @@
                 <label class="input-group-text">Entry size</label>
               </div>
               <input id="dlsm-input-E" value="1" min="1" type="number" data-preval="1" class="dlsm-input form-control" aria-label="Entry Size">
-              <select id="dlsm-select-E" class="custom-select dlsm-input" data-preunit="2">
+              <div class="input-group-append incrementer">
+                <button id="dlsm-increase-E" class="increase"></button>
+                <button id="dlsm-decrease-E"  class="decrease"></button>
+              </div>
+              <select id="dlsm-select-E" class="input-group-append custom-select dlsm-input" data-preunit="2">
                 <option value="0">B</option>
                 <option value="1">KB</option>
                 <option value="2" selected>MB</option>
@@ -623,7 +719,11 @@
                 <label class="input-group-text">Buffer size</label>
               </div>
               <input id="dlsm-input-M" value="1" min="1" type="number" data-preval="1" class="dlsm-input form-control" aria-label="Buffer Capacity">
-              <select id="dlsm-select-M" class="custom-select dlsm-input" data-preunit="2">
+              <div class="input-group-append incrementer">
+                <button id="dlsm-increase-M" class="increase"></button>
+                <button id="dlsm-decrease-M"  class="decrease"></button>
+              </div>
+              <select id="dlsm-select-M" class="input-group-append custom-select dlsm-input" data-preunit="2">
                 <option value="0">B</option>
                 <option value="1">KB</option>
                 <option value="2" selected>MB</option>
@@ -637,7 +737,11 @@
                 <label class="input-group-text">Bloom filters</label>
               </div>
               <input id="dlsm-input-Mbf" value="1024" min="0" type="number" data-preval="1024" class="dlsm-input form-control" aria-label="Bloom filters size">
-              <select id="dlsm-select-Mbf" class="custom-select dlsm-input" data-preunit="0">
+              <div class="input-group-append incrementer">
+                <button id="dlsm-increase-Mbf" class="increase"></button>
+                <button id="dlsm-decrease-Mbf"  class="decrease"></button>
+              </div>
+              <select id="dlsm-select-Mbf" class="input-group-append custom-select dlsm-input" data-preunit="0">
                 <option value="0" selected>B</option>
                 <option value="1">KB</option>
                 <option value="2">MB</option>
@@ -651,7 +755,11 @@
                 <label class="input-group-text">Fence pointers</label>
               </div>
               <input id="dlsm-input-Mf" value="0" min="1" type="number" class="dlsm-input form-control" aria-label="Fence pointer size">
-              <select id="dlsm-select-Mf" class="custom-select dlsm-input">
+              <div class="input-group-append incrementer">
+                <button id="dlsm-increase-Mf" class="increase"></button>
+                <button id="dlsm-decrease-Mf"  class="decrease"></button>
+              </div>
+              <select id="dlsm-select-Mf" class="input-group-append custom-select dlsm-input">
                 <option value="0" selected>B</option>
                 <option value="1">KB</option>
                 <option value="2">MB</option>
@@ -664,7 +772,11 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">File size(in terms of buffer)</label>
               </div>
-              <input id="dlsm-input-f" value="1" min="0" max="1" type="number" step="0.1" data-preval="1" class="dlsm-input form-control" aria-label="Size factor in terms of buffer size">
+              <input id="dlsm-input-f" value="1" min="0" max="1" step="0.1" type="number" data-preval="1" class="dlsm-input form-control" aria-label="Size factor in terms of buffer size">
+              <div class="input-group-append incrementer">
+                <button id="dlsm-increase-f" class="increase"></button>
+                <button id="dlsm-decrease-f"  class="decrease"></button>
+              </div>
             </div>
           </div>
           <div class="row dlsm-conf-row">
@@ -673,6 +785,10 @@
                 <label class="input-group-text">Page Size</label>
               </div>
               <input id="dlsm-input-P" value="1" min="1" type="number" data-preval="1" class="dlsm-input form-control" aria-label="Page size">
+              <div class="input-group-append incrementer">
+                <button id="dlsm-increase-P" class="increase"></button>
+                <button id="dlsm-decrease-P"  class="decrease"></button>
+              </div>
               <select id="dlsm-select-P" class="custom-select dlsm-input" data-preunit="2">
                 <option value="0">B</option>
                 <option value="1">KB</option>
@@ -687,7 +803,11 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">Ratio</label>
               </div>
-              <input id="dlsm-input-T" value="2" min="2" type="number" step="1" data-preval="2" class="dlsm-input form-control" aria-label="Ratio">
+              <input id="dlsm-input-T" value="2" min="2" step="1" type="number" step="1" data-preval="2" class="dlsm-input form-control" aria-label="Ratio">
+              <div class="input-group-append incrementer">
+                <button id="dlsm-increase-T" class="increase"></button>
+                <button id="dlsm-decrease-T"  class="decrease"></button>
+              </div>
             </div>
           </div>
           <div id="dlsm-adConf-row">
@@ -698,6 +818,10 @@
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Selectivity of a range lookup">Selectivity</label>
                 </div>
                 <input id="dlsm-input-s" value="50" min="0" max="100" type="number" data-preval="50" class="dlsm-input form-control" aria-label="Selectivity of a range lookup">
+                <div class="input-group-append incrementer">
+                  <button id="dlsm-increase-s" class="increase"></button>
+                  <button id="dlsm-decrease-s"  class="decrease"></button>
+                </div>
                 <div class="input-group-append">
                   <span class="input-group-text">%</span>
                 </div>
@@ -707,12 +831,20 @@
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage sequential over random access speed">Storage s/r speed</label>
                 </div>
                 <input id="dlsm-input-mu" value="1" min="1" type="number" class="dlsm-input form-control" aria-label="Storage sequential over random access speed">
+                <div class="input-group-append incrementer">
+                  <button id="dlsm-increase-mu" class="increase"></button>
+                  <button id="dlsm-decrease-mu"  class="decrease"></button>
+                </div>
               </div>
               <div class="input-group input-group-sm mb-2">
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage write over read speed">Storage w/r speed</label>
                 </div>
                 <input id="dlsm-input-phi" value="1" min="1" type="number" class="dlsm-input form-control" aria-label="Storage write over read speed">
+                <div class="input-group-append incrementer">
+                  <button id="dlsm-increase-phi" class="increase"></button>
+                  <button id="dlsm-decrease-phi"  class="decrease"></button>
+                </div>
               </div>
             </div> 
           </div>
@@ -738,6 +870,10 @@
                 <label class="input-group-text"># Entries</label>
               </div>
               <input id="osm-input-N" value="1" min="1" type="number" data-preval="1" class="osm-input form-control" aria-label="#Entries">
+              <div class="input-group-append incrementer">
+                <button id="osm-increase-N" class="increase"></button>
+                <button id="osm-decrease-N"  class="decrease"></button>
+              </div>
             </div>
           </div>
 
@@ -747,7 +883,11 @@
                 <label class="input-group-text">Entry size</label>
               </div>
               <input id="osm-input-E" value="1" min="1" type="number" data-preval="1" class="osm-input form-control" aria-label="Entry Size">
-              <select id="osm-select-E" class="custom-select osm-input" data-preunit="2">
+              <div class="input-group-append incrementer">
+                <button id="osm-increase-E" class="increase"></button>
+                <button id="osm-decrease-E"  class="decrease"></button>
+              </div>
+              <select id="osm-select-E" class="input-group-append custom-select osm-input" data-preunit="2">
                 <option value="0">B</option>
                 <option value="1">KB</option>
                 <option value="2" selected>MB</option>
@@ -762,7 +902,11 @@
                 <label class="input-group-text">Buffer size</label>
               </div>
               <input id="osm-input-M" value="1" min="1" type="number" data-preval="1" class="osm-input form-control" aria-label="Buffer Capacity">
-              <select id="osm-select-M" class="custom-select osm-input" data-preunit="2">
+              <div class="input-group-append incrementer">
+                <button id="osm-increase-M" class="increase"></button>
+                <button id="osm-decrease-M"  class="decrease"></button>
+              </div>
+              <select id="osm-select-M" class="input-group-append custom-select osm-input" data-preunit="2">
                 <option value="0">B</option>
                 <option value="1">KB</option>
                 <option value="2" selected>MB</option>
@@ -776,7 +920,11 @@
                 <label class="input-group-text">Bloom filters</label>
               </div>
               <input id="osm-input-Mbf" value="1024" min="0" type="number" data-preval="1024" class="osm-input form-control" aria-label="Bloom filters size">
-              <select id="osm-select-Mbf" class="custom-select osm-input" data-preunit="0">
+              <div class="input-group-append incrementer">
+                <button id="osm-increase-Mbf" class="increase"></button>
+                <button id="osm-decrease-Mbf"  class="decrease"></button>
+              </div>
+              <select id="osm-select-Mbf" class="input-group-append custom-select osm-input" data-preunit="0">
                 <option value="0" selected>B</option>
                 <option value="1">KB</option>
                 <option value="2">MB</option>
@@ -790,6 +938,10 @@
                 <label class="input-group-text">Fence pointers</label>
               </div>
               <input id="osm-input-Mf" value="0" min="1" type="number" class="osm-input form-control" aria-label="Fence pointer size">
+              <div class="input-group-append incrementer">
+                <button id="osm-increase-Mf" class="increase"></button>
+                <button id="osm-decrease-Mf"  class="decrease"></button>
+              </div>
               <select id="osm-select-Mf" class="custom-select osm-input">
                 <option value="0" selected>B</option>
                 <option value="1">KB</option>
@@ -803,7 +955,11 @@
               <div class="input-group-prepend">
                 <label class="input-group-text">File size(in terms of buffer)</label>
               </div>
-              <input id="osm-input-f" value="1" min="0" max="1" type="number" step="0.1" data-preval="1" class="osm-input form-control" aria-label="Size factor in terms of buffer size">
+              <input id="osm-input-f" value="1" min="0" max="1" step="0.1" type="number" data-preval="1" class="osm-input form-control" aria-label="Size factor in terms of buffer size">
+              <div class="input-group-append incrementer">
+                <button id="osm-increase-f" class="increase"></button>
+                <button id="osm-decrease-f"  class="decrease"></button>
+              </div>
             </div>
           </div>
           <div class="row osm-conf-row">
@@ -812,7 +968,11 @@
                 <label class="input-group-text">Page Size</label>
               </div>
               <input id="osm-input-P" value="1" min="1" type="number" data-preval="1" class="osm-input form-control" aria-label="Page size">
-              <select id="osm-select-P" class="custom-select osm-input" data-preunit="2">
+              <div class="input-group-append incrementer">
+                <button id="osm-increase-P" class="increase"></button>
+                <button id="osm-decrease-P"  class="decrease"></button>
+              </div>
+              <select id="osm-select-P" class="input-group-append custom-select osm-input" data-preunit="2">
                 <option value="0">B</option>
                 <option value="1">KB</option>
                 <option value="2" selected>MB</option>
@@ -837,6 +997,10 @@
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Selectivity of a range lookup">Selectivity</label>
                 </div>
                 <input id="osm-input-s" value="50" min="0" max="100" type="number" data-preval="50" class="osm-input form-control" aria-label="Selectivity of a range lookup">
+                <div class="input-group-append incrementer">
+                  <button id="osm-increase-s" class="increase"></button>
+                  <button id="osm-decrease-s"  class="decrease"></button>
+                </div>
                 <div class="input-group-append">
                   <span class="input-group-text">%</span>
                 </div>
@@ -846,12 +1010,20 @@
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage sequential over random access speed">Storage s/r speed</label>
                 </div>
                 <input id="osm-input-mu" value="1" min="1" type="number" class="osm-input form-control" aria-label="Storage sequential over random access speed">
+                <div class="input-group-append incrementer">
+                  <button id="osm-increase-mu" class="increase"></button>
+                  <button id="osm-decrease-mu"  class="decrease"></button>
+                </div>
               </div>
               <div class="input-group input-group-sm mb-2">
                 <div class="input-group-prepend">
                   <label class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Storage write over read speed">Storage w/r speed</label>
                 </div>
                 <input id="osm-input-phi" value="1" min="1" type="number" class="osm-input form-control" aria-label="Storage write over read speed">
+                <div class="input-group-append incrementer">
+                  <button id="osm-increase-phi" class="increase"></button>
+                  <button id="osm-decrease-phi"  class="decrease"></button>
+                </div>
               </div>
             </div> 
           </div>
