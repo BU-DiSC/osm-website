@@ -709,22 +709,18 @@ class VanillaLSM extends LSM{
 class RocksDBLSM extends LSM {
     constructor(tarConf, tarRes) {
         super(tarConf, tarRes);
-        this.threshold = this._initThreshold();
+        this.threshold = this._getThreshold();
         this.bg_merge = false;
         this.MP = 0;
         this.DEFAULT.MP = 0;
         this.preMP = 0;
     }
-    _initThreshold() {
+    _getThreshold() {
         var L = this._getL();
         var lth = (L === 1) ? 1 : L - 1;
         var t = this._getLevelCapacity(lth) / super._getLevelSpace(lth);
-        var elem = document.querySelector(`#${this.prefix}-rlsm-threshold`);
-        elem.value = t * 100;
-        var thumbCorrect = 15 * (t - 0.5) * -1;
-        var titlepos = Math.round( ( t * 129 ) + 42 - 15/4 + thumbCorrect);
-        document.querySelector(".setvalue").style.left = titlepos + "px";
-        document.querySelector(".setvalue").textContent = elem.value;
+        var elem = document.querySelector(`#${this.prefix}-threshold`);
+        this.slider.setValue(t * 100, true, true);
         return t;
     }
     get bg_merge() {
@@ -732,6 +728,10 @@ class RocksDBLSM extends LSM {
     }
     get threshold() {
         return this._threshold / 100;
+    }
+    get slider() {
+        if (this.prefix === "cmp") return window.cmpSlider;
+        else return window.rlsmSlider;
     }
     set threshold(x) {
         this._threshold = parseFloat(x);
@@ -989,11 +989,11 @@ class RocksDBLSM extends LSM {
         this.PB = this.P * this.B;
         this.bg_merge = (document.querySelector(`#${prefix}-bg-merging`).checked) ? true:false;
         if (this.bg_merge) {
-            this.threshold = document.querySelector(`#${prefix}-rlsm-threshold`).value;
+            this.threshold = document.querySelector(`#${prefix}-threshold`).value;
             this.L = this._getLALT();
         }
         else {
-            this.threshold = this._initThreshold();
+            this.threshold = this._getThreshold();
             this.L = this._getL();
         }
         this._updateCostEquation();
@@ -1244,12 +1244,15 @@ function runCmp() {
         //     rlsm.show();
         //     break;
         case "cmp-bg-merging": 
+            console.log("update rlsm background merging mode");
             rlsm.update(target);
             rlsm.show();
             break;
-        case "cmp-rlsm-threshold":
+        case "cmp-threshold":
+            console.log("update rlsm background merging threshold");
             rlsm.update(target);
             rlsm.show();
+            break;
         // currently untriggered by event, unchanged merge policy
         // case "cmp-dlsm-lazyLevel":  
         //     dlsm.update(target, 1);
@@ -1484,7 +1487,7 @@ function validate(self, target, input) {
                 setInput(`#${target}-input-Mbf`, `#${target}-select-Mbf`);
             }
             break;
-        case "cmp-input-f":  //global setting: 1byte <= F <= M
+        case `${target}-input-f`:  //global setting: 1byte <= F <= M
             if (input.F < 1 || input.F < input.P || input.F < input.E || input.F > input.M) {
                 if (input.F < input.P) {
                     alert("Invalid input: the minimal size of a file should be >= page size");
@@ -1510,6 +1513,7 @@ function validate(self, target, input) {
                 setInput("#cmp-input-f");
             }
             break;
+
 
         // case `${target}-input-f`:  //TODO: individual setting in terms of leveling and tiering
         //     if (input.F <= min || input.F > max) document.querySelector(`#${target}-input-f`).value = 1;
@@ -1553,7 +1557,7 @@ function validate(self, target, input) {
         case `${target}-vlsm-tiering`:
         case `${target}-vlsm-leveling`:
         case `${target}-bg-merging`:
-        case `${target}-rlsm-threshold`:
+        case `${target}-threshold`:
         // currently untriggered by event, unchanged merge policy
         // case `${target}-rlsm-leveling`:
         // case `${target}-rlsm-tiering`:
@@ -1744,7 +1748,34 @@ function clear(element) {
     }
 }
 
- 
+function initSlider() {
+    window.cmpSlider = new Slider("#cmp-threshold", {
+    formatter: function(value) {
+        return value + "%";
+    },
+    value: 5,
+    precision: 20
+    });
+
+    window.rlsmSlider = new Slider("#rlsm-threshold", {
+    formatter: function(value) {
+        return value + "%";
+    },
+    value: 5,
+    precision: 20
+    });
+}
+
+
+
+// var mySlider = new Slider("#cmp-threshold", {
+//     formatter: function(value) {
+//         return value + "%";
+//     },
+//     value: 5,
+//     precision: 20
+// });
+initSlider();
 initCmp();
 
 // Event attributes, trigger
@@ -1885,7 +1916,7 @@ document.querySelector("#cmp-select-E").onchange = runCmp;
 document.querySelector("#cmp-select-P").onchange = runCmp;
 document.querySelector("#cmp-select-Mbf").onchange = runCmp;
 document.querySelector("#cmp-bg-merging").onchange = runCmp;
-document.querySelector("#cmp-rlsm-threshold").oninput = runCmp;
+document.querySelector("#cmp-threshold").onchange = runCmp;
 // document.querySelector("#cmp-osm-tiering").onclick = runCmp;
 // Individual LSM analysis event trigger
 document.querySelector("#vlsm-input-T").onchange = runIndiv;
@@ -1940,6 +1971,7 @@ document.querySelector("#rlsm-select-M").onchange = runIndiv;
 document.querySelector("#rlsm-select-E").onchange = runIndiv;
 document.querySelector("#rlsm-select-P").onchange = runIndiv;
 document.querySelector("#rlsm-select-Mbf").onchange = runIndiv;
+document.querySelector("#rlsm-threshold").onchange = runIndiv;
 document.querySelector("#dlsm-input-T").onchange = runIndiv
 document.querySelector("#dlsm-input-T").onwheel = runIndiv;
 document.querySelector("#dlsm-input-E").onchange = runIndiv;
