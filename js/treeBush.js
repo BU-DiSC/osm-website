@@ -718,7 +718,8 @@ class RocksDBLSM extends LSM {
     _getThreshold() {
         var L = this._getL();
         var lth = (L === 1) ? 1 : L - 1;
-        var t = this._getLevelCapacity(lth) / super._getLevelSpace(lth);
+        // var t = this._getLevelCapacity(lth) / super._getLevelSpace(lth);
+        var t = (this.T - 1) / this.T;
         var elem = document.querySelector(`#${this.prefix}-threshold`);
         this.slider.setValue(t * 100, true, true);
         return t;
