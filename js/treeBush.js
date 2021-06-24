@@ -407,7 +407,9 @@ class LSM {
         this.MP = mergePolicy;
         this.T = document.querySelector(`#${prefix}-input-T`).value;
         this.E = convertToBytes(`#${prefix}-select-E`, document.querySelector(`#${prefix}-input-E`).value);
-        this.N = document.querySelector(`#${prefix}-input-N`).value;
+        //this.N = document.querySelector(`#${prefix}-input-N`).value;
+		this.N = window.progressSlider.getValue();
+		if (!this.N) this.N = 1;
         this.M = convertToBytes(`#${prefix}-select-M`, document.querySelector(`#${prefix}-input-M`).value);
         this.f = document.querySelector(`#${prefix}-input-f`).value;
         this.P = convertToBytes(`#${prefix}-select-P`, document.querySelector(`#${prefix}-input-P`).value);
@@ -979,7 +981,9 @@ class RocksDBLSM extends LSM {
         this.prefix = prefix;
         this.T = document.querySelector(`#${prefix}-input-T`).value;
         this.E = convertToBytes(`#${prefix}-select-E`, document.querySelector(`#${prefix}-input-E`).value);
-        this.N = document.querySelector(`#${prefix}-input-N`).value;
+        //this.N = document.querySelector(`#${prefix}-input-N`).value;
+		this.N = window.progressSlider.getValue();
+		if (!this.N) this.N = 1;
         this.M = convertToBytes(`#${prefix}-select-M`, document.querySelector(`#${prefix}-input-M`).value);
         this.f = document.querySelector(`#${prefix}-input-f`).value;
         this.P = convertToBytes(`#${prefix}-select-P`, document.querySelector(`#${prefix}-input-P`).value);
@@ -1113,7 +1117,8 @@ class DostoevskyLSM extends LSM {
         this.prefix = prefix;
         this.T = document.querySelector(`#${prefix}-input-T`).value;
         this.E = convertToBytes(`#${prefix}-select-E`, document.querySelector(`#${prefix}-input-E`).value);
-        this.N = document.querySelector(`#${prefix}-input-N`).value;
+        //this.N = document.querySelector(`#${prefix}-input-N`).value;
+		this.N = window.progressSlider.getValue();
         this.M = convertToBytes(`#${prefix}-select-M`, document.querySelector(`#${prefix}-input-M`).value);
         this.f = document.querySelector(`#${prefix}-input-f`).value;
         this.P = convertToBytes(`#${prefix}-select-P`, document.querySelector(`#${prefix}-input-P`).value);
@@ -1207,11 +1212,19 @@ function display() {
     }
 }
 
+function changeProgressBar(newVal) {
+	window.ProgressSlider.setValue(newVal);
+	//const total = document.querySelector("#adjustable-progress-bar")["aria-valuemax"];
+	//document.querySelector("#adjustable-progress-bar")["style"] = "width: " + newVal/total * 100 + "%";
+}
+
 function runCmp() {
     var target = "cmp";
     var input_T = getInputValbyId("#cmp-input-T");
     var input_E = convertToBytes("#cmp-select-E", getInputValbyId("#cmp-input-E"));
-    var input_N = getInputValbyId("#cmp-input-N");
+	//var input_N = getInputValbyId("#cmp-input-N");
+    var input_N = window.progressSlider.getValue();
+	console.log(input_N);
     var input_M = convertToBytes("#cmp-select-M", getInputValbyId("#cmp-input-M"));
     var input_f = getInputValbyId("#cmp-input-f");
     var input_F = input_M * input_f;
@@ -1566,6 +1579,8 @@ function validate(self, target, input) {
         // case `${target}-osm-tiering`:
         // case `${target}-osm-leveling`:
             break;
+		case "adjustable-progress-bar":
+			break;
         default:
             console.log(self.id);
             alert(`Invalid: Unknown ${target} configuration input`);
@@ -1593,24 +1608,107 @@ function increaseInput() {
     var input_elem = this.parentElement.previousElementSibling;
     if (input_elem.step === "") {
         input_elem.value = nextPowerOfTwo(getInputVal(input_elem));
-    } else {
+    } else if (input_elem.step == 10) {
+		const nval = getInputValbyId("#cmp-input-N");
+		const val = getInputVal(input_elem);
+		if (nextPowerOfTen(val) < nval) {
+			input_elem.value = nextPowerOfTen(val);
+		} else {
+			input_elem.value = nval;
+		}
+	}else {
         input_elem.value = correctDecimal(getInputVal(input_elem) + parseFloat(input_elem.step));
     }
-    var event = new Event('change');
-    input_elem.dispatchEvent(event);
+	if (this.id == "cmp-increase-N") {
+		window.progressSlider.setAttribute("max", getInputValbyId("#cmp-input-N"));
+		//document.querySelector("#adjustable-progress-bar")["aria-valuenow"] = 0;
+		changeProgressBar(0);
+	}
+	if (this.id != "granularity-increase") {
+    	var event = new Event('change');
+    	input_elem.dispatchEvent(event);
+	} else {
+		window.granularity = input_elem.value;
+	}
 }
 function decreaseInput() {
     var input_elem = this.parentElement.previousElementSibling;  
     if (input_elem.step === "") {
         input_elem.value = lastPowerOfTwo(getInputVal(input_elem));
-    } else {
+    } else if (input_elem.step == 10) {
+		const nval = getInputValbyId("#cmp-input-N");
+		const val = getInputVal(input_elem);
+		if (val == nval) {
+			input_elem.value = lastPowerOfTen(nval);
+		} else {
+			input_elem.value = val / 10;
+		}
+	} else {
         input_elem.value = correctDecimal(getInputVal(input_elem) - parseFloat(input_elem.step));
     }
-    var event = new Event('change');
-    input_elem.dispatchEvent(event);  
+	if (this.id == "cmp-decrease-N") {
+		window.progressSlider.setAttribute("max", getInputValbyId("#cmp-input-N"));
+		//document.querySelector("#adjustable-progress-bar")["aria-valuenow"] = 0;
+		changeProgressBar(0);
+	}
+	if (this.id != "granularity-decrease") {
+    	var event = new Event('change');
+    	input_elem.dispatchEvent(event);
+	}  else {
+		window.granularity = input_elem.value;
+	}
 }
 
+function startPlaying() {
+	const id = setInterval(progressAdvance, 500);
+	window.progressEventId = id;
+	//document.querySelector("#adjustable-progress-bar")["timeevent-id"] = id;
+	function progressAdvance() {
+		//const currentVal = document.querySelector("#adjustable-progress-bar")["aria-valuenow"];
+		const currentVal = window.progressSlider.getValue();
+		if (window.progressEventId && currentVal < window.progressSlider.getAttribute("max")) {
+			//changeProgressBar(currentVal + 1);
+			const newVal = (Math.floor(currentVal / window.granularity) + 1) * window.granularity;
+			window.progressSlider.setValue(newVal);
+			var event = new Event('change');
+			// var input_elem = document.querySelector("#cmp-input-N");
+			document.querySelector("#adjustable-progress-bar").onchange();
+		} else {
+			clearInterval(id);
+		}
+	}
+	
+}
 
+function stopPlaying() {
+	if (window.progressEventId) {
+		clearInterval(window.progressEventId);
+		window.progressEventId = null;
+	}
+}
+
+function resetProgress() {
+	stopPlaying();
+	window.progressSlider.setValue(0);
+}
+
+function setUpGranularityOptions() {
+
+}
+
+function selectGranularity() {
+	stopPlaying();
+	resetProgress();
+}
+
+function clickProgressBar() {
+
+}
+
+function changeProgressCapacity() {
+	const newVal = getInputValbyId("#cmp-input-N");
+	window.progressSlider.setAttribute("max", newVal);
+}
 //Common Methods
 
 /* FIXED precision of decimal eg. 0.1 + 0.2 = 0.3000000000000004
@@ -1679,6 +1777,15 @@ function nextPowerOfTwo(x) {
     return (x === result) ? result * 2 : result;
 }
 
+function nextPowerOfTen(x) {
+	// The reuslt should not less than 1
+	if (isNaN(x)) throw new TypeError(x + " must be a number");
+	if (x < 1) return 1;
+	var exp = Math.ceil(getBaseLog(10, x));
+	var result = Math.pow(10, exp);
+	return (x === result) ? result * 10 : result;
+}
+
 function lastPowerOfTwo(x) {
     // The reuslt should not less than 1
     if (isNaN(x)) throw new TypeError(x + " must be a number");
@@ -1686,6 +1793,14 @@ function lastPowerOfTwo(x) {
     var exp = Math.floor(getBaseLog(2, x));
     var result = Math.pow(2, exp);
     return (x === result) ? result / 2 : result;
+}
+
+function lastPowerOfTen(x) {
+	if (isNaN(x)) throw new TypeError(x + " must be a number");
+    if (x <= 1) return 1;
+    var exp = Math.floor(getBaseLog(10, x));
+    var result = Math.pow(10, exp);
+    return (x === result) ? result / 10 : result;
 }
 
 
@@ -1765,6 +1880,18 @@ function initSlider() {
     value: 5,
     precision: 20
     });
+	
+	window.progressSlider = new Slider("#adjustable-progress-bar", {
+		formatter: function(value) {
+			return value;
+		},
+		value: 0,
+		precision: 20,
+		max: getInputValbyId("#cmp-input-N")
+	});
+
+	window.progressSlider.max = getInputValbyId("#cmp-input-N");
+	window.granularity = 1;
 }
 
 
@@ -1884,13 +2011,19 @@ document.querySelector("#osm-increase-mu").onclick = increaseInput;
 document.querySelector("#osm-decrease-mu").onclick = decreaseInput;
 document.querySelector("#osm-increase-phi").onclick = increaseInput;
 document.querySelector("#osm-decrease-phi").onclick = decreaseInput;
+document.querySelector("#autoplay-button").onclick = startPlaying;
+document.querySelector("#stop-button").onclick = stopPlaying;
+document.querySelector("#granularity-increase").onclick = increaseInput;
+document.querySelector("#granularity-decrease").onclick = decreaseInput;
+//document.querySelector("#adjustable-progress").onclick = clickProgressBar;
 
 document.querySelector("#cmp-input-T").onchange = runCmp;
 document.querySelector("#cmp-input-T").onwheel = runCmp;
 document.querySelector("#cmp-input-E").onchange = runCmp;
 document.querySelector("#cmp-input-E").onwheel = runCmp;
-document.querySelector("#cmp-input-N").onchange = runCmp;
-document.querySelector("#cmp-input-N").onwheel = runCmp;
+document.querySelector("#cmp-input-N").onchange = changeProgressCapacity;
+document.querySelector("#cmp-input-N").onwheel = changeProgressCapacity;
+document.querySelector("#adjustable-progress-bar").onchange = runCmp;
 document.querySelector("#cmp-input-M").onchange = runCmp;
 document.querySelector("#cmp-input-M").onwheel = runCmp;
 document.querySelector("#cmp-input-f").onchange = runCmp;
@@ -1918,6 +2051,7 @@ document.querySelector("#cmp-select-P").onchange = runCmp;
 document.querySelector("#cmp-select-Mbf").onchange = runCmp;
 document.querySelector("#cmp-bg-merging").onchange = runCmp;
 document.querySelector("#cmp-threshold").onchange = runCmp;
+document.querySelector("#adjustable-progress-bar").onchange = runCmp;
 // document.querySelector("#cmp-osm-tiering").onclick = runCmp;
 // Individual LSM analysis event trigger
 document.querySelector("#vlsm-input-T").onchange = runIndiv;
@@ -2023,6 +2157,7 @@ document.querySelector("#osm-select-M").onchange = runIndiv;
 document.querySelector("#osm-select-E").onchange = runIndiv;
 document.querySelector("#osm-select-P").onchange = runIndiv;
 document.querySelector("#osm-select-Mbf").onchange = runIndiv;
+
 
 
 });

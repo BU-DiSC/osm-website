@@ -106,10 +106,7 @@ ul > .nav-item{
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: 0.45rem auto;
-	background-image: url("data:image/svg+xml;charset=utf-8, \
-    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'> \
-      <polygon points='50,20 100,100 0,100' style='fill:grey;'/> \
-    </svg>");
+	background-image: url("data:image/svg+xml;charset=utf-8, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'> <polygon points='50,20 100,100 0,100' style='fill:grey;'/> </svg>");
 }
 .incrementer .decrease {
 	position: relative;
@@ -118,22 +115,13 @@ ul > .nav-item{
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: 0.45rem auto;
-	background-image: url("data:image/svg+xml;charset=utf-8, \
-    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'> \
-      <polygon points='0,0 100,0 50,80' style='fill:grey;'/> \
-    </svg>");
+	background-image: url("data:image/svg+xml;charset=utf-8,  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'> <polygon points='0,0 100,0 50,80' style='fill:grey;'/> </svg>");
 }
 .incrementer .increase:active{
-	background-image: url("data:image/svg+xml;charset=utf-8, \
-    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'> \
-      <polygon points='50,0 100,100 0,100' style='fill:black;'/> \
-    </svg>");
+	background-image: url("data:image/svg+xml;charset=utf-8, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'> <polygon points='50,0 100,100 0,100' style='fill:black;'/> </svg>");
 }
 .incrementer .decrease:active{
-	background-image: url("data:image/svg+xml;charset=utf-8, \
-    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'> \
-      <polygon points='0,0 100,0 50,100' style='fill:black;'/> \
-    </svg>");
+	background-image: url("data:image/svg+xml;charset=utf-8, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'> <polygon points='0,0 100,0 50,100' style='fill:black;'/> </svg>");
 }
 
 
@@ -142,10 +130,7 @@ ul > .nav-item{
 	background-position: right 5px center;
     background-repeat: no-repeat;
     background-size: 0.45rem auto;
-    background-image: url("data:image/svg+xml;charset=utf-8, \
-    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 40'> \
-      <polygon points='0,0 60,0 30,40' style='fill:grey;'/> \
-    </svg>");
+    background-image: url("data:image/svg+xml;charset=utf-8, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 40'> <polygon points='0,0 60,0 30,40' style='fill:grey;'/> </svg>");
     text-align-last: center;
     text-align: center;
     padding-right: 13px;
@@ -480,6 +465,17 @@ input[type=number] {
     max-width: 100%;
 }
 
+/* For Control Panel*/
+
+#control-panel {
+	border-style: solid;
+}
+div.row h4 {
+	margin:0 auto;
+}
+div#progress-box {
+	border: hidden;
+}
 
 @media (min-width: 1200px) {
 
