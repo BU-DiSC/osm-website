@@ -467,15 +467,12 @@ input[type=number] {
 
 /* For Control Panel*/
 
-#control-panel {
-	border-style: solid;
-}
 div.row h4 {
 	margin:0 auto;
 }
-div#progress-box {
+/*div#progress-box {
 	border: hidden;
-}
+}*/
 
 @media (min-width: 1200px) {
 

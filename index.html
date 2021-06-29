@@ -320,7 +320,20 @@
 					<div class="text-center"><a data-toggle="collapse" href="#cmp-adSetting" aria-expanded="false"
 							aria-controls="cmp-adSetting">Advanced settings</a></div>
 					<div class="collapse row" id="cmp-adSetting">
-						<div class="cmp-conf-col col-lg-4 col-md-4 col-sm-4">
+						<div class="cmp-conf-col col-lg-3 col-md-3 col-sm-3">
+							<div class="input-group input-group-sm mb-2">
+								<div class="input-group-prepend">
+									<label class="input-group-text">Granularity</label>
+								</div>
+								<input id="granularity-input" value="1" min="1" step="10" type="number" data-preval="2"
+									class="cmp-input form-control" aria-label="Ratio">
+								<div class="input-group-append incrementer">
+									<button id="granularity-increase" class="increase"></button>
+									<button id="granularity-decrease" class="decrease"></button>
+								</div>
+							</div>
+						</div>
+						<div class="cmp-conf-col col-lg-3 col-md-3 col-sm-3">
 							<div class="input-group input-group-sm mb-2">
 								<div class="input-group-prepend">
 									<label class="input-group-text" data-toggle="tooltip" data-placement="bottom"
@@ -337,7 +350,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="cmp-conf-col col-lg-4 col-md-4 col-sm-4">
+						<div class="cmp-conf-col col-lg-3 col-md-3 col-sm-3">
 							<div class="input-group input-group-sm mb-2">
 								<div class="input-group-prepend">
 									<label class="input-group-text" data-toggle="tooltip" data-placement="bottom"
@@ -351,7 +364,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="cmp-conf-col col-lg-4 col-md-4 col-sm-4">
+						<div class="cmp-conf-col col-lg-3 col-md-3 col-sm-3">
 							<div class="input-group input-group-sm mb-2">
 								<div class="input-group-prepend">
 									<label class="input-group-text" data-toggle="tooltip" data-placement="bottom"
@@ -1186,42 +1199,32 @@
 				</div> <!-- END of Demo4-conf-col -->
 			</div> <!-- END of indivaidual configurations of Interactive Demo -->
 
+			<br/>
+
 			<div id="control-panel" class="">
 				<div class="container-fluid">
-					<div class="row ">
-						<h4>Control Panel</h4>
-					</div>
 					<div class="row">
-						<div class="col-8">
+						<div class="cmp-conf-row input-group input-group-sm mb-2 col-8">
+								<div class="input-group-prepend">
+									<label class="input-group-text">Progress</label>
+								</div>
 							<div id="progress-box" class="slider-box form-control">
 								<input id="adjustable-progress-bar" data-slider-id='ex1Slider' class="cmp-input" type="text" data-slider-min="0"
 									data-slider-max="100" data-slider-step="1" data-slider-value="0" />
 							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="col-3">
-							<div class="input-group input-group-sm mb-2">
-								<div class="input-group-prepend">
-									<label class="input-group-text">Granularity</label>
-								</div>
-								<input id="granularity-input" value="1" min="1" step="10" type="number" data-preval="2"
-									class="cmp-input form-control" aria-label="Ratio">
-								<div class="input-group-append incrementer">
-									<button id="granularity-increase" class="increase"></button>
-									<button id="granularity-decrease" class="decrease"></button>
-								</div>
+						<div class="col-4">
+							<div class="btn-group" role="group" aria-label="progress-control">
+								<button id="autoplay-button" type="button" class="btn btn-success">Play</button>
+								<button id="stop-button" type="button" class="btn btn-warning">Pause</button>
+								<button id="finish-button" type="button" class="btn btn-danger">Finish</button>
 							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="col-4">
-							<button id="autoplay-button" type="button" class="btn btn-primary">Play</button>
-							<button id="stop-button" type="button" class="btn btn-primary">Stop</button>
 						</div>
-					</div>
 				</div>
 			</div>
+
+			<br/>
 
 			<!-- Interactive Demo result starts here -->
 			<!-- Diagram result starts here -->
