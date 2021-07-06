@@ -1213,12 +1213,22 @@ function display() {
 }
 
 function changeProgressBar(newVal) {
-	window.ProgressSlider.setValue(newVal);
+	window.progressSlider.setValue(newVal);
+	//const maxVal = window.progressSlider.getAttribute("max");
+	//const newPercentage = newVal / maxVal * 100; 
+	//console.log(newPercentage);
+	//document.getElementById("progress-percentage-label").innerHTML = newPercentage + "%";
 	//const total = document.querySelector("#adjustable-progress-bar")["aria-valuemax"];
 	//document.querySelector("#adjustable-progress-bar")["style"] = "width: " + newVal/total * 100 + "%";
 }
 
 function runCmp() {
+	if (this.id == "adjustable-progress-bar") {
+		const newVal = window.progressSlider.getValue();
+		const maxVal = window.progressSlider.getAttribute("max");
+		const newPercentage = Math.floor(newVal / maxVal * 100);
+		document.getElementById("progress-percentage-label").innerHTML = newPercentage + "%";
+	}
     var target = "cmp";
     var input_T = getInputValbyId("#cmp-input-T");
     var input_E = convertToBytes("#cmp-select-E", getInputValbyId("#cmp-input-E"));
@@ -1623,6 +1633,7 @@ function increaseInput() {
 		window.progressSlider.setAttribute("max", getInputValbyId("#cmp-input-N"));
 		//document.querySelector("#adjustable-progress-bar")["aria-valuenow"] = 0;
 		changeProgressBar(0);
+		document.getElementById("progress-percentage-label").innerHTML = "0%";
 	}
 	if (this.id != "granularity-increase") {
     	var event = new Event('change');
@@ -1650,6 +1661,7 @@ function decreaseInput() {
 		window.progressSlider.setAttribute("max", getInputValbyId("#cmp-input-N"));
 		//document.querySelector("#adjustable-progress-bar")["aria-valuenow"] = 0;
 		changeProgressBar(0);
+		document.getElementById("progress-percentage-label").innerHTML = "0%";
 	}
 	if (this.id != "granularity-decrease") {
     	var event = new Event('change');
@@ -1660,6 +1672,8 @@ function decreaseInput() {
 }
 
 function startPlaying() {
+	//if (this.playing) return;
+	//this.playing = "playing";
 	const id = setInterval(progressAdvance, 500);
 	window.progressEventId = id;
 	//document.querySelector("#adjustable-progress-bar")["timeevent-id"] = id;
@@ -1669,12 +1683,14 @@ function startPlaying() {
 		if (window.progressEventId && currentVal < window.progressSlider.getAttribute("max")) {
 			//changeProgressBar(currentVal + 1);
 			const newVal = (Math.floor(currentVal / window.granularity) + 1) * window.granularity;
-			window.progressSlider.setValue(newVal);
+			//window.progressSlider.setValue(newVal);
+			changeProgressBar(newVal);
 			var event = new Event('change');
 			// var input_elem = document.querySelector("#cmp-input-N");
-			document.querySelector("#adjustable-progress-bar").onchange();
+			document.querySelector("#adjustable-progress-bar").dispatchEvent(event);
 		} else {
 			clearInterval(id);
+			//this.playing = null;
 		}
 	}
 	
@@ -1684,12 +1700,23 @@ function stopPlaying() {
 	if (window.progressEventId) {
 		clearInterval(window.progressEventId);
 		window.progressEventId = null;
+		//this.previousElementSibling.playing = null;
 	}
 }
 
 function resetProgress() {
 	stopPlaying();
-	window.progressSlider.setValue(0);
+	//window.progressSlider.setValue(0);
+	changeProgressBar(0);
+}
+
+function finishProgress() {
+	const maxVal = window.progressSlider.getAttribute("max");
+	//window.progressSlider.setValue(maxVal);
+	changeProgressBar(maxVal);
+	document.querySelector("#adjustable-progress-bar").onchange();
+	clearInterval(window.progressEventId);
+	window.progressEventId = null;
 }
 
 function setUpGranularityOptions() {
@@ -1708,6 +1735,22 @@ function clickProgressBar() {
 function changeProgressCapacity() {
 	const newVal = getInputValbyId("#cmp-input-N");
 	window.progressSlider.setAttribute("max", newVal);
+}
+
+function switchViewType() {
+	if (this.id == "dynamic-view") {
+		if (!this.classList.contains("btn-active")) {
+			this.classList.add("btn-active");
+			this.nextElementSibling.classList.remove("btn-active");
+			document.querySelector("#control-panel").style["display"] = "block";
+		}
+	} else if (this.id == "static-view") {
+		if (!this.classList.contains("btn-active")) {
+			this.classList.add("btn-active");
+			this.previousElementSibling.classList.remove("btn-active");
+			document.querySelector("#control-panel").style["display"] = "none";
+		}
+	}
 }
 //Common Methods
 
@@ -2013,8 +2056,11 @@ document.querySelector("#osm-increase-phi").onclick = increaseInput;
 document.querySelector("#osm-decrease-phi").onclick = decreaseInput;
 document.querySelector("#autoplay-button").onclick = startPlaying;
 document.querySelector("#stop-button").onclick = stopPlaying;
+document.querySelector("#finish-button").onclick = finishProgress;
 document.querySelector("#granularity-increase").onclick = increaseInput;
 document.querySelector("#granularity-decrease").onclick = decreaseInput;
+//document.querySelector("#static-view").onclick = switchViewType;
+//document.querySelector("#dynamic-view").onclick = switchViewType;
 //document.querySelector("#adjustable-progress").onclick = clickProgressBar;
 
 document.querySelector("#cmp-input-T").onchange = runCmp;
