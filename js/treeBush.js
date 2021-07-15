@@ -1232,6 +1232,7 @@ function runCmp() {
     var target = "cmp";
     var input_T = getInputValbyId("#cmp-input-T");
     var input_E = convertToBytes("#cmp-select-E", getInputValbyId("#cmp-input-E"));
+	//var input_E = convertToBytes()
 	//var input_N = getInputValbyId("#cmp-input-N");
     var input_N = window.progressSlider.getValue();
 	console.log(input_N);
@@ -1682,7 +1683,12 @@ function startPlaying() {
 		const currentVal = window.progressSlider.getValue();
 		if (window.progressEventId && currentVal < window.progressSlider.getAttribute("max")) {
 			//changeProgressBar(currentVal + 1);
-			const newVal = (Math.floor(currentVal / window.granularity) + 1) * window.granularity;
+    		const input_E = convertToBytes("#cmp-select-E", getInputValbyId("#cmp-input-E"));
+			const input_M = convertToBytes("#cmp-select-M", getInputValbyId("#cmp-input-M"));
+			const coeff = Math.floor(input_M / input_E);
+			const unit = coeff * window.granularity;
+			console.log("coeff:" + coeff);
+			const newVal = (Math.floor(currentVal / unit) + 1) * unit;
 			//window.progressSlider.setValue(newVal);
 			changeProgressBar(newVal);
 			var event = new Event('change');
