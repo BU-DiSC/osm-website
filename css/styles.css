@@ -346,6 +346,11 @@ input[type=number] {
 .lsm-btn-group .lsm-btn:last-child { /* Override, last first run in each level in tiering */
 	margin-right: 0px;
 }
+.ellipsis {
+	color: white;
+	top: -9px;
+	text-align: center;
+}
 
 /* LSM performance result display */
 #cost-result {

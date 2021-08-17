@@ -1,3 +1,5 @@
+const level_physical_capacities = [48, 36, 27, 22, 17, 12, 9, 6, 4];
+
 // Event handling
 document.addEventListener("DOMContentLoaded",
 function (event) {
@@ -326,7 +328,7 @@ class LSM {
         var level_space = 0;
         var context = "";
         var getWidth = function(i) {
-            var coef = 1;  
+           var coef = 1;  
             var base_width = 10;
             var client_width = elem.clientWidth - 1;  // -1 to avoid stacking
             var m = client_width / Math.pow(ratio, level);   // level0 actual width;
@@ -335,12 +337,17 @@ class LSM {
                 m  = base_width;
             }
             return m * Math.pow(coef * ratio, i) + "px";
+			/*var p_cap = 4;
+			if (i <= 8) 
+				p_cap = level_physical_capacities[8 - i];	
+			return elem.clientWidth * p_cap / 36 + "px";*/
         };
 
         for (var i = 1; i <= level; i++) {
             run_width = getWidth(i);
             button = createBtn(run_width);
             level_space = this._getLevelSpace(i);
+			console.log("level cap:", level_space);
             context = this._getTipText(i, level_space, 0, 0);   // jth run = 0;
             setToolTip(button, "left", context);
             setRunGradient(button, 0);
@@ -544,27 +551,33 @@ class VanillaLSM extends LSM{
             entry_num = this._getEntryNum(n + super._getExtraEntries(), level_cap);
             rate = entry_num / level_space;
             var file_num = Math.ceil(correctDecimal(entry_num / this.F));
+			console.log("render level cap:", level_space);
             context = super._getTipText(l, level_space, entry_num, file_num);
             setToolTip(elem[l], "left", context);
-            setRunGradient(elem[l], rate);
+            //setRunGradient(elem[l], rate, file_num, Math.min(level_cap, level_physical_capacities[8 - l]));
+			setRunGradientWrapper(elem[l], entry_num, level_space, elem[l].displayunit);
             return;
         }
 
+		var file_num = 0;
         if (this._isFull(n, l)) {
             entry_num = level_cap;
             rate = entry_num / level_space;
-            var file_num = Math.ceil(correctDecimal(entry_num / this.F));
+            file_num = Math.ceil(correctDecimal(entry_num / this.F));
+			console.log("render level cap:", level_space);
             context = super._getTipText(l, level_space, entry_num, file_num);
             n = n - entry_num;
         } else {
             entry_num = this._getOffsetFactor(n, l) * (super._sumLevelCapacity(l - 1) + this.PB);
             rate = entry_num / level_space;
-            var file_num = Math.ceil(correctDecimal(entry_num / this.F));
+			console.log("render level cap:", level_space);
+            file_num = Math.ceil(correctDecimal(entry_num / this.F));
             context = super._getTipText(l, level_space, entry_num, file_num);
             n = n - entry_num;
         }
         setToolTip(elem[l], "left", context);
-        setRunGradient(elem[l], rate);
+        //setRunGradient(elem[l].element, rate, file_num);
+		setRunGradientWrapper(elem[l], entry_num, level_space, elem[l].displayunit );
         return this._renderLeveler(elem, n);
     }
 
@@ -615,7 +628,7 @@ class VanillaLSM extends LSM{
                     var file_num = Math.ceil(correctDecimal(entry_num / this.F));
                     context = super._getTipText(l, run_cap, entry_num, file_num);
                     setToolTip(elem[l].childNodes[j], "left", context);
-                    setRunGradient(elem[l].childNodes[j], rate);
+                    setRunGradient(elem[l].childNodes[j], rate );
                 }
             } 
             n = n - offset;
@@ -631,25 +644,89 @@ class VanillaLSM extends LSM{
         var context = "";
 
         var getWidth = function(i) {
+			var ret = {width: 0, displaycap: 0, unitsize: 0};
             var coef = 1;  
             var base_width = 10;
+			const max_file_num = Math.pow(ratio, level);
+			var max_display_cap = 0;
+			if (max_file_num > 18) {
+				max_display_cap = 18; 
+			} else {
+				max_display_cap = max_file_num;
+			} 
             var client_width = elem.clientWidth - 1;  // -1 to avoid stacking
+			const display_cap_unit = client_width / max_display_cap;
+			ret.unitsize = display_cap_unit;
+			console.log("max display cap: ",max_display_cap);
+
+			if (max_display_cap == 18) {
+				if (ratio == 2) {
+					if (i == 1) {
+						ret.width = display_cap_unit * 2 + "px"; 
+						return ret;
+					} else if (i == 2) {
+						ret.width = display_cap_unit * 4 + "px";
+						return ret;
+					} else if (i > 2) {
+						const coef = Math.pow(client_width / display_cap_unit / 4, 1 / (level - 2)) / ratio;
+						ret.width = 4 * display_cap_unit * Math.pow(coef * ratio, i - 2) + "px";
+						return ret;
+					}
+				} else if (ratio == 3) {
+					if (i == 1) {
+						ret.width = display_cap_unit * 3 + "px";
+						return ret;
+					} else if (i == 2) {
+						const coef = Math.pow(client_width / display_cap_unit / 3, 1 / (level - 1)) / ratio;
+						var width = 3 * display_cap_unit * Math.pow(coef * ratio, i - 1);
+						if (width < 4 * display_cap_unit) width = 4 * display_cap_unit;
+						ret.width = width + "px";
+						return ret;
+					} else if (i > 2) {
+						var coef = Math.pow(client_width / display_cap_unit / 3, 1 / (level - 1)) / ratio;
+						const width = 3 * display_cap_unit * Math.pow(coef * ratio, i - 1);
+						if (width < 4 * display_cap_unit) width = 4 * display_cap_unit;
+						const base_width = width;
+						coef = Math.pow(client_width / base_width, 1 / (level - 2)) / ratio;
+						ret.width = base_width * Math.pow(coef * ratio, i - 2) + "px";
+						return ret;
+					}
+				} else {
+					if (i == 1) {
+						ret.width = display_cap_unit * 4 + "px";
+						return ret;
+					} else if (i > 1) {
+						const coef = Math.pow(client_width / display_cap_unit / 4, 1 / (level - 1)) / ratio;
+						ret.width = 4 * display_cap_unit * Math.pow(coef * ratio, i - 1) + "px";
+						return ret;
+					}
+				}			
+			}
             var m = client_width / Math.pow(ratio, level);   // level0 actual width;
             if (m < base_width) {
                 coef = Math.pow(client_width / base_width, 1 / level) / ratio;
                 m  = base_width;
             }
-            return m * Math.pow(coef * ratio, i) + "px";
+			ret.width = m * Math.pow(coef * ratio, i) + "px";
+			//ret.displaycap = ;
+            return ret;
+			/*var p_cap = 4;
+			const diff = level - i;
+			if (diff < 10) 
+				p_cap = level_physical_capacities[diff];	
+			return elem.clientWidth * p_cap / 64 + "px";*/
         };
 
         for (var i = 1; i <= level; i++) {
-            run_width = getWidth(i);
-            button = createBtn(run_width);
+            const run_prop = getWidth(i);
+            button = createBtn(run_prop.width);
             level_cap = super._getLevelCapacity(i);
             context = super._getTipText(i, level_cap, 0, 0);   // jth run = 0;
             setToolTip(button, "left", context);
             setRunGradient(button, 0);
             runs[i] = button;
+			runs[i].displayunit = run_prop.unitsize;
+			//runs[i].displayunit = run_prop.unitsize;
         }
         this._renderLeveler(runs, this.N - super._getExtraEntries());
         return runs;
@@ -822,7 +899,7 @@ class RocksDBLSM extends LSM {
         var context = "";
         var entry_num = 0;
         var rate = 0;
-        var getWidth = function(i) {
+        /*var getWidth = function(i) {
             var coef = 1;  
             var base_width = 10;
             var client_width = elem.clientWidth - 1;  // -1 to avoid stacking
@@ -832,10 +909,84 @@ class RocksDBLSM extends LSM {
                 m  = base_width;
             }
             return m * Math.pow(coef * ratio, i) + "px";
+        };*/
+		var getWidth = function(i) {
+			var ret = {width: 0, displaycap: 0, unitsize: 0};
+            var coef = 1;  
+            var base_width = 10;
+			const max_file_num = Math.pow(ratio, level);
+			var max_display_cap = 0;
+			if (max_file_num > 18) {
+				max_display_cap = 18; 
+			} else {
+				max_display_cap = max_file_num;
+			} 
+            var client_width = elem.clientWidth - 1;  // -1 to avoid stacking
+			const display_cap_unit = client_width / max_display_cap;
+			ret.unitsize = display_cap_unit;
+			console.log("max display cap: ",max_display_cap);
+
+			if (max_display_cap == 18) {
+				if (ratio == 2) {
+					if (i == 1) {
+						ret.width = display_cap_unit * 2 + "px"; 
+						return ret;
+					} else if (i == 2) {
+						ret.width = display_cap_unit * 4 + "px";
+						return ret;
+					} else if (i > 2) {
+						const coef = Math.pow(client_width / display_cap_unit / 4, 1 / (level - 2)) / ratio;
+						ret.width = 4 * display_cap_unit * Math.pow(coef * ratio, i - 2) + "px";
+						return ret;
+					}
+				} else if (ratio == 3) {
+					if (i == 1) {
+						ret.width = display_cap_unit * 3 + "px";
+						return ret;
+					} else if (i == 2) {
+						const coef = Math.pow(client_width / display_cap_unit / 3, 1 / (level - 1)) / ratio;
+						var width = 3 * display_cap_unit * Math.pow(coef * ratio, i - 1);
+						if (width < 4 * display_cap_unit) width = 4 * display_cap_unit;
+						ret.width = width + "px";
+						return ret;
+					} else if (i > 2) {
+						var coef = Math.pow(client_width / display_cap_unit / 3, 1 / (level - 1)) / ratio;
+						const width = 3 * display_cap_unit * Math.pow(coef * ratio, i - 1);
+						if (width < 4 * display_cap_unit) width = 4 * display_cap_unit;
+						const base_width = width;
+						coef = Math.pow(client_width / base_width, 1 / (level - 2)) / ratio;
+						ret.width = base_width * Math.pow(coef * ratio, i - 2) + "px";
+						return ret;
+					}
+				} else {
+					if (i == 1) {
+						ret.width = display_cap_unit * 4 + "px";
+						return ret;
+					} else if (i > 1) {
+						const coef = Math.pow(client_width / display_cap_unit / 4, 1 / (level - 1)) / ratio;
+						ret.width = 4 * display_cap_unit * Math.pow(coef * ratio, i - 1) + "px";
+						return ret;
+					}
+				}			
+			}
+            var m = client_width / Math.pow(ratio, level);   // level0 actual width;
+            if (m < base_width) {
+                coef = Math.pow(client_width / base_width, 1 / level) / ratio;
+                m  = base_width;
+            }
+			ret.width = m * Math.pow(coef * ratio, i) + "px";
+			//ret.displaycap = ;
+            return ret;
+			/*var p_cap = 4;
+			const diff = level - i;
+			if (diff < 10) 
+				p_cap = level_physical_capacities[diff];	
+			return elem.clientWidth * p_cap / 64 + "px";*/
         };
 
+
         for (var i = 1; i <= level; i++) {
-            run_width = getWidth(i);
+            run_width = getWidth(i).width;
             button = createBtn(run_width);
             level_cap = this._getLevelCapacity(i);
             level_space = this._getLevelSpace(i);
@@ -844,7 +995,8 @@ class RocksDBLSM extends LSM {
             var file_num = Math.ceil(correctDecimal(entry_num / this.F));
             context = super._getTipText(i, level_space, entry_num, file_num);
             setToolTip(button, "left", context);
-            setRunGradient(button, rate);
+            //setRunGradient(button, rate, file_num);
+			setRunGradientWrapper(button, entry_num, level_space, getWidth(i).unitsize);
             runs[i] = button;
         }
         return runs;
@@ -935,7 +1087,7 @@ class RocksDBLSM extends LSM {
                 m  = base_width;
             }
             return m * Math.pow(coef * ratio, i) + "px";
-        };
+        }; 
 
         for (var i = 1; i <= level; i++) {
             run_width = getWidth(i);
@@ -1864,17 +2016,86 @@ function setToolTip(elem, pos, text) {
     elem.setAttribute("title", "" + text);
 }
 
-function setRunGradient(elem, rate) {
-    var color1 = "#95a5a6";
+function setRunGradient(elem, rate1, file_num, rate2, full) {
+    var color1 = "#32cd32";
     var color2 = "#fff";
-    var rate1 = rate;
-    var rate2 = 1 - rate;
-    if (rate === 0) {
-        rate1 = 0;
+	var color3 = "#7b68ee";
+	var color4 = "#95a5a6";
+    //var rate1 = file_num/pcap;
+	const setFileColoring = function(rate, file_num) {
+		//const step = unit_width * 100 ;
+		const step = rate * 100 / file_num;
+		for (let i = 0; i < file_num; i ++) {
+			const stop = Math.min(step * (i + 1) , 100);  
+			if (i % 2 == 0) {
+				coloring = coloring + `${color1} ${stop}%,0,`;
+			} else {
+				coloring = coloring + `${color3} ${stop}%,0,`;
+			}
+		}
+		console.log("Coloring: ", coloring);
+		return coloring;
+	} 
+	//var omission_width = unit_width * 2;
+    if (rate1 === 0) {
+        //rate1 = 0;
         rate2 = 0;
     }
+	var coloring = "";
+
     var prev_style = elem.getAttribute("style");
-    elem.setAttribute("style", prev_style + `; background:linear-gradient(to right, ${color1} ${rate1*100}%, 0, ${color2} ${(rate2)*100}%)`);
+	if (!file_num) {
+    	elem.setAttribute("style", prev_style + `; background:linear-gradient(to right, ${color1} ${rate1*100}%, 0, ${color2} ${(1 - rate1)*100}%)`);
+	} else if (!rate2){
+		elem.setAttribute("style", prev_style + `; background:linear-gradient(to right, ${setFileColoring(rate1, file_num)} ${color2} ${(1 - rate1)*100}%`);
+	} else if (full) {
+		//rate1 = (pcap - 3) * 100 / pcap;
+		elem.setAttribute("style", prev_style + `; background:linear-gradient(to right, ${setFileColoring(rate1, file_num)} ${color4} ${(rate2)*100}%, 0, ${color3} ${(1 - rate2)*100}%`);
+	} else {
+		elem.setAttribute("style", prev_style + `; background:linear-gradient(to right, ${setFileColoring(rate1, file_num)} ${color4} ${(rate2) * 100}%, 0, ${color2} ${(1 - rate2) * 100}%)`)
+	}
+}
+
+function setRunGradientWrapper(button, entry_num, level_space, display_unit) {
+	console.log("entry num ", entry_num);
+	const width = button.style.width.slice(0, -2);
+	console.log("display unit: ", display_unit);
+	console.log("width: ", width);
+	console.log("rate: ", (display_unit * entry_num) / width);
+	if (Math.round(width / display_unit) < level_space && width / display_unit <= entry_num + 1 && level_space > 4) {
+		const display_num = Math.ceil(width / display_unit);
+		if (entry_num < level_space) {
+			setRunGradient(button, (display_num - 3) * display_unit / width, display_num - 3, 1 - display_unit / width, false);
+			var ellipsis_node = document.createElement("span");
+			ellipsis_node.classList.add("ellipsis");
+			ellipsis_node.style['position'] = "absolute";
+			ellipsis_node.style['left'] = ((display_num - 3) * display_unit) + "px";
+			ellipsis_node.style['width'] = (width - (display_num - 2) * display_unit) + "px";
+			//ellipsis_node.style['height'] = 0.5 * button.style.height.slice(0, -2) + "px";
+			console.log("top:", ellipsis_node.style['top']);
+			//ellipsis_node.align = "center";
+			ellipsis_node.innerHTML = "...";
+			button.style['position'] = "relative";
+			button.appendChild(ellipsis_node);
+		} else {
+			setRunGradient(button, (display_num - 3) * display_unit / width, display_num - 3, 1 - display_unit / width, true);
+			var ellipsis_node = document.createElement("span");
+			ellipsis_node.classList.add("ellipsis");
+			ellipsis_node.style['position'] = "absolute";
+			ellipsis_node.style['left'] = ((display_num - 3) * display_unit) + "px";
+			ellipsis_node.style['width'] = (width - (display_num - 2) * display_unit) + "px";
+			//ellipsis_node.style['height'] = 0.5 * button.style.height.slice(0 , -2) + "px";
+			console.log("top:", ellipsis_node.style['top']);
+			//ellipsis_node.align = "center";
+			ellipsis_node.innerHTML = "...";
+			button.style['position'] = "relative";
+			button.appendChild(ellipsis_node);
+		}
+	} else {
+
+		setRunGradient(button, entry_num * display_unit / width, entry_num);
+	}
+
 }
 
 function createDots(width) {
@@ -1908,7 +2129,9 @@ function hideElem(query) {
 }
 
 function clear(element) {
+	console.log("clear is called");
     while (element.firstChild) {
+		$(element.firstChild.firstChild).tooltip('dispose');
         element.removeChild(element.firstChild);
     }
 }
